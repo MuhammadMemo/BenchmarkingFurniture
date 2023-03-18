@@ -19,10 +19,9 @@ headers = {
 df = pd.read_excel("H:\\Benchmarking\\Python\\Benchmarking\\Benchmarking\\Datafurniture.xls")
 
 
-dfMffco = df.loc[df['Campany'] == 'Mffco']
-dfElMalik = df.loc[df['Campany'] == 'ElMalik']
+FinalDatadf=pd.DataFrame()
 
-Campany=df['Campany']
+
 
 Products = []
 Price = []
@@ -153,25 +152,35 @@ def Mffco(url, headers, campany, category):
     Img.clear()
     AllData.clear()
     return DFMffco
-    
-def main():
-    
-   FinalDatadf = pd.DataFrame()
+ 
 
-   for c in Campany: 
+def getElMalikData():
+      #CampanyElMalik = dfElMalik['Campany']
+      #CategorElMalik = dfElMalik['Category']
+      #urlElMalik = dfElMalik['URL']
+      #kdf=ElMalik(urlElMalik, headers, CampanyElMalik, CategorElMalik)
+      FinalDatadf=FinalDatadf.append(df,ignore_index=True)
+
+def getMffcoData():
+    
+    dfMffco = df.loc[df['Campany'] == 'Mffco']
+    dfElMalik = df.loc[df['Campany'] == 'ElMalik']
+    CampanyMffco = dfMffco['Campany']
+    CategoryMffco = dfMffco['Category']
+    urlMffco = dfMffco['URL']
+    mdf=Mffco(urlMffco, headers, CampanyMffco, CategoryMffco) 
+    FinalDatadf=FinalDatadf.append(mdf,ignore_index=True)
+
+   
+def main():
+    #df["Subjects"].unique())
+   for c in df['Campany'].unique(): 
        if c=='Mffco' : 
-           CampanyMffco = dfMffco['Campany']
-           CategoryMffco = dfMffco['Category']
-           urlMffco = dfMffco['URL']
-           mdf=Mffco(urlMffco, headers, CampanyMffco, CategoryMffco) 
-           FinalDatadf=FinalDatadf.append(mdf,ignore_index=True)
+           #getMffcoData()
+           print(1)
        elif c=='ElMalik':
-           CampanyElMalik = dfElMalik['Campany']
-           CategorElMalik = dfElMalik['Category']
-           urlElMalik = dfElMalik['URL']
-           kdf=ElMalik(urlElMalik, headers, CampanyElMalik, CategorElMalik)
-           FinalDatadf=FinalDatadf.append(kdf,ignore_index=True)
-          
+        # getElMalikData()
+          print(2)
     #Save Data In Excel
    FinalDatadf.to_excel("h:\Product_Details.xlsx")
    print('Done')
