@@ -183,7 +183,7 @@ def main():
        for c in List_Company:
            print(c)
 
-       Campany = input('Please enter an Campany Number :\n')
+       Campany = int(input('Please enter an Campany Number :\n'))
        if Campany==1 : 
           #getMffcoData()
                print(1)
