@@ -204,6 +204,8 @@ def main():
        elif Campany==7:
             # getElMalikData()
               print(7)
+       else :
+            break
         #Save Data In Excel
      #  FinalDatadf.to_excel("h:\Product_Details.xlsx")
         
