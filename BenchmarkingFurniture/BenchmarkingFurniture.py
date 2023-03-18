@@ -15,7 +15,7 @@ import requests
 
 # list for month + all
 List_Company=['0..all','1..Mffco','2..Kabbani','3..Egypt','4..Hub'
-            ,'5 Smart','6..Carpiture','7..American']
+            ,'5..Smart','6..Carpiture','7..American']
 
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.3'}
@@ -204,8 +204,8 @@ def main():
     #List_Company=['0..all','1..Mffco','2..Kabbani','3..Egypt','4..Hub'
     #        ,'5 Smart','6..Carpiture','7..American']
     for c in List_Company:
-           print(c)
-
+           print('Press:',c)
+           
     while True :
        Campany = int(input('Please enter an Campany Number :\n'))
        if Campany==0 : 
