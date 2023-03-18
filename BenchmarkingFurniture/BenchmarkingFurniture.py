@@ -150,8 +150,7 @@ def Mffco(url, headers, campany, category):
     PriceBeforDiscount.clear()
     Img.clear()
     AllData.clear()
-    DFMffco=DFMffco.append(DFMffco,ignore_index=True)
-    DFMffco.to_excel("h:\Product_Details.xlsx")
+    return DFMffco
  
 #def getElMalikData():
       #CampanyElMalik = dfElMalik['Campany']
@@ -175,8 +174,10 @@ def FilterData(campany):
         exit()
     elif campany=='Mffco' : 
         for g in range(len(urls)):
-                Mffco(urls[g], headers, campanyName[g], categoryName[g]) 
-                break
+              dfmffco=  Mffco(urls[g], headers, campanyName[g], categoryName[g]) 
+              dfmffco=dfmffco.append(dfmffco,ignore_index=True)
+              dfmffco.to_excel("h:\Product_Details.xlsx")
+              break
     elif campany=='':
         # getElMalikData()
             print(2)
@@ -196,7 +197,7 @@ def FilterData(campany):
         # getElMalikData()
             print(7)
 
-
+    
 
 def main():
 
