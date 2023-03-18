@@ -173,11 +173,11 @@ def FilterData(campany):
         print(0)
         exit()
     elif campany=='Mffco' : 
+        dfmffco=pd.DataFrame()
         for g in range(len(urls)):
-              dfmffco=  Mffco(urls[g], headers, campanyName[g], categoryName[g]) 
-              dfmffco=dfmffco.append(dfmffco,ignore_index=True)
-              dfmffco.to_excel("h:\Product_Details.xlsx")
-              break
+            dfmffco=dfmffco.append(Mffco(urls[g], headers, campanyName[g], categoryName[g]),ignore_index=True)
+              
+        dfmffco.to_excel("h:\Product_Details.xlsx")
     elif campany=='':
         # getElMalikData()
             print(2)
