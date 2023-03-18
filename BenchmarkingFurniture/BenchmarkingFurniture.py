@@ -164,7 +164,6 @@ def getElMalikData():
 def getMffcoData():
     
     dfMffco = df.loc[df['Campany'] == 'Mffco']
-    dfElMalik = df.loc[df['Campany'] == 'ElMalik']
     CampanyMffco = dfMffco['Campany']
     CategoryMffco = dfMffco['Category']
     urlMffco = dfMffco['URL']
