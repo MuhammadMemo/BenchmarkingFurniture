@@ -150,7 +150,8 @@ def Mffco(url, headers, campany, category):
     PriceBeforDiscount.clear()
     Img.clear()
     AllData.clear()
-    return DFMffco
+    DFMffco=DFMffco.append(DFMffco,ignore_index=True)
+    DFMffco.to_excel("h:\Product_Details.xlsx")
  
 #def getElMalikData():
       #CampanyElMalik = dfElMalik['Campany']
@@ -159,19 +160,42 @@ def Mffco(url, headers, campany, category):
       #kdf=ElMalik(urlElMalik, headers, CampanyElMalik, CategorElMalik)
       #FinalDatadf=FinalDatadf.append(df,ignore_index=True)
 
-def getMffcoData():
-   
-    df = pd.read_excel("Datafurniture.xls")
-    dfMffco = df[df['Campany'] == 'Mffco']
-    dfMffco.reset_index(inplace=True)
+def FilterData(campany):
+    if campany!='' :
+        df = pd.read_excel("Datafurniture.xls")
+        dfCampany = df[df['Campany'] == campany]
+        dfCampany.reset_index(inplace=True)
 
-    CampanyMffco = dfMffco['Campany']
-    CategoryMffco = dfMffco['Category']
-    urlMffco = dfMffco['URL']
-    for g in range(len(urlMffco)):
-         mdf=Mffco(urlMffco[g], headers, CampanyMffco[g], CategoryMffco[g]) 
+        campanyName = dfCampany['Campany']
+        categoryName = dfCampany['Category']
+        urls = dfCampany['URL']
+           
+    if campany=='' : 
+        print(0)
+        exit()
+    elif campany=='Mffco' : 
+        for g in range(len(urls)):
+                Mffco(urls[g], headers, campanyName[g], categoryName[g]) 
+                break
+    elif campany=='':
+        # getElMalikData()
+            print(2)
+    elif campany=='':
+        # getElMalikData()
+            print(3)
+    elif campany=='':
+        # getElMalikData()
+            print(4)
+    elif campany=='':
+        # getElMalikData()
+            print(5)
+    elif campany=='':
+        # getElMalikData()
+            print(6)
+    elif campany=='':
+        # getElMalikData()
+            print(7)
 
-    FinalDatadf=FinalDatadf.append(mdf,ignore_index=True)
 
 
 def main():
@@ -186,8 +210,7 @@ def main():
        if Campany==0 : 
             print(0)
        elif Campany==1 : 
-          getMffcoData()
-          print(1)
+          FilterData('Mffco')
        elif Campany==2:
             # getElMalikData()
               print(2)
