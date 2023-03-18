@@ -11,17 +11,22 @@ from bs4 import BeautifulSoup as bs
 import pandas as pd
 import time as t
 import urllib.request as urlReq
+import requests
 
+# list for month + all
+List_Company=['0..all','1..Mffco','2..Kabbani','3..Egypt','4..Hub'
+            ,'5 Smart','6..Carpiture','7..American']
 
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.3'}
 
-df = pd.read_excel("H:\\Benchmarking\\Python\\Benchmarking\\Benchmarking\\Datafurniture.xls")
+df = pd.read_excel("Datafurniture.xls")
+#url="https://github.com/MuhammadMemo/BenchmarkingFurniture/blob/6e044ecf25f743ee036dd804d3afc96e0f48c673/BenchmarkingFurniture/Datafurniture.xls"
 
-
+#file=requests.get(url)
+#df = pd.read_excel(file)
+#FinalDatadf=pd.DataFrame(file)
 FinalDatadf=pd.DataFrame()
-
-
 
 Products = []
 Price = []
@@ -32,7 +37,6 @@ FlagPrice=0
 Img = []
 imgList = []
 imgUrl = []
-
 
 #Mathod Get ElMalik data
 def ElMalik(url, headers, campany, category):
@@ -62,9 +66,6 @@ def ElMalik(url, headers, campany, category):
                  #Loop Get Images name
             #for g in i.find_all('img'):
             #   Img.append(g['src'])
-                
-
-
               
         # Sleep before Next URL
         t.sleep(10)
@@ -153,7 +154,6 @@ def Mffco(url, headers, campany, category):
     AllData.clear()
     return DFMffco
  
-
 def getElMalikData():
       #CampanyElMalik = dfElMalik['Campany']
       #CategorElMalik = dfElMalik['Category']
@@ -171,20 +171,42 @@ def getMffcoData():
     mdf=Mffco(urlMffco, headers, CampanyMffco, CategoryMffco) 
     FinalDatadf=FinalDatadf.append(mdf,ignore_index=True)
 
-   
+
 def main():
     #df["Subjects"].unique())
-   for c in df['Campany'].unique(): 
-       if c=='Mffco' : 
-           #getMffcoData()
-           print(1)
-       elif c=='ElMalik':
-        # getElMalikData()
-          print(2)
-    #Save Data In Excel
-   FinalDatadf.to_excel("h:\Product_Details.xlsx")
-   print('Done')
-   quit()
+
+    #List_Company=['0..all','1..Mffco','2..Kabbani','3..Egypt','4..Hub'
+    #        ,'5 Smart','6..Carpiture','7..American']
+
+    while True :
+       
+       for c in List_Company:
+           print(c)
+
+       Campany = input('Please enter an Campany Number :\n').isnumeric()
+       if Campany=='Mffco' : 
+          #getMffcoData()
+               print(1)
+       elif Campany=='ElMalik':
+            # getElMalikData()
+              print(2)
+        #Save Data In Excel
+       FinalDatadf.to_excel("h:\Product_Details.xlsx")
+        
+      #while True:
+     #   city, month, day = get_filters()
+     #   df = load_data(city, month, day)
+     #   time_stats(df)
+     #   station_stats(df)
+     #   trip_duration_stats(df)
+     #   user_stats(df)
+     #   # data_show(df)
+     #   data_display(df)
+     #   restart = input('\nWould you like to restart? Enter yes or press any key to exit.\n')
+     #   if restart.lower() != 'yes':
+     #       break
+    print('Done')
+
    
 
 if __name__ == "__main__":
