@@ -183,15 +183,30 @@ def main():
        for c in List_Company:
            print(c)
 
-       Campany = input('Please enter an Campany Number :\n').isnumeric()
-       if Campany=='Mffco' : 
+       Campany = input('Please enter an Campany Number :\n')
+       if Campany==1 : 
           #getMffcoData()
                print(1)
-       elif Campany=='ElMalik':
+       elif Campany==2:
             # getElMalikData()
               print(2)
+       elif Campany==3:
+            # getElMalikData()
+              print(3)
+       elif Campany==4:
+            # getElMalikData()
+              print(4)
+       elif Campany==5:
+            # getElMalikData()
+              print(5)
+       elif Campany==6:
+            # getElMalikData()
+              print(6)
+       elif Campany==7:
+            # getElMalikData()
+              print(7)
         #Save Data In Excel
-       FinalDatadf.to_excel("h:\Product_Details.xlsx")
+     #  FinalDatadf.to_excel("h:\Product_Details.xlsx")
         
       #while True:
      #   city, month, day = get_filters()
