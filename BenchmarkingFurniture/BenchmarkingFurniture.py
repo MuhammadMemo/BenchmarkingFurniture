@@ -156,33 +156,43 @@ def getFilter():
 
     while True :
         for k,v in List_Company.items():
-               print("Press.",str(v),"-->",str(k))
+               print("Press.",str(v),"->",str(k))
         
         campany = int(input('Please enter an Campany Number :\n'))
         if campany in values:
             break
         else:
              print('Sorry... Campany Number.is not invalid..! :')
-    key, value = list(List_Company.items())[campany]
-    print(key)
-    return key
+    name=list(keys)[campany]
+    print(name)
+    return name
 
 def LoadDate(campany):
-    if campany!='' :
-        df = pd.read_excel("Datafurniture.xls")
+
+    
+    df = pd.read_excel("Datafurniture.xls")
+    dfcampny=pd.DataFrame() 
+    #Get Company Data base on filter
+    if campany!='all' :
         dfCampany = df[df['Campany'] == campany]
         dfCampany.reset_index(inplace=True)
-
         campanyName = dfCampany['Campany']
         categoryName = dfCampany['Category']
         urls = dfCampany['URL']
-        dfcampny=pd.DataFrame()   
-
-    if campany=='' : 
-        exit()
+    #Get All Company Data base on filter
+    else:
+        dfcampny=df
+        campanyName = dfcampny['Campany']
+        categoryName = dfcampny['Category']
+        urls = dfcampny['URL']
+         
+    if campany=='all' : 
+         for g in range(len(urls)):
+            dfcampny=dfcampny.append(Mffco(urls[g], headers, campanyName[g], categoryName[g]),ignore_index=True)
+            t.sleep(10)
     elif campany=='Mffco' : 
         for g in range(len(urls)):
-            dfcampny=dfcampny.append(Mffco(urls[g], headers, campanyName[g], categoryName[g]),ignore_index=True)
+            dfcampny= pd.concat([dfcampny,Mffco(urls[g], headers, campanyName[g], categoryName[g])],ignore_index=True)
             t.sleep(10)
     elif campany=='':
         # getElMalikData()
@@ -202,15 +212,19 @@ def LoadDate(campany):
     elif campany=='':
         # getElMalikData()
             print(7)
-    dfcampny.to_excel("h:\Product_Details.xlsx")
+    return dfcampny
 
+def ExportData(df):
+    df.to_excel("c:\Product_Details.xlsx")
+    
 def main():
-     
+    print("Hello in the Benchmarketing Project...Pleass Select one or all to download Company data from website ")
     while True :
        campany = getFilter()
        df = LoadDate(campany)
        print(df)
-       restart = input('\nWould you like to restart? Enter yes or press any key to exit.\n')
+       ExportData(df)
+       restart = input('\nWould you like to restart? Enter yes.... or press any key to exit.\n')
        if restart.lower() != 'yes':
             break
         #Save Data In Excel
