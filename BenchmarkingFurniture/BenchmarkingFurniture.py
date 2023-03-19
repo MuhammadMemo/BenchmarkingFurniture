@@ -148,19 +148,24 @@ def Mffco(url, headers, campany, category):
  
 
 def getFilter():
-    #{ "0..all":0,"1..Mffco":1,"2..Kabbani":2,"3..Egypt":3,"4..Hub" : 4
-    #        ,"5..Smart" : 5,"6..Carpiture" :6 ,"7..American" : 7}
-    while True :
+   #List_Company={ "all":0,"Mffco":1,"Kabbani":2,"Egypt":3,"Hub" : 4
+   #         ,"Smart" : 5,"Carpiture" :6 ,"American" : 7}
 
+    keys = List_Company.keys()
+    values = List_Company.values()
+
+    while True :
         for k,v in List_Company.items():
-               print("Press: ",str(k),"To: ",str(v))
+               print("Press.",str(v),"-->",str(k))
         
         campany = int(input('Please enter an Campany Number :\n'))
-        if campany in List_Company.items():
+        if campany in values:
             break
         else:
              print('Sorry... Campany Number.is not invalid..! :')
-    return List_Company.keys()
+    key, value = list(List_Company.items())[campany]
+    print(key)
+    return key
 
 def LoadDate(campany):
     if campany!='' :
