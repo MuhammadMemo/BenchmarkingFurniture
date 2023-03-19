@@ -145,6 +145,68 @@ def Mffco(url, headers, campany, category):
     t.sleep(10)
     return df
 
+# Mathod Get Mffco data
+def Smart(url, headers, campany, category):
+    # Get Campany ,Category name
+    print ("Data Downloading for...",campany, category,url,"\n")
+    # Get Page HTML
+    page = rs.get(url=url, headers=headers)
+    soup = bs(page.content, 'html.parser')
+
+    # Filter Products in HTML
+    filter_Products = soup.find_all("ul", class_='products columns-4')
+    # Loop Get Product name
+    for i in filter_Products:
+        for p in i.find_all("h2", class_='woocommerce-loop-product__title'):
+            Products.append(p.text.strip())
+                # Get category,campany name
+            CampanyList.append(campany)
+            CategoryList.append(category)
+        # Loop Get Price
+        global FlagPrice
+        for c in i.find_all(class_='woocommerce-Price-amount amount'):
+            if (FlagPrice == 0):
+                 PriceBeforDiscount.append(c.text)
+                 FlagPrice=1
+            else:
+                Price.append(c.text)
+                FlagPrice=0
+        #Loop Get Images name
+        #for g in i.find_all('img'):
+        #    Img.append(g['src'])
+    # Sleep before Next URL
+    
+# Image Download
+        #  
+    # t.sleep(100)
+#    for u in range(len(img)):
+#       opener = urlReq.build_opener()
+#       opener.addheaders = [('User-Agent', 'MyApp/1.0')]
+#       urlReq.install_opener(opener)
+#       imgUrl="https:" + img[u]
+# #     urlReq.urlretriev(imgUrl,str(u)+".jpg"+ Campany +"/"+ Category + "/" +"Name")
+#       imgList.append(imgUrl)
+        
+    AllData = {'Campany': CampanyList, 'Category': CategoryList,
+                'Products': Products, 'Price': Price,'PriceBeforDiscount':PriceBeforDiscount}  
+#global FinalDatadf
+    df = pd.DataFrame(AllData)
+  
+    #clear All variables
+    CampanyList.clear()
+    CategoryList.clear()
+    Products.clear()
+    Price.clear()
+    PriceBeforDiscount.clear()
+    Img.clear()
+    AllData.clear()
+    print("sleep....\n")
+    t.sleep(10)
+    return df
+
+
+
+
 def getFilter():
    #List_Company={ "all":0,"Mffco":1,"Kabbani":2,"Egypt":3,"Hub" : 4
    #         ,"Smart" : 5,"Carpiture" :6 ,"American" : 7}
@@ -173,8 +235,8 @@ def getFilter():
 
 
 def LoadDate(campany):
-
-    df = pd.read_excel("Datafurniture.xls")
+  
+    df = pd.read_excel( "C:\\Users\\ism01\\source\\repos\\MuhammadMemo\\BenchmarkingFurniture\\BenchmarkingFurniture\\Datafurniture.xls")
     dfcampany=pd.DataFrame()
     dfFinal=pd.DataFrame()
     #dfcampny=df
@@ -201,8 +263,8 @@ def LoadDate(campany):
 
                 print("Hub")
         elif campanyname=='Smart':
-
-                print("Smart")
+            for g in range(len(urls)):
+                dfFinal= pd.concat([dfFinal,Smart(urls[g], headers, campanyName[g], categoryName[g])],ignore_index=True)
         elif campanyname=='Carpiture':
 
                 print("Carpiture")
