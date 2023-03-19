@@ -230,7 +230,7 @@ def getFilter():
     if  campany == 0 :
        name=list(keys)
     else:
-        name=list(keys)[campany]
+        name=list(keys)[campany-1]
     return name
 
 
@@ -240,7 +240,7 @@ def LoadDate(campany):
     dfcampany=pd.DataFrame()
     dfFinal=pd.DataFrame()
     #dfcampny=df
-   
+    #print((campany.index()))
     #Loop To Campany Name
     for campanyname in campany:
 
