@@ -11,11 +11,11 @@ from bs4 import BeautifulSoup as bs
 import pandas as pd
 import time as t
 import urllib.request as urlReq
-import requests
+
 
 # list for month + all
-List_Company=['0..all','1..Mffco','2..Kabbani','3..Egypt','4..Hub'
-            ,'5..Smart','6..Carpiture','7..American']
+List_Company={ "all":0,"Mffco":1,"Kabbani":2,"Egypt":3,"Hub" : 4
+            ,"Smart" : 5,"Carpiture" :6 ,"American" : 7}
 
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.3'}
@@ -41,46 +41,42 @@ imgUrl = []
 #Mathod Get ElMalik data
 def ElMalik(url, headers, campany, category):
     
-    for g in range(len(url)):
-        #Get Campany ,Category name
-        campanyName = campany[g]
-        categoryName = category[g]
-        #Get Page HTML
-        page = rs.get(url=url[g], headers=headers)
-        soup = bs(page.content, 'html.parser')
-        #Filter Products in HTML
-        filter_Products = soup.find_all("div", class_='products')
+    #Get Page HTML
+    page = rs.get(url=url[g], headers=headers)
+    soup = bs(page.content, 'html.parser')
+    #Filter Products in HTML
+    filter_Products = soup.find_all("div", class_='products')
 
-        for i in filter_Products:
-            #Loop Get Product name
-            for p in i.find_all("h3", class_='heading-title product-name'):
-                Products.append(p.text)
-                 #Get category,campany name
-                CampanyList.append(campanyName)
-                CategoryList.append(categoryName)
+    for i in filter_Products:
+        #Loop Get Product name
+        for p in i.find_all("h3", class_='heading-title product-name'):
+            Products.append(p.text)
+                #Get category,campany name
+            CampanyList.append(campany)
+            CategoryList.append(category)
 
-                #Loop Get Price
-            for c in i.find_all(class_='woocommerce-Price-amount amount'):
-                PriceBeforDiscount.append(0)
-                Price.append(c.text.strip())
-                 #Loop Get Images name
-            #for g in i.find_all('img'):
-            #   Img.append(g['src'])
+            #Loop Get Price
+        for c in i.find_all(class_='woocommerce-Price-amount amount'):
+            PriceBeforDiscount.append(0)
+            Price.append(c.text.strip())
+                #Loop Get Images name
+        #for g in i.find_all('img'):
+        #   Img.append(g['src'])
               
-        # Sleep before Next URL
-        t.sleep(10)
-    #    for u in range(len(img)):
-    #       opener = urlReq.build_opener()
-    #       opener.addheaders = [('User-Agent', 'MyApp/1.0')]
-    #       urlReq.install_opener(opener)
-    #       imgUrl="https:" + img[u]
-    # #     urlReq.urlretriev(imgUrl,str(u)+".jpg"+ Campany +"/"+ Category + "/" +"Name")
-    #       imgList.append(imgUrl)
+    # Sleep before Next URL
+    t.sleep(10)
+#    for u in range(len(img)):
+#       opener = urlReq.build_opener()
+#       opener.addheaders = [('User-Agent', 'MyApp/1.0')]
+#       urlReq.install_opener(opener)
+#       imgUrl="https:" + img[u]
+# #     urlReq.urlretriev(imgUrl,str(u)+".jpg"+ Campany +"/"+ Category + "/" +"Name")
+#       imgList.append(imgUrl)
         
-        AllData = {'Campany': CampanyList, 'Category': CategoryList,
-                   'Products': Products, 'Price': Price,'PriceBeforDiscount':PriceBeforDiscount} 
+    AllData = {'Campany': CampanyList, 'Category': CategoryList,
+                'Products': Products, 'Price': Price,'PriceBeforDiscount':PriceBeforDiscount} 
     
-        DFElMalik = pd.DataFrame(AllData)
+    df = pd.DataFrame(AllData)
   
    #clear All variables
     CampanyList.clear()
@@ -91,14 +87,12 @@ def ElMalik(url, headers, campany, category):
     Img.clear()
     AllData.clear()
  
-    return DFElMalik
+    return df
 
-    # Mathod Get Mffco data
+# Mathod Get Mffco data
 def Mffco(url, headers, campany, category):
     # Get Campany ,Category name
-    campanyName = campany
-    categoryName = category
-    url=url
+
     # Get Page HTML
     page = rs.get(url=url, headers=headers)
     soup = bs(page.content, 'html.parser')
@@ -110,14 +104,14 @@ def Mffco(url, headers, campany, category):
         for p in i.find_all("h3", class_='title'):
             Products.append(p.text.strip())
                 # Get category,campany name
-            CampanyList.append(campanyName)
-            CategoryList.append(categoryName)
+            CampanyList.append(campany)
+            CategoryList.append(category)
         # Loop Get Price
         global FlagPrice
         for c in i.find_all(class_='woocommerce-Price-amount amount'):
             if (FlagPrice == 0):
-                    PriceBeforDiscount.append(c.text)
-                    FlagPrice=1
+                 PriceBeforDiscount.append(c.text)
+                 FlagPrice=1
             else:
                 Price.append(c.text)
                 FlagPrice=0
@@ -125,7 +119,7 @@ def Mffco(url, headers, campany, category):
         #for g in i.find_all('img'):
         #    Img.append(g['src'])
     # Sleep before Next URL
-    t.sleep(10)
+    
 # Image Download
         #  
     # t.sleep(100)
@@ -140,7 +134,7 @@ def Mffco(url, headers, campany, category):
     AllData = {'Campany': CampanyList, 'Category': CategoryList,
                 'Products': Products, 'Price': Price,'PriceBeforDiscount':PriceBeforDiscount}  
 #global FinalDatadf
-    DFMffco = pd.DataFrame(AllData)
+    df = pd.DataFrame(AllData)
   
     #clear All variables
     CampanyList.clear()
@@ -150,16 +144,25 @@ def Mffco(url, headers, campany, category):
     PriceBeforDiscount.clear()
     Img.clear()
     AllData.clear()
-    return DFMffco
+    return df
  
-#def getElMalikData():
-      #CampanyElMalik = dfElMalik['Campany']
-      #CategorElMalik = dfElMalik['Category']
-      #urlElMalik = dfElMalik['URL']
-      #kdf=ElMalik(urlElMalik, headers, CampanyElMalik, CategorElMalik)
-      #FinalDatadf=FinalDatadf.append(df,ignore_index=True)
 
-def FilterData(campany):
+def getFilter():
+    #{ "0..all":0,"1..Mffco":1,"2..Kabbani":2,"3..Egypt":3,"4..Hub" : 4
+    #        ,"5..Smart" : 5,"6..Carpiture" :6 ,"7..American" : 7}
+    while True :
+
+        for k,v in List_Company.items():
+               print("Press: ",str(k),"To: ",str(v))
+        
+        campany = int(input('Please enter an Campany Number :\n'))
+        if campany in List_Company.items():
+            break
+        else:
+             print('Sorry... Campany Number.is not invalid..! :')
+    return List_Company.keys()
+
+def LoadDate(campany):
     if campany!='' :
         df = pd.read_excel("Datafurniture.xls")
         dfCampany = df[df['Campany'] == campany]
@@ -169,15 +172,13 @@ def FilterData(campany):
         categoryName = dfCampany['Category']
         urls = dfCampany['URL']
         dfcampny=pd.DataFrame()   
+
     if campany=='' : 
-        print(0)
         exit()
     elif campany=='Mffco' : 
-        
         for g in range(len(urls)):
             dfcampny=dfcampny.append(Mffco(urls[g], headers, campanyName[g], categoryName[g]),ignore_index=True)
-              
-        dfcampny.to_excel("h:\Product_Details.xlsx")
+            t.sleep(10)
     elif campany=='':
         # getElMalikData()
             print(2)
@@ -196,47 +197,19 @@ def FilterData(campany):
     elif campany=='':
         # getElMalikData()
             print(7)
-
-    
+    dfcampny.to_excel("h:\Product_Details.xlsx")
 
 def main():
-
-    #List_Company=['0..all','1..Mffco','2..Kabbani','3..Egypt','4..Hub'
-    #        ,'5 Smart','6..Carpiture','7..American']
-    for c in List_Company:
-           print('Press:',c)
-           
+     
     while True :
-       Campany = int(input('Please enter an Campany Number :\n'))
-       if Campany==0 : 
-            print(0)
-       elif Campany==1 : 
-          FilterData('Mffco')
-       elif Campany==2:
-            # getElMalikData()
-              print(2)
-       elif Campany==3:
-            # getElMalikData()
-              print(3)
-       elif Campany==4:
-            # getElMalikData()
-              print(4)
-       elif Campany==5:
-            # getElMalikData()
-              print(5)
-       elif Campany==6:
-            # getElMalikData()
-              print(6)
-       elif Campany==7:
-            # getElMalikData()
-              print(7)
-       else :
+       campany = getFilter()
+       df = LoadDate(campany)
+       print(df)
+       restart = input('\nWould you like to restart? Enter yes or press any key to exit.\n')
+       if restart.lower() != 'yes':
             break
         #Save Data In Excel
      #  FinalDatadf.to_excel("h:\Product_Details.xlsx")
-        
-  
-    print('Done')
 
    
 
