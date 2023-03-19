@@ -40,7 +40,7 @@ imgUrl = []
 
 #Mathod Get ElMalik data
 def ElMalik(url, headers, campany, category):
-    
+    print ("Data Downloading for...",campany, category,url,"\n")
     #Get Page HTML
     page = rs.get(url=url[g], headers=headers)
     soup = bs(page.content, 'html.parser')
@@ -86,13 +86,14 @@ def ElMalik(url, headers, campany, category):
     PriceBeforDiscount.clear()
     Img.clear()
     AllData.clear()
- 
+    print("sleep....\n")
+    t.sleep(10)
     return df
 
 # Mathod Get Mffco data
 def Mffco(url, headers, campany, category):
     # Get Campany ,Category name
-
+    print ("Data Downloading for...",campany, category,url,"\n")
     # Get Page HTML
     page = rs.get(url=url, headers=headers)
     soup = bs(page.content, 'html.parser')
@@ -144,6 +145,8 @@ def Mffco(url, headers, campany, category):
     PriceBeforDiscount.clear()
     Img.clear()
     AllData.clear()
+    print("sleep....\n")
+    t.sleep(10)
     return df
  
 
@@ -155,14 +158,19 @@ def getFilter():
     values = List_Company.values()
 
     while True :
+
         for k,v in List_Company.items():
                print("Press.",str(v),"->",str(k))
-        
-        campany = int(input('Please enter an Campany Number :\n'))
-        if campany in values:
-            break
-        else:
-             print('Sorry... Campany Number.is not invalid..! :')
+        try:
+             campany = int(input('Please enter an Campany Number :\n'))
+             if campany in values:
+                break
+             else:
+                print('Sorry... Campany Number.is not invalid..! :')
+        except :
+               print("Oops... data.is not Correct..! :")
+              
+             
     name=list(keys)[campany]
     print(name)
     return name
@@ -189,11 +197,9 @@ def LoadDate(campany):
     if campany=='all' : 
          for g in range(len(urls)):
             dfcampny=dfcampny.append(Mffco(urls[g], headers, campanyName[g], categoryName[g]),ignore_index=True)
-            t.sleep(10)
     elif campany=='Mffco' : 
         for g in range(len(urls)):
             dfcampny= pd.concat([dfcampny,Mffco(urls[g], headers, campanyName[g], categoryName[g])],ignore_index=True)
-            t.sleep(10)
     elif campany=='':
         # getElMalikData()
             print(2)
@@ -218,7 +224,7 @@ def ExportData(df):
     df.to_excel("c:\Product_Details.xlsx")
     
 def main():
-    print("Hello in the Benchmarketing Project...Pleass Select one or all to download Company data from website ")
+    print("Hello in the Benchmarketing Project...Pleass Select one or all to download Company data from website:\n")
     while True :
        campany = getFilter()
        df = LoadDate(campany)
