@@ -5,7 +5,6 @@ Created on Sat Feb 18 15:02:34 2023
 @author: Muhammad Mahmoud
 """
 
-
 import requests as rs
 from bs4 import BeautifulSoup as bs
 import pandas as pd
@@ -14,8 +13,8 @@ import urllib.request as urlReq
 
 
 # list for month + all
-List_Company={ "all":0,"Mffco":1,"Kabbani":2,"Egypt":3,"Hub" : 4
-            ,"Smart" : 5,"Carpiture" :6 ,"American" : 7}
+List_Company={"Mffco":1,"Kabbani":2,"Egypt":3,"Hub" : 4
+            ,"Smart" : 5,"Carpiture" :6 ,"American" : 7,"ElMalik" : 8}
 
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.3'}
@@ -26,7 +25,6 @@ headers = {
 #file=requests.get(url)
 #df = pd.read_excel(file)
 #FinalDatadf=pd.DataFrame(file)
-FinalDatadf=pd.DataFrame()
 
 Products = []
 Price = []
@@ -42,7 +40,7 @@ imgUrl = []
 def ElMalik(url, headers, campany, category):
     print ("Data Downloading for...",campany, category,url,"\n")
     #Get Page HTML
-    page = rs.get(url=url[g], headers=headers)
+    page = rs.get(url=url, headers=headers)
     soup = bs(page.content, 'html.parser')
     #Filter Products in HTML
     filter_Products = soup.find_all("div", class_='products')
@@ -64,7 +62,6 @@ def ElMalik(url, headers, campany, category):
         #   Img.append(g['src'])
               
     # Sleep before Next URL
-    t.sleep(10)
 #    for u in range(len(img)):
 #       opener = urlReq.build_opener()
 #       opener.addheaders = [('User-Agent', 'MyApp/1.0')]
@@ -77,7 +74,6 @@ def ElMalik(url, headers, campany, category):
                 'Products': Products, 'Price': Price,'PriceBeforDiscount':PriceBeforDiscount} 
     
     df = pd.DataFrame(AllData)
-  
    #clear All variables
     CampanyList.clear()
     CategoryList.clear()
@@ -148,7 +144,6 @@ def Mffco(url, headers, campany, category):
     print("sleep....\n")
     t.sleep(10)
     return df
- 
 
 def getFilter():
    #List_Company={ "all":0,"Mffco":1,"Kabbani":2,"Egypt":3,"Hub" : 4
@@ -156,72 +151,73 @@ def getFilter():
 
     keys = List_Company.keys()
     values = List_Company.values()
-
     while True :
 
         for k,v in List_Company.items():
-               print("Press.",str(v),"->",str(k))
+               print("Press.",str(v),"->",str(k))  
+        print("Press.","0","->","All\n")
         try:
              campany = int(input('Please enter an Campany Number :\n'))
-             if campany in values:
+             if campany in values or campany == 0 :
                 break
              else:
                 print('Sorry... Campany Number.is not invalid..! :')
         except :
                print("Oops... data.is not Correct..! :")
-              
-             
-    name=list(keys)[campany]
-    print(name)
+
+    if  campany == 0 :
+       name=list(keys)
+    else:
+        name=list(keys)[campany]
     return name
+
 
 def LoadDate(campany):
 
-    
     df = pd.read_excel("Datafurniture.xls")
-    dfcampny=pd.DataFrame() 
-    #Get Company Data base on filter
-    if campany!='all' :
-        dfCampany = df[df['Campany'] == campany]
-        dfCampany.reset_index(inplace=True)
-        campanyName = dfCampany['Campany']
-        categoryName = dfCampany['Category']
-        urls = dfCampany['URL']
-    #Get All Company Data base on filter
-    else:
-        dfcampny=df
-        campanyName = dfcampny['Campany']
-        categoryName = dfcampny['Category']
-        urls = dfcampny['URL']
-         
-    if campany=='all' : 
-         for g in range(len(urls)):
-            dfcampny=dfcampny.append(Mffco(urls[g], headers, campanyName[g], categoryName[g]),ignore_index=True)
-    elif campany=='Mffco' : 
-        for g in range(len(urls)):
-            dfcampny= pd.concat([dfcampny,Mffco(urls[g], headers, campanyName[g], categoryName[g])],ignore_index=True)
-    elif campany=='':
-        # getElMalikData()
-            print(2)
-    elif campany=='':
-        # getElMalikData()
-            print(3)
-    elif campany=='':
-        # getElMalikData()
-            print(4)
-    elif campany=='':
-        # getElMalikData()
-            print(5)
-    elif campany=='':
-        # getElMalikData()
-            print(6)
-    elif campany=='':
-        # getElMalikData()
-            print(7)
-    return dfcampny
+    dfcampany=pd.DataFrame()
+    dfFinal=pd.DataFrame()
+    #dfcampny=df
+   
+    #Loop To Campany Name
+    for campanyname in campany:
+
+        #Get Company Data base on filter
+        dfcampany = df[df['Campany'] == campanyname]
+        dfcampany.reset_index(inplace=True)
+        campanyName = dfcampany['Campany']
+        categoryName = dfcampany['Category']
+        urls = dfcampany['URL']
+
+        if campanyname=='Mffco' : 
+            for g in range(len(urls)):
+                dfFinal= pd.concat([dfFinal,Mffco(urls[g], headers, campanyName[g], categoryName[g])],ignore_index=True)
+        elif campanyname=='Kabbani':
+                print("Kabbani")
+        elif campanyname=='Egypt':
+
+                print("Egypt")
+        elif campanyname=='Hub':
+
+                print("Hub")
+        elif campanyname=='Smart':
+
+                print("Smart")
+        elif campanyname=='Carpiture':
+
+                print("Carpiture")
+        elif campanyname=='American':
+
+                print("American")
+        elif campanyname=='ElMalik':
+               for g in range(len(urls)):
+                dfFinal= pd.concat([dfFinal,ElMalik(urls[g], headers, campanyName[g], categoryName[g])],ignore_index=True)
+    return dfFinal
 
 def ExportData(df):
+    print("Data Exporting....")
     df.to_excel("c:\Product_Details.xlsx")
+    print("Finished")
     
 def main():
     print("Hello in the Benchmarketing Project...Pleass Select one or all to download Company data from website:\n")
@@ -233,11 +229,8 @@ def main():
        restart = input('\nWould you like to restart? Enter yes.... or press any key to exit.\n')
        if restart.lower() != 'yes':
             break
-        #Save Data In Excel
-     #  FinalDatadf.to_excel("h:\Product_Details.xlsx")
 
    
-
 if __name__ == "__main__":
     main()
    
