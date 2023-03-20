@@ -42,7 +42,7 @@ def ElMalik(url, headers, campany, category):
 
             #Loop Get Price
         for c in i.find_all(class_='woocommerce-Price-amount amount'):
-            PriceBeforDiscount.append(0)
+            PriceBeforDiscount.append(c.text.strip())
             Price.append(c.text.strip())
                 #Loop Get Images name
         #for g in i.find_all('img'):
@@ -64,6 +64,61 @@ def ElMalik(url, headers, campany, category):
     df = pd.DataFrame(AllData)
     print("Downloded  ",len(Products),"  Products")
    # TO-DO clear All variables
+    CampanyList.clear()
+    CategoryList.clear()
+    Products.clear()
+    Price.clear()
+    PriceBeforDiscount.clear()
+    Img.clear()
+    AllData.clear()
+
+    print(MesgAfterURL)
+    t.sleep(10)
+    return df
+
+
+#Method Get ElMalik data
+def American(url, headers, campany, category):
+    print (campany, category," Downloading...","\n")
+    #Get Page HTML
+    page = rs.get(url=url, headers=headers)
+    soup = bs(page.content, 'html.parser')
+    #Filter Products in HTML
+    filter_Products = soup.find_all(class_='products columns-tablet-2 columns-mobile-2 rey-wcGap-default rey-wcGrid-default columns-4')
+
+    for i in filter_Products:
+        #Loop Get Product name
+        for p in i.find_all("h2", class_='woocommerce-loop-product__title'):
+            Products.append(p.text)
+            #Repeat campany,category name
+            CampanyList.append(campany)
+            CategoryList.append(category)
+
+         #Loop Get Price
+        for c in i.find_all(class_='price'):
+            Price.append(c.text.strip())
+            PriceBeforDiscount.append(c.text.strip())
+
+                #Loop Get Images name
+        #for g in i.find_all('img'):
+        #   Img.append(g['src'])
+              
+    # Sleep before Next URL
+#    for u in range(len(img)):
+#       opener = urlReq.build_opener()
+#       opener.addheaders = [('User-Agent', 'MyApp/1.0')]
+#       urlReq.install_opener(opener)
+#       imgUrl="https:" + img[u]
+# #     urlReq.urlretriev(imgUrl,str(u)+".jpg"+ Campany +"/"+ Category + "/" +"Name")
+#       imgList.append(imgUrl)
+
+    # Associate data from lists to dictionary
+    AllData = {'Campany': CampanyList, 'Category': CategoryList,
+                'Products': Products, 'Price': Price,'PriceBeforDiscount':PriceBeforDiscount}
+
+    df = pd.DataFrame(AllData)
+    print("Downloded  ",len(Products),"  Products")
+    # TO-DO clear All variables
     CampanyList.clear()
     CategoryList.clear()
     Products.clear()
@@ -269,6 +324,64 @@ def Kabbani(url, headers, campany, category):
     t.sleep(10)
     return df
 
+
+# Method Get Hub data
+def Hub(url, headers, campany, category):
+    # Get Campany ,Category name
+    print (campany, category," Downloading...","\n")
+    # Get Page HTML
+    page = rs.get(url=url, headers=headers)
+    soup = bs(page.content, 'html.parser')
+
+    # Filter Products in HTML
+    filter_Products = soup.find_all("div" ,id="layerednav-list-products")
+    # Loop Get Product name
+    for i in filter_Products:
+        for p in i.find_all("strong", class_='product name product-item-name'):
+            Products.append(p.text.strip())
+                # Get category,campany name
+            CampanyList.append(campany)
+            CategoryList.append(category)
+        # Loop Get Price
+
+        for c in i.find_all("span" ,class_='old-price'):
+                 PriceBeforDiscount.append(c.text)
+        for c in i.find_all("span" ,class_='special-price'):
+                 Price.append(c.text)
+        #Loop Get Images name
+        #for g in i.find_all('img'):
+        #    Img.append(g['src'])
+    # Sleep before Next URL
+    
+# Image Download
+        #  
+    # t.sleep(100)
+#    for u in range(len(img)):
+#       opener = urlReq.build_opener()
+#       opener.addheaders = [('User-Agent', 'MyApp/1.0')]
+#       urlReq.install_opener(opener)
+#       imgUrl="https:" + img[u]
+# #     urlReq.urlretriev(imgUrl,str(u)+".jpg"+ Campany +"/"+ Category + "/" +"Name")
+#       imgList.append(imgUrl)
+        
+    AllData = {'Campany': CampanyList, 'Category': CategoryList,
+                'Products': Products, 'Price': Price,'PriceBeforDiscount':PriceBeforDiscount}  
+
+    df = pd.DataFrame(AllData)
+    print("Downloded  ",len(Products),"  Products")
+    #clear All variables
+    CampanyList.clear()
+    CategoryList.clear()
+    Products.clear()
+    Price.clear()
+    PriceBeforDiscount.clear()
+    Img.clear()
+    AllData.clear()
+
+    print(MesgAfterURL)
+    t.sleep(10)
+    return df
+
 # Method Get Mffco data
 def Smart(url, headers, campany, category):
     # Get Campany ,Category name
@@ -385,19 +498,22 @@ def LoadDate(campany):
             if campany!= 0 :
                 return dfFinal 
         elif campanyname=='Hub':
-                print("Hub")
+            for g in range(len(urls)):
+                dfFinal= pd.concat([dfFinal,Hub(urls[g], headers, campanyName[g], categoryName[g])],ignore_index=True)
+            if campany !=0 :
+               return dfFinal
         elif campanyname=='Smart':
             for g in range(len(urls)):
                 dfFinal= pd.concat([dfFinal,Smart(urls[g], headers, campanyName[g], categoryName[g])],ignore_index=True)
             if campany !=0 :
                return dfFinal 
         elif campanyname=='Carpiture':
-
                 print("Carpiture")
         elif campanyname=='American':
-
-                print("American")
-
+            for g in range(len(urls)):
+                dfFinal= pd.concat([dfFinal,American(urls[g], headers, campanyName[g], categoryName[g])],ignore_index=True)
+            if campany !=0 :
+               return dfFinal
         elif campanyname=='ElMalik':
                for g in range(len(urls)):
                 dfFinal= pd.concat([dfFinal,ElMalik(urls[g], headers, campanyName[g], categoryName[g])],ignore_index=True)
