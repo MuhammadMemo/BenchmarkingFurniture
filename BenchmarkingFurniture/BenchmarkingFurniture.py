@@ -245,16 +245,18 @@ def LoadDate(campany):
     #        campanyname=list(keys)[campany]
   # values=campany
     
-    #df = pd.read_excel( "C:\\Users\\ism01\\source\\repos\\MuhammadMemo\\BenchmarkingFurniture\\BenchmarkingFurniture\\Datafurniture.xls")
-    df = pd.read_excel("Datafurniture.xls")
+    df = pd.read_excel( "C:\\Users\\ism01\\source\\repos\\MuhammadMemo\\BenchmarkingFurniture\\BenchmarkingFurniture\\Datafurniture.xls")
+    #df = pd.read_excel("Datafurniture.xls")
     dfcampany=pd.DataFrame()
     dfFinal=pd.DataFrame()
     #dfcampny=df
     #print((campany.index()))
     #Loop To Campany Name
-    for indx in  range(campany):
+    for indx in  range(1,8):
 
-        campanyname =list(keys)[indx]
+        #TO-DO Filter Data base on Campany Number
+        if campany!= 0 : campanyname =list(keys)[campany]
+        else: campanyname =list(keys)[indx]
 
         #Get Company Data base on filter
         dfcampany = df[df['Campany'] == campanyname]
@@ -263,9 +265,11 @@ def LoadDate(campany):
         categoryName = dfcampany['Category']
         urls = dfcampany['URL']
 
-        if campanyname=='Mffco' : 
+        if campanyname=='Mffco'  : 
             for g in range(len(urls)):
                 dfFinal= pd.concat([dfFinal,Mffco(urls[g], headers, campanyName[g], categoryName[g])],ignore_index=True)
+            if campany!= 0 :
+                return dfFinal 
         elif campanyname=='Kabbani':
                 print("Kabbani")
         elif campanyname=='Egypt':
@@ -287,11 +291,12 @@ def LoadDate(campany):
         elif campanyname=='ElMalik':
                for g in range(len(urls)):
                 dfFinal= pd.concat([dfFinal,ElMalik(urls[g], headers, campanyName[g], categoryName[g])],ignore_index=True)
+               if campany!= 0 : break
     return dfFinal
 
 def ExportData(df):
     print("Data Exporting....")
-    df.to_excel("c:\Product_Details.xlsx")
+    df.to_excel("c:\\Product_Details.xlsx")
     print("Finished")
     
 def main():
