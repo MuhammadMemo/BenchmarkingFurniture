@@ -163,10 +163,14 @@ def Egypt(url, headers, campany, category):
         #    else:
         #        Price.append(c.text)
         #        FlagPrice=0
+        p=[]
         for c in i.find_all("div", class_="product-price"):
+             p.append(c.text)
+        PriceBeforDiscount = [item.split('EGP')[0] for item in p]
+        Price = [item.split('EGP')[1] for item in p]
 
-                 PriceBeforDiscount.append(c.text)
-                 Price.append(c.text)
+            # Price=PriceBeforDiscount.split("EGP")
+
         #for c in i.find_all("span"):
         #         Price.append(c.text)
         #Loop Get Images name
