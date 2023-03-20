@@ -166,8 +166,11 @@ def Egypt(url, headers, campany, category):
         p=[]
         for c in i.find_all("div", class_="product-price"):
              p.append(c.text)
-        PriceBeforDiscount = [item.split('EGP')[0] for item in p]
-        Price = [item.split('EGP')[1] for item in p]
+
+        PriceBeforDiscount = [item.split()[0] for item in p]
+        Price = [item.split()[2] for item in p]
+
+        #Price = [item.split()[1] for item in p]
 
             # Price=PriceBeforDiscount.split("EGP")
 
@@ -381,9 +384,7 @@ def LoadDate(campany):
                 dfFinal= pd.concat([dfFinal,Egypt(urls[g], headers, campanyName[g], categoryName[g])],ignore_index=True)
             if campany!= 0 :
                 return dfFinal 
-                print("Egypt")
         elif campanyname=='Hub':
-
                 print("Hub")
         elif campanyname=='Smart':
             for g in range(len(urls)):
