@@ -1,9 +1,4 @@
 
-# -*- coding: utf-8 -*-
-"""
-Created on Sat Feb 18 15:02:34 2023
-@author: Muhammad Mahmoud
-"""
 
 import requests as rs
 from bs4 import BeautifulSoup as bs
@@ -13,7 +8,7 @@ import urllib.request as urlReq
 
 
 # list for month + all
-List_Company={"Mffco":1,"Kabbani":2,"Egypt":3,"Hub" : 4
+List_Company={"AllData":0,"Mffco":1,"Kabbani":2,"Egypt":3,"Hub" : 4
             ,"Smart" : 5,"Carpiture" :6 ,"American" : 7,"ElMalik" : 8}
 
 headers = {
@@ -211,7 +206,7 @@ def getFilter():
    #List_Company={ "all":0,"Mffco":1,"Kabbani":2,"Egypt":3,"Hub" : 4
    #         ,"Smart" : 5,"Carpiture" :6 ,"American" : 7}
 
-    keys = List_Company.keys()
+    
     values = List_Company.values()
     while True :
 
@@ -220,29 +215,46 @@ def getFilter():
         print("Press.","0","->","All\n")
         try:
              campany = int(input('Please enter an Campany Number :\n'))
-             if campany in values or campany == 0 :
+             if campany in values :
                 break
              else:
                 print('Sorry... Campany Number.is not invalid..! :')
         except :
                print("Oops... data.is not Correct..! :")
 
-    if  campany == 0 :
-       name=list(keys)
-    else:
-        name=list(keys)[campany-1]
-    return name
+    
+  #  #Value= List_Company.values()
+  #  if  campany == 0 :
+  #          campanyname=list(keys)
+  #  else:
+  #          campanyname=list(keys)[campany]
+  ##indx=list(keys)[campany-1]
+    return campany
 
 
 def LoadDate(campany):
-  
-    df = pd.read_excel( "C:\\Users\\ism01\\source\\repos\\MuhammadMemo\\BenchmarkingFurniture\\BenchmarkingFurniture\\Datafurniture.xls")
+
+    
+    keys = List_Company.keys()
+    #values = List_Company.values()
+    
+      #Value= List_Company.values()
+    #if  campany == 0 :
+    #        campanyname=list(keys)
+    #else:
+    #        campanyname=list(keys)[campany]
+  # values=campany
+    
+    #df = pd.read_excel( "C:\\Users\\ism01\\source\\repos\\MuhammadMemo\\BenchmarkingFurniture\\BenchmarkingFurniture\\Datafurniture.xls")
+    df = pd.read_excel("Datafurniture.xls")
     dfcampany=pd.DataFrame()
     dfFinal=pd.DataFrame()
     #dfcampny=df
     #print((campany.index()))
     #Loop To Campany Name
-    for campanyname in campany:
+    for indx in  range(campany):
+
+        campanyname =list(keys)[indx]
 
         #Get Company Data base on filter
         dfcampany = df[df['Campany'] == campanyname]
@@ -265,6 +277,7 @@ def LoadDate(campany):
         elif campanyname=='Smart':
             for g in range(len(urls)):
                 dfFinal= pd.concat([dfFinal,Smart(urls[g], headers, campanyName[g], categoryName[g])],ignore_index=True)
+            if campany !=0 : break
         elif campanyname=='Carpiture':
 
                 print("Carpiture")
@@ -292,8 +305,5 @@ def main():
        if restart.lower() != 'yes':
             break
 
-   
 if __name__ == "__main__":
     main()
-   
-   
