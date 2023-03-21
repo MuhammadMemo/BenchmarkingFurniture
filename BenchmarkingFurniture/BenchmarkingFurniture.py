@@ -8,6 +8,7 @@ import pandas as pd
 import time as t
 import urllib.request as urlReq
 import datetime as dt
+import re
 
 # list for Company + all
 List_Company={"All Company":0,"Mffco":1,"Kabbani":2,"Egypt":3,"Hub" : 4
@@ -18,6 +19,7 @@ List_Company={"All Company":0,"Mffco":1,"Kabbani":2,"Egypt":3,"Hub" : 4
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.3'}
 
+#Public Messages
 #200 is OK, 404 is Not Found
 status_code_OK="Connection is OK \n"
 status_code_NotFound="Connection is Not Found!"
@@ -642,7 +644,29 @@ def ExportData(df):
 
 def PriceCleaning(df):
 
-    df['Price']=df['Price'].replace(['EGP','LE ',','],'')
+
+
+   # df['Price']=df['Price'].replace('LE','',inplace=True)
+   # df['Price'] = df['Price'].str.replace('LE','')
+   # df['Price'] = df['Price'].str.replace('EGP','')
+   # df['Price'] = df['Price'].str.replace('Special Price','')
+   # #df['Price'] = df['Price'].str.replace("Ì.ã.",'', regex=True)
+   # df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('LE','')
+   # df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('EGP','')
+   # df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('Regular Price','')
+   ## df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace("Ì.ã.","", regex=True)
+   # df['Price'] = df['Price'].str.replace(',','')
+   # df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace(',','')
+   # #df['Price'] = df['Price'].astype('int')
+
+    #df['PriceBeforDiscount']=df['PriceBeforDiscount'].astype('int')
+
+    df['Price'] = df['Price'].str.replace('\W', '', regex=True)
+    df['Price'] = df['Price'].str.replace('\s', '', regex=True)
+    df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('\W', '', regex=True)
+    df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('\s', '', regex=True)
+
+    #df['Price']=df['Price'].replace(['EGP','LE ',','],'', regex=True)
     return df
 
 def main():
