@@ -193,6 +193,67 @@ def Mffco(url, headers, campany, category):
 
 
 # Method Get Mffco data
+def Carpiture(url, headers, campany, category):
+    # Get Campany ,Category name
+    print (campany, category," Downloading...","\n")
+    # Get Page HTML
+    page = rs.get(url=url, headers=headers)
+    soup = bs(page.content, 'html.parser')
+
+    # Filter Products in HTML
+    filter_Products = soup.find_all("div", class_='container')
+    # Loop Get Product name
+    for i in filter_Products:
+        for p in i.find_all("h2",class_='woo-loop-product__title'):
+            Products.append(p.text.strip())
+                # Get category,campany name
+            CampanyList.append(campany)
+            CategoryList.append(category)
+        # Loop Get Price
+        global FlagPrice
+        for c in i.find_all(class_='woocommerce-Price-amount amount'):
+            if (FlagPrice == 0):
+                 Price.append(c.text)
+                 FlagPrice=1
+            else:
+                PriceBeforDiscount.append(c.text)
+                FlagPrice=0
+        #Loop Get Images name
+        #for g in i.find_all('img'):
+        #    Img.append(g['src'])
+    # Sleep before Next URL
+    
+# Image Download
+        #  
+    # t.sleep(100)
+#    for u in range(len(img)):
+#       opener = urlReq.build_opener()
+#       opener.addheaders = [('User-Agent', 'MyApp/1.0')]
+#       urlReq.install_opener(opener)
+#       imgUrl="https:" + img[u]
+# #     urlReq.urlretriev(imgUrl,str(u)+".jpg"+ Campany +"/"+ Category + "/" +"Name")
+#       imgList.append(imgUrl)
+        
+    AllData = {'Campany': CampanyList, 'Category': CategoryList,
+                'Products': Products, 'Price': Price,'PriceBeforDiscount':PriceBeforDiscount}  
+
+    df = pd.DataFrame(AllData)
+    print("Downloded  ",len(Products),"  Products")
+    #clear All variables
+    CampanyList.clear()
+    CategoryList.clear()
+    Products.clear()
+    Price.clear()
+    PriceBeforDiscount.clear()
+    Img.clear()
+    AllData.clear()
+
+    print(MesgAfterURL)
+    t.sleep(10)
+    return df
+
+
+# Method Get Mffco data
 def Egypt(url, headers, campany, category):
     # Get Campany ,Category name
     print (campany, category," Downloading...","\n")
@@ -508,7 +569,10 @@ def LoadDate(campany):
             if campany !=0 :
                return dfFinal 
         elif campanyname=='Carpiture':
-                print("Carpiture")
+            for g in range(len(urls)):
+                dfFinal= pd.concat([dfFinal,Carpiture(urls[g], headers, campanyName[g], categoryName[g])],ignore_index=True)
+            if campany !=0 :
+                return dfFinal
         elif campanyname=='American':
             for g in range(len(urls)):
                 dfFinal= pd.concat([dfFinal,American(urls[g], headers, campanyName[g], categoryName[g])],ignore_index=True)
