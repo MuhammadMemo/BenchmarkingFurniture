@@ -124,7 +124,7 @@ def KabbaniFormat(soup, campany, category):
     #       imgUrl="https:" + img[u]
     # #     urlReq.urlretriev(imgUrl,str(u)+".jpg"+ Campany +"/"+ Category + "/" +"Name")
     #       imgList.append(imgUrl)
-    print("Total Downloded : ",len(Products),"  Products\n")
+    print("Downloded : ",len(Products),"  Products\n")
 
     AllData = {'Campany': CampanyList, 'Category': CategoryList,
                 'Products': Products, 'Price': Price,'PriceBeforDiscount':PriceBeforDiscount}  
@@ -347,7 +347,7 @@ def CarpitureFormat(soup, campany, category):
     # #     urlReq.urlretriev(imgUrl,str(u)+".jpg"+ Campany +"/"+ Category + "/" +"Name")
     #       imgList.append(imgUrl)
 
-    print("Total Downloded : ",len(Products),"  Products\n")
+    print("Downloded : ",len(Products),"  Products\n")
     AllData = {'Campany': CampanyList, 'Category': CategoryList,
                 'Products': Products, 'Price': Price,'PriceBeforDiscount':PriceBeforDiscount}  
 
@@ -397,7 +397,7 @@ def AmericanFormat(soup, campany, category):
 # #     urlReq.urlretriev(imgUrl,str(u)+".jpg"+ Campany +"/"+ Category + "/" +"Name")
 #       imgList.append(imgUrl)
 
-    print("Total Downloded : ",len(Products),"  Products\n")
+    print("Downloded : ",len(Products),"  Products\n")
     # Associate data from lists to dictionary
     AllData = {'Campany': CampanyList, 'Category': CategoryList,
                 'Products': Products, 'Price': Price,'PriceBeforDiscount':PriceBeforDiscount}
