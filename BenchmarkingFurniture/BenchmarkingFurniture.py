@@ -1,4 +1,4 @@
-
+ï»¿
 
 from dataclasses import replace
 from tkinter import Variable
@@ -109,21 +109,6 @@ def KabbaniFormat(soup, campany, category):
         for c in i.find_all(class_='product-price__price product-price__sale'):
                     Price.append(c.text)
 
-            #Loop Get Images name
-            #for g in i.find_all('img'):
-            #    Img.append(g['src'])
-        # Sleep before Next URL
-    
-    # Image Download
-            #  
-        # t.sleep(100)
-    #    for u in range(len(img)):
-    #       opener = urlReq.build_opener()
-    #       opener.addheaders = [('User-Agent', 'MyApp/1.0')]
-    #       urlReq.install_opener(opener)
-    #       imgUrl="https:" + img[u]
-    # #     urlReq.urlretriev(imgUrl,str(u)+".jpg"+ Campany +"/"+ Category + "/" +"Name")
-    #       imgList.append(imgUrl)
     print("Downloded : ",len(Products),"  Products\n")
 
     AllData = {'Campany': CampanyList, 'Category': CategoryList,
@@ -155,41 +140,12 @@ def EgyptFormat(soup, campany, category):
             CategoryList.append(category)
         # Loop Get Price
         global FlagPrice
-        #for c in i.find_all("div",class_='product-price'):
-        #    if (FlagPrice == 0):
-        #         PriceBeforDiscount.append(c.text)
-        #         FlagPrice=1
-        #    else:
-        #        Price.append(c.text)
-        #        FlagPrice=0
         p=[]
         for c in i.find_all("div", class_="product-price"):
                 p.append(c.text)
-
         PriceBeforDiscount = [item.split()[0] for item in p]
         Price = [item.split()[2] for item in p]
 
-            #Price = [item.split()[1] for item in p]
-
-                # Price=PriceBeforDiscount.split("EGP")
-
-            #for c in i.find_all("span"):
-            #         Price.append(c.text)
-            #Loop Get Images name
-            #for g in i.find_all('img'):
-            #    Img.append(g['src'])
-        # Sleep before Next URL
-    
-    # Image Download
-            #  
-        # t.sleep(100)
-    #    for u in range(len(img)):
-    #       opener = urlReq.build_opener()
-    #       opener.addheaders = [('User-Agent', 'MyApp/1.0')]
-    #       urlReq.install_opener(opener)
-    #       imgUrl="https:" + img[u]
-    # #     urlReq.urlretriev(imgUrl,str(u)+".jpg"+ Campany +"/"+ Category + "/" +"Name")
-    #       imgList.append(imgUrl)
     print("Downloded : ",len(Products),"  Products\n")
 
     AllData = {'Campany': CampanyList, 'Category': CategoryList,
@@ -204,7 +160,6 @@ def EgyptFormat(soup, campany, category):
     PriceBeforDiscount.clear()
     Img.clear()
     AllData.clear()
-
 
     return df
 # TO-DO ..Method To Get Hub data
@@ -225,21 +180,6 @@ def HubFormat(soup, campany, category):
                     PriceBeforDiscount.append(c.text)
         for c in i.find_all("span" ,class_='special-price'):
                     Price.append(c.text)
-        #Loop Get Images name
-        #for g in i.find_all('img'):
-        #    Img.append(g['src'])
-    # Sleep before Next URL
-    
-    # Image Download
-            #  
-        # t.sleep(100)
-    #    for u in range(len(img)):
-    #       opener = urlReq.build_opener()
-    #       opener.addheaders = [('User-Agent', 'MyApp/1.0')]
-    #       urlReq.install_opener(opener)
-    #       imgUrl="https:" + img[u]
-    # #     urlReq.urlretriev(imgUrl,str(u)+".jpg"+ Campany +"/"+ Category + "/" +"Name")
-    #       imgList.append(imgUrl)
 
     print("Downloded : ",len(Products),"  Products\n")
 
@@ -279,21 +219,7 @@ def SmartFormat(soup, campany, category):
             else:
                 Price.append(c.text)
                 FlagPrice=0
-        #Loop Get Images name
-        #for g in i.find_all('img'):
-        #    Img.append(g['src'])
-    # Sleep before Next URL
-    
-    # Image Download
-            #  
-        # t.sleep(100)
-    #    for u in range(len(img)):
-    #       opener = urlReq.build_opener()
-    #       opener.addheaders = [('User-Agent', 'MyApp/1.0')]
-    #       urlReq.install_opener(opener)
-    #       imgUrl="https:" + img[u]
-    # #     urlReq.urlretriev(imgUrl,str(u)+".jpg"+ Campany +"/"+ Category + "/" +"Name")
-    #       imgList.append(imgUrl)
+
     print("Downloded : ",len(Products),"  Products\n")
     AllData = {'Campany': CampanyList, 'Category': CategoryList,
                 'Products': Products, 'Price': Price,'PriceBeforDiscount':PriceBeforDiscount}  
@@ -331,28 +257,12 @@ def CarpitureFormat(soup, campany, category):
             else:
                 PriceBeforDiscount.append(c.text)
                 FlagPrice=0
-        #Loop Get Images name
-        #for g in i.find_all('img'):
-        #    Img.append(g['src'])
-    # Sleep before Next URL
-    
-    # Image Download
-            #  
-        # t.sleep(100)
-    #    for u in range(len(img)):
-    #       opener = urlReq.build_opener()
-    #       opener.addheaders = [('User-Agent', 'MyApp/1.0')]
-    #       urlReq.install_opener(opener)
-    #       imgUrl="https:" + img[u]
-    # #     urlReq.urlretriev(imgUrl,str(u)+".jpg"+ Campany +"/"+ Category + "/" +"Name")
-    #       imgList.append(imgUrl)
 
     print("Downloded : ",len(Products),"  Products\n")
     AllData = {'Campany': CampanyList, 'Category': CategoryList,
                 'Products': Products, 'Price': Price,'PriceBeforDiscount':PriceBeforDiscount}  
 
     df = pd.DataFrame(AllData)
-    df=df.drop_duplicates(keep='first')
 
     #clear All variables
     CampanyList.clear()
@@ -362,7 +272,6 @@ def CarpitureFormat(soup, campany, category):
     PriceBeforDiscount.clear()
     Img.clear()
     AllData.clear()
-
 
     return df
 # TO-DO ..Method To Get American data
@@ -384,18 +293,6 @@ def AmericanFormat(soup, campany, category):
             Price.append(c.text.strip())
             PriceBeforDiscount.append(c.text.strip())
 
-                #Loop Get Images name
-        #for g in i.find_all('img'):
-        #   Img.append(g['src'])
-              
-    # Sleep before Next URL
-#    for u in range(len(img)):
-#       opener = urlReq.build_opener()
-#       opener.addheaders = [('User-Agent', 'MyApp/1.0')]
-#       urlReq.install_opener(opener)
-#       imgUrl="https:" + img[u]
-# #     urlReq.urlretriev(imgUrl,str(u)+".jpg"+ Campany +"/"+ Category + "/" +"Name")
-#       imgList.append(imgUrl)
 
     print("Downloded : ",len(Products),"  Products\n")
     # Associate data from lists to dictionary
@@ -510,37 +407,28 @@ def LoadDate(campany):
             page = rs.get(url=urls[g], headers=headers)
             # Get Page HTML
             soup = bs(page.content, 'html.parser')
-
             if page.status_code == 404 :
                 print(status_code_NotFound)
                 break
             else :
-                print (status_code_OK," Downloading...",campanyName[g], categoryName[g],"\n")
+                print (status_code_OK,"Downloading...",campanyName[g], categoryName[g],"\n")
             # Filter Products in HTML
             if campanyname=='Mffco':
                 dfFinal= pd.concat([dfFinal,MffcoFormat(soup ,campanyName[g], categoryName[g])],ignore_index=True)
-                #if campany!= 0 :return dfFinal
             elif campanyname=='Kabbani':
                 dfFinal= pd.concat([dfFinal,KabbaniFormat(soup, campanyName[g], categoryName[g])],ignore_index=True)
-                #if campany!= 0 :return dfFinal
             elif campanyname=='Egypt':
                 dfFinal= pd.concat([dfFinal,EgyptFormat(soup, campanyName[g], categoryName[g])],ignore_index=True)
-                #if campany!= 0 :return dfFinal
             elif campanyname=='Hub':
                 dfFinal= pd.concat([dfFinal,HubFormat(soup, campanyName[g], categoryName[g])],ignore_index=True)
-                #if campany !=0 :return dfFinal
             elif campanyname=='Smart':
                 dfFinal= pd.concat([dfFinal,SmartFormat(soup, campanyName[g], categoryName[g])],ignore_index=True)
-                #if campany !=0 :return dfFinal
             elif campanyname=='Carpiture':
                 dfFinal= pd.concat([dfFinal,CarpitureFormat(soup, campanyName[g], categoryName[g])],ignore_index=True)
-                #if campany !=0 :return dfFinal
             elif campanyname=='American':
                 dfFinal= pd.concat([dfFinal,AmericanFormat(soup, campanyName[g], categoryName[g])],ignore_index=True)
-                #if campany !=0 :return dfFinal
             elif campanyname=='ElMalik':
                 dfFinal= pd.concat([dfFinal,ElMalikFormat(soup, campanyName[g], categoryName[g])],ignore_index=True)
-                #if campany!= 0 :return dfFinal
 
             page.close()
             t.sleep(sleepWaiting)
@@ -550,21 +438,31 @@ def LoadDate(campany):
 def ExportData(df):
     print("Data Exporting....")
     df.to_excel("c:\\Product_Details.xlsx")
-    print("Finished")
+    print("Finished!")
 
-def PriceCleaning(df):
+def Cleaning(df):
 
+    #getVals = list([val for val in ini_string if val.isalnum()])
+    #result = "".join(getVals)
+
+    df=df.drop_duplicates(keep='first')
    # df['Price']=df['Price'].replace('LE','',inplace=True)
+
+   # df['Price']= df['Price'][df['Price'].str.isdigit()] = ''
+
     df['Price'] = df['Price'].str.replace('LE','')
     df['Price'] = df['Price'].str.replace('EGP','')
     df['Price'] = df['Price'].str.replace('Special Price','')
-    #df['Price'] = df['Price'].str.replace("Ì.ã.",'', regex=True)
+    #df['Price'] = df['Price'].str.replace("Ø¬.Ù….",'', regex=True)
     df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('LE','')
     df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('EGP','')
     df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('Regular Price','')
-   # df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace("Ì.ã.","", regex=True)
+   # df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace("Ø¬.Ù….","", regex=True)
     df['Price'] = df['Price'].str.replace(',','')
     df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace(',','')
+    df['Price'] = df['Price'].str.replace('Ù¬','')
+    df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('Ù¬','')
+    
    # #df['Price'] = df['Price'].astype('int')
 
     #df['PriceBeforDiscount']=df['PriceBeforDiscount'].astype('int')
@@ -583,7 +481,7 @@ def main():
        campany = getFilter()
        StartTime=dt.datetime.now()
        df = LoadDate(campany)
-       df1 = PriceCleaning(df)
+       df1 = Cleaning(df)
        print(df1)
        ExportData(df1)
 
