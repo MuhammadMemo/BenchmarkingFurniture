@@ -39,44 +39,29 @@ imgList = []
 imgUrl = []
 
 # TO-DO ..Method To Get Mffco data
-def Mffco(url, headers, campany, category):
-    # TO_DO Loop in urls 
-    for g in range(len(url)):
-        # Get Campany ,Category name
+def MffcoFormat(soup, campany, category):
 
-        page = rs.get(url=url[g], headers=headers)
-        # Get Page HTML
-        soup = bs(page.content, 'html.parser')
-
-        if page.status_code == 404 :
-            print(status_code_NotFound)
-            break
-        else :
-            print (status_code_OK," Downloading...",campany[g], category[g],"\n")
-        # Filter Products in HTML
-        filter_Products = soup.find_all("div", class_='product_container')
-        # Loop Get Product name
-        for i in filter_Products:
-            for p in i.find_all("h3", class_='title'):
-                Products.append(p.text.strip())
-                    # Get category,campany name
-                CampanyList.append(campany[g])
-                CategoryList.append(category[g])
-            # Loop Get Price
-            global FlagPrice
-            for c in i.find_all(class_='woocommerce-Price-amount amount'):
-                if (FlagPrice == 0):
-                     PriceBeforDiscount.append(c.text)
-                     Price.append(0)
-                     FlagPrice=1
-                else:
-                    Price.append(c.text)
-                    PriceBeforDiscount.append(0)
-                    FlagPrice=0
-            #Loop Get Images name
-            #for g in i.find_all('img'):
-            #    Img.append(g['src'])
-        # Sleep before Next URL
+    filter_Products = soup.find_all("div", class_='product_container')
+    # Loop Get Product name
+    for i in filter_Products:
+        for p in i.find_all("h3", class_='title'):
+            Products.append(p.text.strip())
+                # Get category,campany name
+            CampanyList.append(campany)
+            CategoryList.append(category)
+        # Loop Get Price
+        global FlagPrice
+        for c in i.find_all(class_='woocommerce-Price-amount amount'):
+            if (FlagPrice == 0):
+                    PriceBeforDiscount.append(c.text)
+                    FlagPrice=1
+            else:
+                Price.append(c.text)
+                FlagPrice=0
+        #Loop Get Images name
+        #for g in i.find_all('img'):
+        #    Img.append(g['src'])
+    # Sleep before Next URL
     
     # Image Download
             #  
@@ -89,10 +74,8 @@ def Mffco(url, headers, campany, category):
     # #     urlReq.urlretriev(imgUrl,str(u)+".jpg"+ Campany +"/"+ Category + "/" +"Name")
     #       imgList.append(imgUrl)
 
-            page.close()
-            t.sleep(sleepWaiting)
-            print("Downloded  ",len(Products),"  Products\n",ConnectionClosed,MesgAfterURL)
 
+    print("Downloded  ",len(Products),"  Products\n")
     AllData = {'Campany': CampanyList, 'Category': CategoryList,
                 'Products': Products, 'Price': Price,'PriceBeforDiscount':PriceBeforDiscount}  
 
@@ -109,35 +92,22 @@ def Mffco(url, headers, campany, category):
 
     return df
 # TO-DO ..Method To Get Kabbani data
-def Kabbani(url, headers, campany, category):
+def KabbaniFormat(soup, campany, category):
 
-    for g in range(len(url)):
-        # Get Campany ,Category name
-       
-        page = rs.get(url=url[g], headers=headers)
-        # Get Page HTML
-        soup = bs(page.content, 'html.parser')
-
-        if page.status_code == 404 :
-            print(status_code_NotFound)
-            break
-        else :
-            print (status_code_OK," Downloading...",campany[g], category[g],"\n")
-
-        # Filter Products in HTML
-        filter_Products = soup.find_all("div", class_='grid grid--uniform grid-products grid--view-items')
-        # Loop Get Product name
-        for i in filter_Products:
-            for p in i.find_all(class_='grid-view-item__title'):
-                Products.append(p.text.strip())
-                    # Get category,campany name
-                CampanyList.append(campany[g])
-                CategoryList.append(category[g])
-            # Loop Get Price
-            for c in i.find_all(class_='product-price__price regular'):
-                     PriceBeforDiscount.append(c.text)
-            for c in i.find_all(class_='product-price__price product-price__sale'):
-                     Price.append(c.text)
+    # Filter Products in HTML
+    filter_Products = soup.find_all("div", class_='grid grid--uniform grid-products grid--view-items')
+    # Loop Get Product name
+    for i in filter_Products:
+        for p in i.find_all(class_='grid-view-item__title'):
+            Products.append(p.text.strip())
+                # Get category,campany name
+            CampanyList.append(campany)
+            CategoryList.append(category)
+        # Loop Get Price
+        for c in i.find_all(class_='product-price__price regular'):
+                    PriceBeforDiscount.append(c.text)
+        for c in i.find_all(class_='product-price__price product-price__sale'):
+                    Price.append(c.text)
 
             #Loop Get Images name
             #for g in i.find_all('img'):
@@ -154,9 +124,7 @@ def Kabbani(url, headers, campany, category):
     #       imgUrl="https:" + img[u]
     # #     urlReq.urlretriev(imgUrl,str(u)+".jpg"+ Campany +"/"+ Category + "/" +"Name")
     #       imgList.append(imgUrl)
-            page.close()
-            t.sleep(sleepWaiting)
-            print("Downloded  ",len(Products),"  Products\n",ConnectionClosed,MesgAfterURL)
+    print("Total Downloded : ",len(Products),"  Products\n")
 
     AllData = {'Campany': CampanyList, 'Category': CategoryList,
                 'Products': Products, 'Price': Price,'PriceBeforDiscount':PriceBeforDiscount}  
@@ -172,47 +140,34 @@ def Kabbani(url, headers, campany, category):
     Img.clear()
     AllData.clear()
 
-
     return df
 # TO-DO ..Method To Get Egypt data
-def Egypt(url, headers, campany, category):
+def EgyptFormat(soup, campany, category):
 
-    for g in range(len(url)):
-        # Get Campany ,Category name
-        page = rs.get(url=url[g], headers=headers)
-        # Get Page HTML
-        soup = bs(page.content, 'html.parser')
+    # Filter Products in HTML
+    filter_Products = soup.find_all("div", class_='shop-product-content tab-content')
+    # Loop Get Product name
+    for i in filter_Products:
+        for p in i.find_all("div", class_='product-title'):
+            Products.append(p.text.strip())
+                # Get category,campany name
+            CampanyList.append(campany)
+            CategoryList.append(category)
+        # Loop Get Price
+        global FlagPrice
+        #for c in i.find_all("div",class_='product-price'):
+        #    if (FlagPrice == 0):
+        #         PriceBeforDiscount.append(c.text)
+        #         FlagPrice=1
+        #    else:
+        #        Price.append(c.text)
+        #        FlagPrice=0
+        p=[]
+        for c in i.find_all("div", class_="product-price"):
+                p.append(c.text)
 
-        if page.status_code == 404 :
-            print(status_code_NotFound)
-            break
-        else :
-            print (status_code_OK," Downloading...",campany[g], category[g],"\n")
-
-        # Filter Products in HTML
-        filter_Products = soup.find_all("div", class_='shop-product-content tab-content')
-        # Loop Get Product name
-        for i in filter_Products:
-            for p in i.find_all("div", class_='product-title'):
-                Products.append(p.text.strip())
-                    # Get category,campany name
-                CampanyList.append(campany[g])
-                CategoryList.append(category[g])
-            # Loop Get Price
-            global FlagPrice
-            #for c in i.find_all("div",class_='product-price'):
-            #    if (FlagPrice == 0):
-            #         PriceBeforDiscount.append(c.text)
-            #         FlagPrice=1
-            #    else:
-            #        Price.append(c.text)
-            #        FlagPrice=0
-            p=[]
-            for c in i.find_all("div", class_="product-price"):
-                 p.append(c.text)
-
-            PriceBeforDiscount = [item.split()[0] for item in p]
-            Price = [item.split()[2] for item in p]
+        PriceBeforDiscount = [item.split()[0] for item in p]
+        Price = [item.split()[2] for item in p]
 
             #Price = [item.split()[1] for item in p]
 
@@ -235,9 +190,8 @@ def Egypt(url, headers, campany, category):
     #       imgUrl="https:" + img[u]
     # #     urlReq.urlretriev(imgUrl,str(u)+".jpg"+ Campany +"/"+ Category + "/" +"Name")
     #       imgList.append(imgUrl)
-            page.close()
-            t.sleep(sleepWaiting)
-            print("Downloded  ",len(Products),"  Products\n",ConnectionClosed,MesgAfterURL)
+    print("Total Downloded : ",len(Products),"  Products\n")
+
     AllData = {'Campany': CampanyList, 'Category': CategoryList,
                 'Products': Products, 'Price': Price,'PriceBeforDiscount':PriceBeforDiscount}  
 
@@ -255,39 +209,27 @@ def Egypt(url, headers, campany, category):
 
     return df
 # TO-DO ..Method To Get Hub data
-def Hub(url, headers, campany, category):
+def HubFormat(soup, campany, category):
 
-    for g in range(len(url)):
-        # Get Campany ,Category name
-        page = rs.get(url=url[g], headers=headers)
-        # Get Page HTML
-        soup = bs(page.content, 'html.parser')
+    # Filter Products in HTML
+    filter_Products = soup.find_all("div" ,id="layerednav-list-products")
+    # Loop Get Product name
+    for i in filter_Products:
+        for p in i.find_all("strong", class_='product name product-item-name'):
+            Products.append(p.text.strip())
+                # Get category,campany name
+            CampanyList.append(campany)
+            CategoryList.append(category)
+        # Loop Get Price
 
-        if page.status_code == 404 :
-            print(status_code_NotFound)
-            break
-        else :
-            print (status_code_OK," Downloading...",campany[g], category[g],"\n")
-
-        # Filter Products in HTML
-        filter_Products = soup.find_all("div" ,id="layerednav-list-products")
-        # Loop Get Product name
-        for i in filter_Products:
-            for p in i.find_all("strong", class_='product name product-item-name'):
-                Products.append(p.text.strip())
-                    # Get category,campany name
-                CampanyList.append(campany[g])
-                CategoryList.append(category[g])
-            # Loop Get Price
-
-            for c in i.find_all("span" ,class_='old-price'):
-                     PriceBeforDiscount.append(c.text)
-            for c in i.find_all("span" ,class_='special-price'):
-                     Price.append(c.text)
-            #Loop Get Images name
-            #for g in i.find_all('img'):
-            #    Img.append(g['src'])
-        # Sleep before Next URL
+        for c in i.find_all("span" ,class_='old-price'):
+                    PriceBeforDiscount.append(c.text)
+        for c in i.find_all("span" ,class_='special-price'):
+                    Price.append(c.text)
+        #Loop Get Images name
+        #for g in i.find_all('img'):
+        #    Img.append(g['src'])
+    # Sleep before Next URL
     
     # Image Download
             #  
@@ -299,9 +241,8 @@ def Hub(url, headers, campany, category):
     #       imgUrl="https:" + img[u]
     # #     urlReq.urlretriev(imgUrl,str(u)+".jpg"+ Campany +"/"+ Category + "/" +"Name")
     #       imgList.append(imgUrl)
-            page.close()
-            t.sleep(sleepWaiting)
-            print("Downloded  ",len(Products),"  Products\n",ConnectionClosed,MesgAfterURL)
+
+    print("Total Downloded : ",len(Products),"  Products\n")
 
     AllData = {'Campany': CampanyList, 'Category': CategoryList,
                 'Products': Products, 'Price': Price,'PriceBeforDiscount':PriceBeforDiscount}  
@@ -320,42 +261,29 @@ def Hub(url, headers, campany, category):
 
     return df
 # TO-DO ..Method To Get Smart data
-def Smart(url, headers, campany, category):
+def SmartFormat(soup, campany, category):
 
-    for g in range(len(url)):
-        # Get Campany ,Category name
-        page = rs.get(url=url[g], headers=headers)
-        # Get Page HTML
-        soup = bs(page.content, 'html.parser')
-
-        if page.status_code == 404 :
-            print(status_code_NotFound)
-            break
-        else :
-            print (status_code_OK," Downloading...",campany[g], category[g],"\n")
-
-        # Filter Products in HTML
-        filter_Products = soup.find_all("ul", class_='products columns-4')
-        # Loop Get Product name
-        for i in filter_Products:
-            for p in i.find_all("h2", class_='woocommerce-loop-product__title'):
-                Products.append(p.text.strip())
-                    # Get category,campany name
-                CampanyList.append(campany[g])
-                CategoryList.append(category[g])
-            # Loop Get Price
-            global FlagPrice
-            for c in i.find_all(class_='woocommerce-Price-amount amount'):
-                if (FlagPrice == 0):
-                     PriceBeforDiscount.append(c.text)
-                     FlagPrice=1
-                else:
-                    Price.append(c.text)
-                    FlagPrice=0
-            #Loop Get Images name
-            #for g in i.find_all('img'):
-            #    Img.append(g['src'])
-        # Sleep before Next URL
+    # Filter Products in HTML
+    filter_Products = soup.find_all("ul", class_='products columns-4')
+    # Loop Get Product name
+    for i in filter_Products:
+        for p in i.find_all("h2", class_='woocommerce-loop-product__title'):
+            Products.append(p.text.strip())
+                # Get category,campany name
+            CampanyList.append(campany)
+            CategoryList.append(category)
+        global FlagPrice
+        for c in i.find_all(class_='woocommerce-Price-amount amount'):
+            if (FlagPrice == 0):
+                    PriceBeforDiscount.append(c.text)
+                    FlagPrice=1
+            else:
+                Price.append(c.text)
+                FlagPrice=0
+        #Loop Get Images name
+        #for g in i.find_all('img'):
+        #    Img.append(g['src'])
+    # Sleep before Next URL
     
     # Image Download
             #  
@@ -367,9 +295,7 @@ def Smart(url, headers, campany, category):
     #       imgUrl="https:" + img[u]
     # #     urlReq.urlretriev(imgUrl,str(u)+".jpg"+ Campany +"/"+ Category + "/" +"Name")
     #       imgList.append(imgUrl)
-            page.close()
-            t.sleep(sleepWaiting)
-            print("Downloded  ",len(Products),"  Products\n",ConnectionClosed,MesgAfterURL)
+    print("Total Downloded : ",len(Products),"  Products\n")
     AllData = {'Campany': CampanyList, 'Category': CategoryList,
                 'Products': Products, 'Price': Price,'PriceBeforDiscount':PriceBeforDiscount}  
 
@@ -386,41 +312,30 @@ def Smart(url, headers, campany, category):
 
     return df
 # TO-DO ..Method To Get Carpiture data
-def Carpiture(url, headers, campany, category):
-    for g in range(len(url)):
-        # Get Campany ,Category name
-        page = rs.get(url=url[g], headers=headers)
-        # Get Page HTML
-        soup = bs(page.content, 'html.parser')
+def CarpitureFormat(soup, campany, category):
 
-        if page.status_code == 404 :
-            print(status_code_NotFound)
-            break
-        else :
-            print (status_code_OK," Downloading...",campany[g], category[g],"\n")
-
-        # Filter Products in HTML
-        filter_Products = soup.find_all("div", id="mf-shop-content", class_="mf-shop-content")
-        # Loop Get Product name
-        for i in filter_Products:
-            for p in i.find_all("h2",class_='woo-loop-product__title'):
-                Products.append(p.text.strip())
-                    # Get category,campany name
-                CampanyList.append(campany[g])
-                CategoryList.append(category[g])
-            # Loop Get Price
-            global FlagPrice
-            for c in i.find_all(class_='woocommerce-Price-amount amount'):
-                if (FlagPrice == 0):
-                     Price.append(c.text)
-                     FlagPrice=1
-                else:
-                    PriceBeforDiscount.append(c.text)
-                    FlagPrice=0
-            #Loop Get Images name
-            #for g in i.find_all('img'):
-            #    Img.append(g['src'])
-        # Sleep before Next URL
+    # Filter Products in HTML
+    filter_Products = soup.find_all("div", id="mf-shop-content", class_="mf-shop-content")
+    # Loop Get Product name
+    for i in filter_Products:
+        for p in i.find_all("h2",class_='woo-loop-product__title'):
+            Products.append(p.text.strip())
+                # Get category,campany name
+            CampanyList.append(campany)
+            CategoryList.append(category)
+        # Loop Get Price
+        global FlagPrice
+        for c in i.find_all(class_='woocommerce-Price-amount amount'):
+            if (FlagPrice == 0):
+                    Price.append(c.text)
+                    FlagPrice=1
+            else:
+                PriceBeforDiscount.append(c.text)
+                FlagPrice=0
+        #Loop Get Images name
+        #for g in i.find_all('img'):
+        #    Img.append(g['src'])
+    # Sleep before Next URL
     
     # Image Download
             #  
@@ -432,9 +347,8 @@ def Carpiture(url, headers, campany, category):
     #       imgUrl="https:" + img[u]
     # #     urlReq.urlretriev(imgUrl,str(u)+".jpg"+ Campany +"/"+ Category + "/" +"Name")
     #       imgList.append(imgUrl)
-            page.close()
-            t.sleep(sleepWaiting)
-            print("Downloded  ",len(Products),"  Products\n",ConnectionClosed,MesgAfterURL)
+
+    print("Total Downloded : ",len(Products),"  Products\n")
     AllData = {'Campany': CampanyList, 'Category': CategoryList,
                 'Products': Products, 'Price': Price,'PriceBeforDiscount':PriceBeforDiscount}  
 
@@ -454,48 +368,38 @@ def Carpiture(url, headers, campany, category):
 
     return df
 # TO-DO ..Method To Get American data
-def American(url, headers, campany, category):
-    for g in range(len(url)):
-        page = rs.get(url=url[g], headers=headers)
-        # Get Page HTML
-        soup = bs(page.content, 'html.parser')
+def AmericanFormat(soup, campany, category):
 
-        if page.status_code == 404 :
-            print(status_code_NotFound)
-            break
-        else :
-            print (status_code_OK," Downloading...",campany[g], category[g],"\n")
-        #Filter Products in HTML
-        filter_Products = soup.find_all(class_='products columns-tablet-2 columns-mobile-2 rey-wcGap-default rey-wcGrid-default columns-4')
+    #Filter Products in HTML
+    filter_Products = soup.find_all(class_='products columns-tablet-2 columns-mobile-2 rey-wcGap-default rey-wcGrid-default columns-4')
 
-        for i in filter_Products:
-            #Loop Get Product name
-            for p in i.find_all("h2", class_='woocommerce-loop-product__title'):
-                Products.append(p.text)
-                #Repeat campany,category name
-                CampanyList.append(campany[g])
-                CategoryList.append(category[g])
+    for i in filter_Products:
+        #Loop Get Product name
+        for p in i.find_all("h2", class_='woocommerce-loop-product__title'):
+            Products.append(p.text)
+            #Repeat campany,category name
+            CampanyList.append(campany)
+            CategoryList.append(category)
 
-             #Loop Get Price
-            for c in i.find_all(class_='price'):
-                Price.append(c.text.strip())
-                PriceBeforDiscount.append(c.text.strip())
+            #Loop Get Price
+        for c in i.find_all(class_='price'):
+            Price.append(c.text.strip())
+            PriceBeforDiscount.append(c.text.strip())
 
-                    #Loop Get Images name
-            #for g in i.find_all('img'):
-            #   Img.append(g['src'])
+                #Loop Get Images name
+        #for g in i.find_all('img'):
+        #   Img.append(g['src'])
               
-        # Sleep before Next URL
-    #    for u in range(len(img)):
-    #       opener = urlReq.build_opener()
-    #       opener.addheaders = [('User-Agent', 'MyApp/1.0')]
-    #       urlReq.install_opener(opener)
-    #       imgUrl="https:" + img[u]
-    # #     urlReq.urlretriev(imgUrl,str(u)+".jpg"+ Campany +"/"+ Category + "/" +"Name")
-    #       imgList.append(imgUrl)
-            page.close()
-            t.sleep(sleepWaiting)
-            print("Downloded  ",len(Products),"  Products\n",ConnectionClosed,MesgAfterURL)
+    # Sleep before Next URL
+#    for u in range(len(img)):
+#       opener = urlReq.build_opener()
+#       opener.addheaders = [('User-Agent', 'MyApp/1.0')]
+#       urlReq.install_opener(opener)
+#       imgUrl="https:" + img[u]
+# #     urlReq.urlretriev(imgUrl,str(u)+".jpg"+ Campany +"/"+ Category + "/" +"Name")
+#       imgList.append(imgUrl)
+
+    print("Total Downloded : ",len(Products),"  Products\n")
     # Associate data from lists to dictionary
     AllData = {'Campany': CampanyList, 'Category': CategoryList,
                 'Products': Products, 'Price': Price,'PriceBeforDiscount':PriceBeforDiscount}
@@ -514,35 +418,25 @@ def American(url, headers, campany, category):
 
     return df
 # TO-DO ..Method To Get ElMalik data
-def ElMalik(url, headers, campany, category):
-    for g in range(len(url)):
+def ElMalikFormat(soup, campany, category):
 
-        page = rs.get(url=url[g], headers=headers)
-        # Get Page HTML
-        soup = bs(page.content, 'html.parser')
+    filter_Products = soup.find_all("div", class_='products')
 
-        if page.status_code == 404 :
-            print(status_code_NotFound)
-            break
-        else :
-            print (status_code_OK," Downloading...",campany[g], category[g],"\n")
-        filter_Products = soup.find_all("div", class_='products')
+    for i in filter_Products:
+        #Loop Get Product name
+        for p in i.find_all("h3", class_='heading-title product-name'):
+            Products.append(p.text)
+            #Repeat campany,category name
+            CampanyList.append(campany)
+            CategoryList.append(category)
 
-        for i in filter_Products:
-            #Loop Get Product name
-            for p in i.find_all("h3", class_='heading-title product-name'):
-                Products.append(p.text)
-                #Repeat campany,category name
-                CampanyList.append(campany[g])
-                CategoryList.append(category[g])
-
-                #Loop Get Price
-            for c in i.find_all(class_='woocommerce-Price-amount amount'):
-                PriceBeforDiscount.append(c.text.strip())
-                Price.append(c.text.strip())
-                    #Loop Get Images name
-            #for g in i.find_all('img'):
-            #   Img.append(g['src'])
+            #Loop Get Price
+        for c in i.find_all(class_='woocommerce-Price-amount amount'):
+            PriceBeforDiscount.append(c.text.strip())
+            Price.append(c.text.strip())
+                #Loop Get Images name
+        #for g in i.find_all('img'):
+        #   Img.append(g['src'])
               
         # Sleep before Next URL
     #    for u in range(len(img)):
@@ -552,9 +446,7 @@ def ElMalik(url, headers, campany, category):
     #       imgUrl="https:" + img[u]
     # #     urlReq.urlretriev(imgUrl,str(u)+".jpg"+ Campany +"/"+ Category + "/" +"Name")
     #       imgList.append(imgUrl)
-            page.close()
-            t.sleep(sleepWaiting)
-            print("Downloded  ",len(Products),"  Products\n",ConnectionClosed,MesgAfterURL)
+    print("Total Downloded : ",len(Products),"  Products\n")
     # Associate data from lists to dictionary
     AllData = {'Campany': CampanyList, 'Category': CategoryList,
                 'Products': Products, 'Price': Price,'PriceBeforDiscount':PriceBeforDiscount} 
@@ -576,7 +468,6 @@ def getFilter():
 
     values = List_Company.values()
     while True :
-
         for k,v in List_Company.items():
                print("Press:",str(v),"->",str(k))
         try:
@@ -597,9 +488,12 @@ def LoadDate(campany):
     df = pd.read_excel( "Datafurniture.xls")
     dfcampany=pd.DataFrame()
     dfFinal=pd.DataFrame()
+    startLoop=1
+    if  campany == 0: endLoop=len(List_Company) 
+    else : endLoop=startLoop+1
 
     #Loop in Campany
-    for indx in  range(1 ,len(List_Company)) :
+    for indx in  range(startLoop ,endLoop) :
         #TO-DO Filter Data base on Campany Number
         if campany!= 0 : campanyname =list(keys)[campany]
         else: campanyname =list(keys)[indx]
@@ -611,30 +505,48 @@ def LoadDate(campany):
         categoryName = dfcampany['Category']
         urls = dfcampany['URL']
         # Select Company Method
-        if campanyname=='Mffco':
-            dfFinal= pd.concat([dfFinal,Mffco(urls, headers, campanyName, categoryName)],ignore_index=True)
-            if campany!= 0 :return dfFinal
-        elif campanyname=='Kabbani':
-            dfFinal= pd.concat([dfFinal,Kabbani(urls, headers, campanyName, categoryName)],ignore_index=True)
-            if campany!= 0 :return dfFinal
-        elif campanyname=='Egypt':
-            dfFinal= pd.concat([dfFinal,Egypt(urls, headers, campanyName, categoryName)],ignore_index=True)
-            if campany!= 0 :return dfFinal
-        elif campanyname=='Hub':
-            dfFinal= pd.concat([dfFinal,Hub(urls, headers, campanyName, categoryName)],ignore_index=True)
-            if campany !=0 :return dfFinal
-        elif campanyname=='Smart':
-            dfFinal= pd.concat([dfFinal,Smart(urls, headers, campanyName, categoryName)],ignore_index=True)
-            if campany !=0 :return dfFinal
-        elif campanyname=='Carpiture':
-            dfFinal= pd.concat([dfFinal,Carpiture(urls, headers, campanyName, categoryName)],ignore_index=True)
-            if campany !=0 :return dfFinal
-        elif campanyname=='American':
-            dfFinal= pd.concat([dfFinal,American(urls, headers, campanyName, categoryName)],ignore_index=True)
-            if campany !=0 :return dfFinal
-        elif campanyname=='ElMalik':
-            dfFinal= pd.concat([dfFinal,ElMalik(urls, headers, campanyName, categoryName)],ignore_index=True)
-            if campany!= 0 :return dfFinal
+            # TO_DO Loop in urls 
+        for g in range(len(urls)):
+            # Get Campany ,Category name
+
+            page = rs.get(url=urls[g], headers=headers)
+            # Get Page HTML
+            soup = bs(page.content, 'html.parser')
+
+            if page.status_code == 404 :
+                print(status_code_NotFound)
+                break
+            else :
+                print (status_code_OK," Downloading...",campanyName[g], categoryName[g],"\n")
+            # Filter Products in HTML
+            if campanyname=='Mffco':
+                dfFinal= pd.concat([dfFinal,MffcoFormat(soup ,campanyName[g], categoryName[g])],ignore_index=True)
+                #if campany!= 0 :return dfFinal
+            elif campanyname=='Kabbani':
+                dfFinal= pd.concat([dfFinal,KabbaniFormat(soup, campanyName[g], categoryName[g])],ignore_index=True)
+                #if campany!= 0 :return dfFinal
+            elif campanyname=='Egypt':
+                dfFinal= pd.concat([dfFinal,EgyptFormat(soup, campanyName[g], categoryName[g])],ignore_index=True)
+                #if campany!= 0 :return dfFinal
+            elif campanyname=='Hub':
+                dfFinal= pd.concat([dfFinal,HubFormat(soup, campanyName[g], categoryName[g])],ignore_index=True)
+                #if campany !=0 :return dfFinal
+            elif campanyname=='Smart':
+                dfFinal= pd.concat([dfFinal,SmartFormat(soup, campanyName[g], categoryName[g])],ignore_index=True)
+                #if campany !=0 :return dfFinal
+            elif campanyname=='Carpiture':
+                dfFinal= pd.concat([dfFinal,CarpitureFormat(soup, campanyName[g], categoryName[g])],ignore_index=True)
+                #if campany !=0 :return dfFinal
+            elif campanyname=='American':
+                dfFinal= pd.concat([dfFinal,AmericanFormat(soup, campanyName[g], categoryName[g])],ignore_index=True)
+                #if campany !=0 :return dfFinal
+            elif campanyname=='ElMalik':
+                dfFinal= pd.concat([dfFinal,ElMalikFormat(soup, campanyName[g], categoryName[g])],ignore_index=True)
+                #if campany!= 0 :return dfFinal
+
+            page.close()
+            t.sleep(sleepWaiting)
+            print(ConnectionClosed,MesgAfterURL)
     return dfFinal
 
 def ExportData(df):
@@ -644,27 +556,25 @@ def ExportData(df):
 
 def PriceCleaning(df):
 
-
-
    # df['Price']=df['Price'].replace('LE','',inplace=True)
-   # df['Price'] = df['Price'].str.replace('LE','')
-   # df['Price'] = df['Price'].str.replace('EGP','')
-   # df['Price'] = df['Price'].str.replace('Special Price','')
-   # #df['Price'] = df['Price'].str.replace("Ì.ã.",'', regex=True)
-   # df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('LE','')
-   # df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('EGP','')
-   # df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('Regular Price','')
-   ## df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace("Ì.ã.","", regex=True)
-   # df['Price'] = df['Price'].str.replace(',','')
-   # df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace(',','')
+    df['Price'] = df['Price'].str.replace('LE','')
+    df['Price'] = df['Price'].str.replace('EGP','')
+    df['Price'] = df['Price'].str.replace('Special Price','')
+    #df['Price'] = df['Price'].str.replace("Ì.ã.",'', regex=True)
+    df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('LE','')
+    df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('EGP','')
+    df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('Regular Price','')
+   # df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace("Ì.ã.","", regex=True)
+    df['Price'] = df['Price'].str.replace(',','')
+    df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace(',','')
    # #df['Price'] = df['Price'].astype('int')
 
     #df['PriceBeforDiscount']=df['PriceBeforDiscount'].astype('int')
 
-    df['Price'] = df['Price'].str.replace('\W', '', regex=True)
-    df['Price'] = df['Price'].str.replace('\s', '', regex=True)
-    df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('\W', '', regex=True)
-    df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('\s', '', regex=True)
+    #df['Price'] = df['Price'].str.replace('\W', '', regex=True)
+    #df['Price'] = df['Price'].str.replace('\s', '', regex=True)
+    #df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('\W', '', regex=True)
+    #df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('\s', '', regex=True)
 
     #df['Price']=df['Price'].replace(['EGP','LE ',','],'', regex=True)
     return df
