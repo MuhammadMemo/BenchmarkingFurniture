@@ -130,7 +130,7 @@ def KabbaniFormat(soup, campany, category):
                 'Products': Products, 'Price': Price,'PriceBeforDiscount':PriceBeforDiscount}  
 
     df = pd.DataFrame(AllData)
-    print("Downloded  ",len(Products),"  Products")
+
     #clear All variables
     CampanyList.clear()
     CategoryList.clear()
@@ -190,13 +190,12 @@ def EgyptFormat(soup, campany, category):
     #       imgUrl="https:" + img[u]
     # #     urlReq.urlretriev(imgUrl,str(u)+".jpg"+ Campany +"/"+ Category + "/" +"Name")
     #       imgList.append(imgUrl)
-    print("Total Downloded : ",len(Products),"  Products\n")
+    print("Downloded : ",len(Products),"  Products\n")
 
     AllData = {'Campany': CampanyList, 'Category': CategoryList,
                 'Products': Products, 'Price': Price,'PriceBeforDiscount':PriceBeforDiscount}  
 
     df = pd.DataFrame(AllData)
-    print("Downloded  ",len(Products),"  Products")
     #clear All variables
     CampanyList.clear()
     CategoryList.clear()
@@ -242,13 +241,13 @@ def HubFormat(soup, campany, category):
     # #     urlReq.urlretriev(imgUrl,str(u)+".jpg"+ Campany +"/"+ Category + "/" +"Name")
     #       imgList.append(imgUrl)
 
-    print("Total Downloded : ",len(Products),"  Products\n")
+    print("Downloded : ",len(Products),"  Products\n")
 
     AllData = {'Campany': CampanyList, 'Category': CategoryList,
                 'Products': Products, 'Price': Price,'PriceBeforDiscount':PriceBeforDiscount}  
 
     df = pd.DataFrame(AllData)
-    print("Downloded  ",len(Products),"  Products")
+
     #clear All variables
     CampanyList.clear()
     CategoryList.clear()
@@ -295,12 +294,12 @@ def SmartFormat(soup, campany, category):
     #       imgUrl="https:" + img[u]
     # #     urlReq.urlretriev(imgUrl,str(u)+".jpg"+ Campany +"/"+ Category + "/" +"Name")
     #       imgList.append(imgUrl)
-    print("Total Downloded : ",len(Products),"  Products\n")
+    print("Downloded : ",len(Products),"  Products\n")
     AllData = {'Campany': CampanyList, 'Category': CategoryList,
                 'Products': Products, 'Price': Price,'PriceBeforDiscount':PriceBeforDiscount}  
 
     df = pd.DataFrame(AllData)
-    print("Downloded  ",len(Products),"  Products")
+
     #clear All variables
     CampanyList.clear()
     CategoryList.clear()
@@ -355,7 +354,6 @@ def CarpitureFormat(soup, campany, category):
     df = pd.DataFrame(AllData)
     df=df.drop_duplicates(keep='first')
 
-    print("Downloded  ",len(Products),"  Products")
     #clear All variables
     CampanyList.clear()
     CategoryList.clear()
@@ -405,7 +403,7 @@ def AmericanFormat(soup, campany, category):
                 'Products': Products, 'Price': Price,'PriceBeforDiscount':PriceBeforDiscount}
 
     df = pd.DataFrame(AllData)
-    print("Downloded  ",len(Products),"  Products")
+
     # TO-DO clear All variables
     CampanyList.clear()
     CategoryList.clear()
@@ -452,7 +450,7 @@ def ElMalikFormat(soup, campany, category):
                 'Products': Products, 'Price': Price,'PriceBeforDiscount':PriceBeforDiscount} 
     
     df = pd.DataFrame(AllData)
-    print("Downloded  ",len(Products),"  Products")
+
    # TO-DO clear All variables
     CampanyList.clear()
     CategoryList.clear()
