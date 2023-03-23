@@ -1,14 +1,13 @@
 ﻿
 
-from dataclasses import replace
-from tkinter import Variable
+
 import requests as rs
 from bs4 import BeautifulSoup as bs
 import pandas as pd
 import time as t
 import urllib.request as urlReq
 import datetime as dt
-import re
+
 
 # list for Company + all
 ListOfCompany={"All Company":0,"Mffco":1,"Kabbani":2,"Egypt":3,"Hub" : 4
@@ -406,17 +405,18 @@ def LoadDate(campany,category):
     #Loop in Campany
     for indx in  range(startLoop ,endLoop) :
         #TO-DO Filter Data base on Campany Number
-        if campany!= 0 : campanyname =list(keysCompany)[campany]
-        else: campanyname =list(keysCompany)[indx]
-        #TO-DO Filter Data base on Category Number
-        if category!= 0 : categoryname =list(keysCategory)[category]
-        else: categoryname =list(keysCategory)[category]
+        if campany!= 0 : 
+            campanyname =list(keysCompany)[campany]
+            dfcampany = df[df['Campany'] == campanyname]
+        else: 
+            campanyname =list(keysCompany)[indx]
+            dfcampany = df[df['Campany'] == campanyname]
 
-        #Get Company Name and Category name Data base on filter
-        dfcampany = df[df['Campany'] == campanyname]
-        dfcampany = dfcampany[dfcampany['Category'] == categoryname]
+        if category!= 0 : 
+            categoryname =list(keysCategory)[category]
+            dfcampany = dfcampany[dfcampany['Category'] == categoryname]
+
         dfcampany.reset_index(inplace=True)
-
         campanyName = dfcampany['Campany']
         categoryName = dfcampany['Category']
         urls = dfcampany['URL']
@@ -452,12 +452,13 @@ def LoadDate(campany,category):
 
             page.close()
             t.sleep(sleepWaiting)
+
             print(ConnectionClosed,MesgAfterURL)
     return dfFinal
 
 def ExportData(df):
     print("Data Exporting....")
-    df.to_excel("c:\\Product_Details.xlsx")
+    df.to_excel("c:\\ProductDetails.xlsx")
     print("Finished!")
 
 def Cleaning(df):
@@ -488,8 +489,11 @@ def Cleaning(df):
     #df['PriceBeforDiscount']=df['PriceBeforDiscount'].astype('int')
 
     #df['Price'] = df['Price'].str.replace('\W', '', regex=True)
+    df['Price'] = df['Price'].str.replace('.00', '', regex=True)
+    df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('.00', '', regex=True)
     df['Price'] = df['Price'].str.replace('\D', '', regex=True)
     df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('\D', '', regex=True)
+
     #df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('\W', '', regex=True)
     #df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('\s', '', regex=True)
 
