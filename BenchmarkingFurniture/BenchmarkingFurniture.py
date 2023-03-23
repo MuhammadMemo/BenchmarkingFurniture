@@ -427,21 +427,21 @@ def DataLoding(campanyName,categoryName,urls):
             print ("Connection is OK \n","Downloading...",campanyName[g], categoryName[g],"\n")
         # Filter Products in HTML
         if campanyName[g]=='Mffco':
-            dfFinal= pd.concat([dfFinal,MffcoFormat(soup ,campanyName[g], categoryName[g])],ignore_index=True)
+            dfFinal= pd.concat([dfFinal,MffcoFormat(soup ,campanyName[g], categoryName[g])])
         elif campanyName[g]=='Kabbani':
-            dfFinal= pd.concat([dfFinal,KabbaniFormat(soup, campanyName[g], categoryName[g])],ignore_index=True)
+            dfFinal= pd.concat([dfFinal,KabbaniFormat(soup, campanyName[g], categoryName[g])])
         elif campanyName[g]=='Egypt':
-            dfFinal= pd.concat([dfFinal,EgyptFormat(soup, campanyName[g], categoryName[g])],ignore_index=True)
+            dfFinal= pd.concat([dfFinal,EgyptFormat(soup, campanyName[g], categoryName[g])])
         elif campanyName[g]=='Hub':
-            dfFinal= pd.concat([dfFinal,HubFormat(soup, campanyName[g], categoryName[g])],ignore_index=True)
+            dfFinal= pd.concat([dfFinal,HubFormat(soup, campanyName[g], categoryName[g])])
         elif campanyName[g]=='Smart':
-            dfFinal= pd.concat([dfFinal,SmartFormat(soup, campanyName[g], categoryName[g])],ignore_index=True)
+            dfFinal= pd.concat([dfFinal,SmartFormat(soup, campanyName[g], categoryName[g])])
         elif campanyName[g]=='Carpiture':
-            dfFinal= pd.concat([dfFinal,CarpitureFormat(soup, campanyName[g], categoryName[g])],ignore_index=True)
+            dfFinal= pd.concat([dfFinal,CarpitureFormat(soup, campanyName[g], categoryName[g])])
         elif campanyName[g]=='American':
-            dfFinal= pd.concat([dfFinal,AmericanFormat(soup, campanyName[g], categoryName[g])],ignore_index=True)
+            dfFinal= pd.concat([dfFinal,AmericanFormat(soup, campanyName[g], categoryName[g])])
         elif campanyName[g]=='ElMalik':
-            dfFinal= pd.concat([dfFinal,ElMalikFormat(soup, campanyName[g], categoryName[g])],ignore_index=True)
+            dfFinal= pd.concat([dfFinal,ElMalikFormat(soup, campanyName[g], categoryName[g])])
 
         page.close()
         print("The Connection Has been Closed\n","Waiting.... \n")
