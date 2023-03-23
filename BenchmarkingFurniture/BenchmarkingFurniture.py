@@ -13,7 +13,9 @@ import re
 # list for Company + all
 ListOfCompany={"All Company":0,"Mffco":1,"Kabbani":2,"Egypt":3,"Hub" : 4
             ,"Smart" : 5,"Carpiture" :6 ,"American" : 7,"ElMalik" : 8}
-ListOfCategory ={'All Category':0, 'MASTER BEDROOMS' :1 ,'TEEN BEDROOMS':2,'KIDS BEDROOMS':3,'DINING ROOMS':4,'Antrehat':5,'Salon':6,'Corner':7}
+# list for Category + all
+ListOfCategory ={'All Category':0, 'MASTER BEDROOMS' :1 ,'TEEN BEDROOMS':2
+                 ,'KIDS BEDROOMS':3,'DINING ROOMS':4,'Antrehat':5,'Salon':6,'Corner':7}
 
 #Public headers To Pass All Methods
 headers = {
@@ -80,7 +82,6 @@ def MffcoFormat(soup, campany, category):
                 'Products': Products, 'Price': Price,'PriceBeforDiscount':PriceBeforDiscount}  
 
     df = pd.DataFrame(AllData)
-    print()
     #clear All variables
     CampanyList.clear()
     CategoryList.clear()
@@ -407,11 +408,11 @@ def LoadDate(campany,category):
         #TO-DO Filter Data base on Campany Number
         if campany!= 0 : campanyname =list(keysCompany)[campany]
         else: campanyname =list(keysCompany)[indx]
-
+        #TO-DO Filter Data base on Category Number
         if category!= 0 : categoryname =list(keysCategory)[category]
         else: categoryname =list(keysCategory)[category]
 
-        #Get Company Name Data base on filter
+        #Get Company Name and Category name Data base on filter
         dfcampany = df[df['Campany'] == campanyname]
         dfcampany = dfcampany[dfcampany['Category'] == categoryname]
         dfcampany.reset_index(inplace=True)
@@ -422,8 +423,7 @@ def LoadDate(campany,category):
         # Select Company Method
             # TO_DO Loop in urls 
         for g in range(len(urls)):
-            # Get Campany ,Category name
-
+            # TO_DO Connect urls 
             page = rs.get(url=urls[g], headers=headers)
             # Get Page HTML
             soup = bs(page.content, 'html.parser')
