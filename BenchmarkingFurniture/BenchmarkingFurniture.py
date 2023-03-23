@@ -3,7 +3,9 @@
 
 import requests as rs
 from bs4 import BeautifulSoup as bs
+import numpy as np
 import pandas as pd
+
 import time as t
 import urllib.request as urlReq
 import datetime as dt
@@ -385,83 +387,86 @@ def getFilter():
                   print('Sorry... Category Number.is not invalid..! :')
         except :
                 print("Oops... data.is not Correct..! :")
-            
 
     return campany,category
 
-# Loding Data Base on Campany Filter
-def LoadDate(campany,category):
+def getFilterData(campany,category):
 
     keysCompany = ListOfCompany.keys()
     keysCategory = ListOfCategory.keys()
 
     df = pd.read_excel( "Datafurniture.xls")
     dfcampany=pd.DataFrame()
-    dfFinal=pd.DataFrame()
-    startLoop=1
-    if  campany == 0: endLoop=len(ListOfCompany) 
-    else : endLoop=startLoop+1
+
+    #startLoop=1
+    #if  campany == 0: endLoop=len(ListOfCompany) 
+    #else : endLoop=startLoop+1
+
 
     #Loop in Campany
-    for indx in  range(startLoop ,endLoop) :
-        #TO-DO Filter Data base on Campany Number
-        if campany!= 0 : 
-            campanyname =list(keysCompany)[campany]
-            dfcampany = df[df['Campany'] == campanyname]
-        else: 
-            campanyname =list(keysCompany)[indx]
-            dfcampany = df[df['Campany'] == campanyname]
+    #for indx in  range(startLoop ,endLoop) :
+        #TO-DO Filter Data base on Campany Numberl
+    if campany!= 0 : 
+        campanyname =list(keysCompany)[campany]
+        dfcampany = df[df['Campany'] == campanyname]
+    else : dfcampany =df
 
-        if category!= 0 : 
-            categoryname =list(keysCategory)[category]
-            dfcampany = dfcampany[dfcampany['Category'] == categoryname]
+    if category!= 0 : 
+        categoryname =list(keysCategory)[category]
+        dfcampany = dfcampany[dfcampany['Category'] == categoryname]
 
-        dfcampany.reset_index(inplace=True)
-        campanyName = dfcampany['Campany']
-        categoryName = dfcampany['Category']
-        urls = dfcampany['URL']
-        # Select Company Method
-            # TO_DO Loop in urls 
-        for g in range(len(urls)):
-            # TO_DO Connect urls 
-            page = rs.get(url=urls[g], headers=headers)
-            # Get Page HTML
-            soup = bs(page.content, 'html.parser')
-            if page.status_code == 404 :
-                print(status_code_NotFound)
-                break
-            else :
-                print (status_code_OK,"Downloading...",campanyName[g], categoryName[g],"\n")
-            # Filter Products in HTML
-            if campanyname=='Mffco':
-                dfFinal= pd.concat([dfFinal,MffcoFormat(soup ,campanyName[g], categoryName[g])],ignore_index=True)
-            elif campanyname=='Kabbani':
-                dfFinal= pd.concat([dfFinal,KabbaniFormat(soup, campanyName[g], categoryName[g])],ignore_index=True)
-            elif campanyname=='Egypt':
-                dfFinal= pd.concat([dfFinal,EgyptFormat(soup, campanyName[g], categoryName[g])],ignore_index=True)
-            elif campanyname=='Hub':
-                dfFinal= pd.concat([dfFinal,HubFormat(soup, campanyName[g], categoryName[g])],ignore_index=True)
-            elif campanyname=='Smart':
-                dfFinal= pd.concat([dfFinal,SmartFormat(soup, campanyName[g], categoryName[g])],ignore_index=True)
-            elif campanyname=='Carpiture':
-                dfFinal= pd.concat([dfFinal,CarpitureFormat(soup, campanyName[g], categoryName[g])],ignore_index=True)
-            elif campanyname=='American':
-                dfFinal= pd.concat([dfFinal,AmericanFormat(soup, campanyName[g], categoryName[g])],ignore_index=True)
-            elif campanyname=='ElMalik':
-                dfFinal= pd.concat([dfFinal,ElMalikFormat(soup, campanyName[g], categoryName[g])],ignore_index=True)
+    dfcampany.reset_index(inplace=True)
+    campanyName = dfcampany['Campany']
+    categoryName = dfcampany['Category']
+    urls = dfcampany['URL']
 
-            page.close()
-            t.sleep(sleepWaiting)
+    return campanyName,categoryName,urls
 
-            print(ConnectionClosed,MesgAfterURL)
+
+# Loding Data Base on Campany,Category Filter
+def LoadDate(campanyName,categoryName,urls):
+# Select Company Method
+    dfFinal=pd.DataFrame()
+    # TO_DO Loop in urls 
+    for g in range(len(urls)):
+        # TO_DO Connect urls 
+        page = rs.get(url=urls[g], headers=headers)
+        # Get Page HTML
+        soup = bs(page.content, 'html.parser')
+        if page.status_code == 404 :
+            print(status_code_NotFound)
+            break
+        else :
+            print (status_code_OK,"Downloading...",campanyName[g], categoryName[g],"\n")
+        # Filter Products in HTML
+        if campanyName[g]=='Mffco':
+            dfFinal= pd.concat([dfFinal,MffcoFormat(soup ,campanyName[g], categoryName[g])],ignore_index=True)
+        elif campanyName[g]=='Kabbani':
+            dfFinal= pd.concat([dfFinal,KabbaniFormat(soup, campanyName[g], categoryName[g])],ignore_index=True)
+        elif campanyName[g]=='Egypt':
+            dfFinal= pd.concat([dfFinal,EgyptFormat(soup, campanyName[g], categoryName[g])],ignore_index=True)
+        elif campanyName[g]=='Hub':
+            dfFinal= pd.concat([dfFinal,HubFormat(soup, campanyName[g], categoryName[g])],ignore_index=True)
+        elif campanyName[g]=='Smart':
+            dfFinal= pd.concat([dfFinal,SmartFormat(soup, campanyName[g], categoryName[g])],ignore_index=True)
+        elif campanyName[g]=='Carpiture':
+            dfFinal= pd.concat([dfFinal,CarpitureFormat(soup, campanyName[g], categoryName[g])],ignore_index=True)
+        elif campanyName[g]=='American':
+            dfFinal= pd.concat([dfFinal,AmericanFormat(soup, campanyName[g], categoryName[g])],ignore_index=True)
+        elif campanyName[g]=='ElMalik':
+            dfFinal= pd.concat([dfFinal,ElMalikFormat(soup, campanyName[g], categoryName[g])],ignore_index=True)
+
+        page.close()
+        t.sleep(sleepWaiting)
+        print(ConnectionClosed,MesgAfterURL)
     return dfFinal
 
 def ExportData(df):
     print("Data Exporting....")
-    df.to_excel("c:\\ProductDetails.xlsx")
+    df.to_excel("c:\\ProductDetails.xlsx","r")
     print("Finished!")
 
-def Cleaning(df):
+def DataCleaning(df):
 
     #getVals = list([val for val in ini_string if val.isalnum()])
     #result = "".join(getVals)
@@ -505,8 +510,9 @@ def main():
     while True :
        campany,category = getFilter()
        StartTime=dt.datetime.now()
-       df = LoadDate(campany,category)
-       df1 = Cleaning(df)
+       campany,category,url =getFilterData(campany,category)
+       df = LoadDate(campany,category,url)
+       df1 = DataCleaning(df)
        print(df1)
        ExportData(df1)
 
