@@ -22,14 +22,6 @@ ListOfCategory ={'All Category':0, 'MASTER BEDROOMS' :1 ,'TEEN BEDROOMS':2
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.3'}
 
-#Public Messages
-#200 is OK, 404 is Not Found
-status_code_OK="Connection is OK \n"
-status_code_NotFound="Connection is Not Found!"
-ConnectionClosed="The Connection Has been Closed\n"
-MesgAfterURL="waiting.... \n"
-sleepWaiting=5
-
 #Public Variables
 Products = []
 Price = []
@@ -276,7 +268,7 @@ def CarpitureFormat(soup, campany, category):
     AllData.clear()
 
     return df
-# TO-DO ..Method To Get American data
+# TO-DO .Method To Get American data
 def AmericanFormat(soup, campany, category):
 
     #Filter Products in HTML
@@ -360,7 +352,7 @@ def ElMalikFormat(soup, campany, category):
     AllData.clear()
 
     return df
-
+# TO-DO Get Filter From user
 def getFilter():
 
     valuesCompany = ListOfCompany.values()
@@ -387,9 +379,9 @@ def getFilter():
                   print('Sorry... Category Number.is not invalid..! :')
         except :
                 print("Oops... data.is not Correct..! :")
-
     return campany,category
 
+# TO-DO Get Filter From data Source
 def getFilterData(campany,category):
 
     keysCompany = ListOfCompany.keys()
@@ -398,14 +390,6 @@ def getFilterData(campany,category):
     df = pd.read_excel( "Datafurniture.xls")
     dfcampany=pd.DataFrame()
 
-    #startLoop=1
-    #if  campany == 0: endLoop=len(ListOfCompany) 
-    #else : endLoop=startLoop+1
-
-
-    #Loop in Campany
-    #for indx in  range(startLoop ,endLoop) :
-        #TO-DO Filter Data base on Campany Numberl
     if campany!= 0 : 
         campanyname =list(keysCompany)[campany]
         dfcampany = df[df['Campany'] == campanyname]
@@ -434,10 +418,10 @@ def LoadDate(campanyName,categoryName,urls):
         # Get Page HTML
         soup = bs(page.content, 'html.parser')
         if page.status_code == 404 :
-            print(status_code_NotFound)
+            print("Connection is Not Found!")
             break
         else :
-            print (status_code_OK,"Downloading...",campanyName[g], categoryName[g],"\n")
+            print ("Connection is OK \n","Downloading...",campanyName[g], categoryName[g],"\n")
         # Filter Products in HTML
         if campanyName[g]=='Mffco':
             dfFinal= pd.concat([dfFinal,MffcoFormat(soup ,campanyName[g], categoryName[g])],ignore_index=True)
@@ -457,8 +441,8 @@ def LoadDate(campanyName,categoryName,urls):
             dfFinal= pd.concat([dfFinal,ElMalikFormat(soup, campanyName[g], categoryName[g])],ignore_index=True)
 
         page.close()
-        t.sleep(sleepWaiting)
-        print(ConnectionClosed,MesgAfterURL)
+        t.sleep(5)
+        print("The Connection Has been Closed\n","Waiting.... \n")
     return dfFinal
 
 def ExportData(df):
