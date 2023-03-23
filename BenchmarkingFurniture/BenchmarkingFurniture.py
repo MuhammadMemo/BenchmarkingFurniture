@@ -11,9 +11,9 @@ import datetime as dt
 import re
 
 # list for Company + all
-List_Company={"All Company":0,"Mffco":1,"Kabbani":2,"Egypt":3,"Hub" : 4
+ListOfCompany={"All Company":0,"Mffco":1,"Kabbani":2,"Egypt":3,"Hub" : 4
             ,"Smart" : 5,"Carpiture" :6 ,"American" : 7,"ElMalik" : 8}
-
+ListOfCategory ={'All Category':0, 'MASTER BEDROOMS' :1 ,'TEEN BEDROOMS':2,'KIDS BEDROOMS':3,'DINING ROOMS':4,'Antrehat':5,'Salon':6,'Corner':7}
 
 #Public headers To Pass All Methods
 headers = {
@@ -361,41 +361,61 @@ def ElMalikFormat(soup, campany, category):
 
 def getFilter():
 
-    values = List_Company.values()
+    valuesCompany = ListOfCompany.values()
+    valuesCategory = ListOfCategory.values()
     while True :
-        for k,v in List_Company.items():
+        for k,v in ListOfCompany.items():
                print("Press:",str(v),"->",str(k))
         try:
              campany = int(input('Please enter an Campany Number :\n'))
-             if campany in values :
+             if campany in valuesCompany :
                 break
              else:
                 print('Sorry... Campany Number.is not invalid..! :')
         except :
                print("Oops... data.is not Correct..! :")
-    return campany
+    while True :
+        for k1,v1 in ListOfCategory.items():
+            print("Press:",str(v1),"->",str(k1))
+        try:
+             category=int(input('Please enter an Category Number :\n'))
+             if category in valuesCategory :
+                break
+             else:
+                  print('Sorry... Category Number.is not invalid..! :')
+        except :
+                print("Oops... data.is not Correct..! :")
+            
+
+    return campany,category
 
 # Loding Data Base on Campany Filter
-def LoadDate(campany):
+def LoadDate(campany,category):
 
-    keys = List_Company.keys()
+    keysCompany = ListOfCompany.keys()
+    keysCategory = ListOfCategory.keys()
 
     df = pd.read_excel( "Datafurniture.xls")
     dfcampany=pd.DataFrame()
     dfFinal=pd.DataFrame()
     startLoop=1
-    if  campany == 0: endLoop=len(List_Company) 
+    if  campany == 0: endLoop=len(ListOfCompany) 
     else : endLoop=startLoop+1
 
     #Loop in Campany
     for indx in  range(startLoop ,endLoop) :
         #TO-DO Filter Data base on Campany Number
-        if campany!= 0 : campanyname =list(keys)[campany]
-        else: campanyname =list(keys)[indx]
+        if campany!= 0 : campanyname =list(keysCompany)[campany]
+        else: campanyname =list(keysCompany)[indx]
+
+        if category!= 0 : categoryname =list(keysCategory)[category]
+        else: categoryname =list(keysCategory)[category]
 
         #Get Company Name Data base on filter
         dfcampany = df[df['Campany'] == campanyname]
+        dfcampany = dfcampany[dfcampany['Category'] == categoryname]
         dfcampany.reset_index(inplace=True)
+
         campanyName = dfcampany['Campany']
         categoryName = dfcampany['Category']
         urls = dfcampany['URL']
@@ -448,27 +468,28 @@ def Cleaning(df):
     df=df.drop_duplicates(keep='first')
    # df['Price']=df['Price'].replace('LE','',inplace=True)
 
-   # df['Price']= df['Price'][df['Price'].str.isdigit()] = ''
+    #df['Price']= df['Price'][df['Price'].str.isalpha()] = ''
 
-    df['Price'] = df['Price'].str.replace('LE','')
-    df['Price'] = df['Price'].str.replace('EGP','')
-    df['Price'] = df['Price'].str.replace('Special Price','')
-    #df['Price'] = df['Price'].str.replace("ج.م.",'', regex=True)
-    df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('LE','')
-    df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('EGP','')
-    df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('Regular Price','')
-   # df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace("ج.م.","", regex=True)
-    df['Price'] = df['Price'].str.replace(',','')
-    df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace(',','')
-    df['Price'] = df['Price'].str.replace('٬','')
-    df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('٬','')
+   # df['Price'] = df['Price'].str.replace('LE','')
+   # df['Price'] = df['Price'].str.replace('EGP','')
+   # df['Price'] = df['Price'].str.replace('Special Price','')
+   # #df['Price'] = df['Price'].str.replace("ج.م.",'', regex=True)
+   # df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('LE','')
+   # df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('EGP','')
+   # df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('Regular Price','')
+   ## df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace("ج.م.","", regex=True)
+   # df['Price'] = df['Price'].str.replace(',','')
+   # df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace(',','')
+   # df['Price'] = df['Price'].str.replace('٬','')
+   # df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('٬','')
     
    # #df['Price'] = df['Price'].astype('int')
 
     #df['PriceBeforDiscount']=df['PriceBeforDiscount'].astype('int')
 
     #df['Price'] = df['Price'].str.replace('\W', '', regex=True)
-    #df['Price'] = df['Price'].str.replace('\s', '', regex=True)
+    df['Price'] = df['Price'].str.replace('\D', '', regex=True)
+    df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('\D', '', regex=True)
     #df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('\W', '', regex=True)
     #df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('\s', '', regex=True)
 
@@ -478,9 +499,9 @@ def Cleaning(df):
 def main():
     print("Hello in the Benchmarketing Project...Pleass Select one or all to download Company data from website:\n")
     while True :
-       campany = getFilter()
+       campany,category = getFilter()
        StartTime=dt.datetime.now()
-       df = LoadDate(campany)
+       df = LoadDate(campany,category)
        df1 = Cleaning(df)
        print(df1)
        ExportData(df1)
