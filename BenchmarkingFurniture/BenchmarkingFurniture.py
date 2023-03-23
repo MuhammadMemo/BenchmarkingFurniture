@@ -379,6 +379,7 @@ def getFilter():
                   print('Sorry... Category Number.is not invalid..! :')
         except :
                 print("Oops... data.is not Correct..! :")
+
     return campany,category
 
 # TO-DO Get Filter From data Source
@@ -406,9 +407,8 @@ def getFilterData(campany,category):
 
     return campanyName,categoryName,urls
 
-
 # Loding Data Base on Campany,Category Filter
-def LoadDate(campanyName,categoryName,urls):
+def DataLoding(campanyName,categoryName,urls):
 # Select Company Method
     dfFinal=pd.DataFrame()
     # TO_DO Loop in urls 
@@ -419,6 +419,9 @@ def LoadDate(campanyName,categoryName,urls):
         soup = bs(page.content, 'html.parser')
         if page.status_code == 404 :
             print("Connection is Not Found!")
+            break
+        if page.status_code != 200:
+            print("Cconnection Error UnKnown!")
             break
         else :
             print ("Connection is OK \n","Downloading...",campanyName[g], categoryName[g],"\n")
@@ -441,13 +444,16 @@ def LoadDate(campanyName,categoryName,urls):
             dfFinal= pd.concat([dfFinal,ElMalikFormat(soup, campanyName[g], categoryName[g])],ignore_index=True)
 
         page.close()
-        t.sleep(5)
         print("The Connection Has been Closed\n","Waiting.... \n")
-    return dfFinal
+        t.sleep(5)
+        print("Data Cleaning....\n","Waiting.... \n")
+        df = DataCleaning(dfFinal)
+    return df
 
 def ExportData(df):
+
     print("Data Exporting....")
-    df.to_excel("c:\\ProductDetails.xlsx","r")
+    df.to_excel("c:\\ProductDetails.xlsx")
     print("Finished!")
 
 def DataCleaning(df):
@@ -478,10 +484,10 @@ def DataCleaning(df):
     #df['PriceBeforDiscount']=df['PriceBeforDiscount'].astype('int')
 
     #df['Price'] = df['Price'].str.replace('\W', '', regex=True)
-    df['Price'] = df['Price'].str.replace('.00', '', regex=True)
-    df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('.00', '', regex=True)
-    df['Price'] = df['Price'].str.replace('\D', '', regex=True)
-    df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('\D', '', regex=True)
+    #df['Price'] = df['Price'].str.replace('.00', '', regex=True)
+    #df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('.00', '', regex=True)
+    #df['Price'] = df['Price'].str.replace('\D', '', regex=True)
+    #df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('\D', '', regex=True)
 
     #df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('\W', '', regex=True)
     #df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('\s', '', regex=True)
@@ -490,15 +496,15 @@ def DataCleaning(df):
     return df
 
 def main():
-    print("Hello in the Benchmarketing Project...Pleass Select one or all to download Company data from website:\n")
+
+    print("# Hello in the Benchmarketing Project# \nPleass Select one or all to download Company data from website:\n")
     while True :
        campany,category = getFilter()
        StartTime=dt.datetime.now()
        campany,category,url =getFilterData(campany,category)
-       df = LoadDate(campany,category,url)
-       df1 = DataCleaning(df)
-       print(df1)
-       ExportData(df1)
+       df = DataLoding(campany,category,url)
+       ExportData(df)
+       print(df)
 
        EndTime=dt.datetime.now()
        print("Start Time: ", StartTime ,"End Time:" , EndTime)
