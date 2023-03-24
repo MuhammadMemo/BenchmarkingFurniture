@@ -263,7 +263,10 @@ class CompanyBenchmarking:
     def __CarpitureFormat__(self,soup, campany, category):
 
         # Filter Products in HTML
-        filter_Products = soup.find_all("div", id="mf-shop-content", class_="mf-shop-content")
+        #filter_Products = soup.find_all("div", id="mf-shop-content", class_="mf-shop-content")
+    #filter_Products = soup.find_all("div", class_="row")
+
+        filter_Products = soup.find_all("ul", class_="products columns-4")
         # Loop Get Product name
         for i in filter_Products:
             for p in i.find_all("h2",class_='woo-loop-product__title'):
@@ -485,32 +488,21 @@ class CompanyBenchmarking:
 
         df=df.drop_duplicates(keep='first')
 
-        df['Price'] = df['Price'].str.replace('LE','')
-        df['Price'] = df['Price'].str.replace('EGP','')
-        df['Price'] = df['Price'].str.replace('Special Price','')
-        df['Price'] = df['Price'].str.replace(',','')
-        df['Price'] = df['Price'].str.replace('٬','')
-        df['Price'] = df['Price'].str.replace('ج.م.','', regex=True)
-        df['Price']=df['Price'].str.strip()
-        
 
-        df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('LE','')
-        df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('EGP','')
-        df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('Regular Price','')
-        df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace(',','')
-        df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('٬','')
-        df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('ج.م.','', regex=True)
+        removabl=['LE','EGP','Special Price',',','٬','ج.م.','Regular Price']
+        for char in removabl:
+            df['Price']=df['Price'].astype(str).str.replace(char,'')
+            df['PriceBeforDiscount']=df['PriceBeforDiscount'].astype(str).str.replace(char,'', regex=True)
+
+        df['Price'] = df['Price'].str.strip()
         df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.strip()
-
-
-
-
         df['Products']=df['Products'].str.strip()
 
-        #df['PriceBeforDiscount']=df['PriceBeforDiscount'].astype('int')
-        #df['Price'] = df['Price'].astype('int')
 
-        #getVals = list([val for val in ini_string if val.isalnum()])
+        df['PriceBeforDiscount']=df['PriceBeforDiscount'].astype('int')
+        df['Price'] = df['Price'].astype('int')
+
+
         #result = "".join(getVals)
         #df['Price']= df['Price'][df['Price'].str.isalpha()] = ''
        # #df['Price'] = df['Price'].str.replace("ج.م.",'', regex=True)
@@ -528,10 +520,15 @@ class CompanyBenchmarking:
 
     def DataDisplay(self):
         pd.set_option('colheader_justify', 'center')
-        pd.set_option('display.max_columns',300)
+        pd.set_option('display.max_columns',None)
+        pd.set_option('display.max_rows', None)
         print(self.__DataFrame)
         print("-" * 40)
         return True
+
+
+    def DataTypes(self):
+        print(self.__DataFrame.dtypes)
 
     def DataExport(self):
         print("Data Exporting....")
@@ -547,8 +544,10 @@ def main():
     while True :
 
        DataCompany= CompanyBenchmarking()
-       DataCompany.DataDisplay()
-       DataCompany.DataExport()
+       #DataCompany.DataDisplay()
+       #DataCompany.DataExport()
+       DataCompany.DataTypes()
+       
        restart = input('\nWould you like to restart? Enter yes.... or press any key to exit.\n')
        if restart.lower() != 'yes':
           break
