@@ -272,14 +272,14 @@ class CompanyBenchmarking:
                 self.__CampanyList.append(campany)
                 self.__CategoryList.append(category)
             # Loop Get Price
-            global FlagPrice
+
             for c in i.find_all(class_='woocommerce-Price-amount amount'):
-                if (FlagPrice == 0):
+                if (self.__FlagPrice == 0):
                         self.__Price.append(c.text)
-                        FlagPrice=1
+                        self.__FlagPrice=1
                 else:
                     self.__PriceBeforDiscount.append(c.text)
-                    FlagPrice=0
+                    self.__FlagPrice=0
 
         print("Downloded : ",len(self.__Products),"  Products\n")
         AllData = {'Campany': self.__CampanyList, 'Category': self.__CategoryList,
@@ -490,24 +490,32 @@ class CompanyBenchmarking:
         df['Price'] = df['Price'].str.replace('Special Price','')
         df['Price'] = df['Price'].str.replace(',','')
         df['Price'] = df['Price'].str.replace('٬','')
+        df['Price'] = df['Price'].str.replace('ج.م.','', regex=True)
+        df['Price']=df['Price'].str.strip()
+        
 
         df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('LE','')
         df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('EGP','')
         df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('Regular Price','')
         df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace(',','')
         df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('٬','')
+        df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('ج.م.','', regex=True)
+        df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.strip()
+
+
+
 
         df['Products']=df['Products'].str.strip()
-        df['Price']=df['Price'].str.strip()
-        df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.strip()
+
+        #df['PriceBeforDiscount']=df['PriceBeforDiscount'].astype('int')
+        #df['Price'] = df['Price'].astype('int')
 
         #getVals = list([val for val in ini_string if val.isalnum()])
         #result = "".join(getVals)
         #df['Price']= df['Price'][df['Price'].str.isalpha()] = ''
        # #df['Price'] = df['Price'].str.replace("ج.م.",'', regex=True)
        ## df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace("ج.م.","", regex=True)
-       # #df['Price'] = df['Price'].astype('int')
-        #df['PriceBeforDiscount']=df['PriceBeforDiscount'].astype('int')
+
         #df['Price'] = df['Price'].str.replace('\W', '', regex=True)
         #df['Price'] = df['Price'].str.replace('.00', '', regex=True)
         #df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('.00', '', regex=True)
@@ -519,6 +527,8 @@ class CompanyBenchmarking:
         return df
 
     def DataDisplay(self):
+        pd.set_option('colheader_justify', 'center')
+        pd.set_option('display.max_columns',300)
         print(self.__DataFrame)
         print("-" * 40)
         return True
@@ -539,7 +549,6 @@ def main():
        DataCompany= CompanyBenchmarking()
        DataCompany.DataDisplay()
        DataCompany.DataExport()
-
        restart = input('\nWould you like to restart? Enter yes.... or press any key to exit.\n')
        if restart.lower() != 'yes':
           break
