@@ -1,6 +1,7 @@
 ﻿
 
 
+from ast import List
 from msilib.schema import Class
 import requests as rs
 from bs4 import BeautifulSoup as bs
@@ -15,8 +16,11 @@ import datetime as dt
 class CompanyBenchmarking:
 
     def __init__(self)-> None:
-        print("# Hello in the Benchmarketing Project# \nPleass Select one or all to download Company data from website:\n")
-        print("-" * 40)
+
+        def __HelloMessage__():
+            print("# Hello in the Benchmarketing Project# \nPleass Select one or all to download Company data from website:\n")
+            print("-" * 40)
+
        # list for Company + all
         self.__ListOfCompany={"All Company":0,"Mffco":1,"Kabbani":2,"Egypt":3,"Hub" : 4
                     ,"Smart" : 5,"Carpiture" :6 ,"American" : 7,"ElMalik" : 8}
@@ -39,10 +43,11 @@ class CompanyBenchmarking:
         self.__Img = []
         self.__imgList = []
         self.__imgUrl = []
-        self.__CampanyList=[]
-        self.__CategoryList=[]
 
-        self.__campany,self.__category = self.__getFilter__()
+
+        __HelloMessage__()
+
+        self.__campany,self.__category = self.__getFilterUser__()
 
         self.__StartTimememe=dt.datetime.now()
 
@@ -56,7 +61,6 @@ class CompanyBenchmarking:
 
         print("Start Time: ", self.__StartTimememe ,"End Time:" , self.__EndTime)
 
-
     # TO-DO ..Method To Get Mffco data
     def __MffcoFormat__(self,soup, campany, category):
 
@@ -64,7 +68,7 @@ class CompanyBenchmarking:
         # Loop Get Product name
         for i in filter_Products:
             for p in i.find_all("h3", class_='title'):
-                 self.__Products.append(p.text.strip())
+                 self.__Products.append(p.text)
                     # Get category,campany name
                  self.__CampanyList.append(campany)
                  self.__CategoryList.append(category)
@@ -119,7 +123,7 @@ class CompanyBenchmarking:
         # Loop Get Product name
         for i in filter_Products:
             for p in i.find_all(class_='grid-view-item__title'):
-                self.__Products.append(p.text.strip())
+                self.__Products.append(p.text)
                     # Get category,campany name
                 self.__CampanyList.append(campany)
                 self.__CategoryList.append(category)
@@ -154,7 +158,7 @@ class CompanyBenchmarking:
         # Loop Get Product name
         for i in filter_Products:
             for p in i.find_all("div", class_='product-title'):
-                self.__Products.append(p.text.strip())
+                self.__Products.append(p.text)
                     # Get category,campany name
                 self.__CampanyList.append(campany)
                 self.__CategoryList.append(category)
@@ -189,7 +193,7 @@ class CompanyBenchmarking:
         # Loop Get Product name
         for i in filter_Products:
             for p in i.find_all("strong", class_='product name product-item-name'):
-                self.__Products.append(p.text.strip())
+                self.__Products.append(p.text)
                     # Get category,campany name
                 self.__CampanyList.append(campany)
                 self.__CategoryList.append(category)
@@ -226,7 +230,7 @@ class CompanyBenchmarking:
         # Loop Get Product name
         for i in filter_Products:
             for p in i.find_all("h2", class_='woocommerce-loop-product__title'):
-                self.__Products.append(p.text.strip())
+                self.__Products.append(p.text)
                     # Get category,campany name
                 self.__CampanyList.append(campany)
                 self.__CategoryList.append(category)
@@ -263,7 +267,7 @@ class CompanyBenchmarking:
         # Loop Get Product name
         for i in filter_Products:
             for p in i.find_all("h2",class_='woo-loop-product__title'):
-                self.__Products.append(p.text.strip())
+                self.__Products.append(p.text)
                     # Get category,campany name
                 self.__CampanyList.append(campany)
                 self.__CategoryList.append(category)
@@ -309,9 +313,8 @@ class CompanyBenchmarking:
 
                 #Loop Get Price
             for c in i.find_all(class_='price'):
-                self.__Price.append(c.text.strip())
-                self.__PriceBeforDiscount.append(c.text.strip())
-
+                self.__Price.append(c.text)
+                self.__PriceBeforDiscount.append(c.text)
 
         print("Downloded : ",len(self.__Products),"  Products\n")
         # Associate data from lists to dictionary
@@ -329,7 +332,6 @@ class CompanyBenchmarking:
         self.__Img.clear()
         AllData.clear()
 
-
         return df
     # TO-DO ..Method To Get ElMalik data
     def __ElMalikFormat__(self,soup, campany, category):
@@ -346,8 +348,8 @@ class CompanyBenchmarking:
 
                 #Loop Get Price
             for c in i.find_all(class_='woocommerce-Price-amount amount'):
-                self.__PriceBeforDiscount.append(c.text.strip())
-                self.__Price.append(c.text.strip())
+                self.__PriceBeforDiscount.append(c.text)
+                self.__Price.append(c.text)
                     #Loop Get Images name
             #for g in i.find_all('img'):
             #   Img.append(g['src'])
@@ -378,7 +380,7 @@ class CompanyBenchmarking:
 
         return df
     # TO-DO Get Filter From user
-    def __getFilter__(self):
+    def __getFilterUser__(self):
 
         valuesCompany = self.__ListOfCompany.values()
         valuesCategory = self.__ListOfCategory.values()
@@ -410,7 +412,7 @@ class CompanyBenchmarking:
         return campany,category
 
     # TO-DO Get Filter From data Source
-    def __getFilterData__(self,campany,category):
+    def __getFilterData__(self,campany : int,category : int):
 
         keysCompany = self.__ListOfCompany.keys()
         keysCategory = self.__ListOfCategory.keys()
@@ -435,7 +437,7 @@ class CompanyBenchmarking:
         return campanyName,categoryName,urls
 
     # Loding Data Base on Campany,Category Filter
-    def __dataLoding__(self,campanyName,categoryName,urls):
+    def __dataLoding__(self,campanyName : List,categoryName : List,urls :List):
     # Select Company Method
         dfFinal=pd.DataFrame()
         # TO_DO Loop in urls 
@@ -495,28 +497,24 @@ class CompanyBenchmarking:
         df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace(',','')
         df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('٬','')
 
+        df['Products']=df['Products'].str.strip()
+        df['Price']=df['Price'].str.strip()
+        df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.strip()
+
         #getVals = list([val for val in ini_string if val.isalnum()])
         #result = "".join(getVals)
         #df['Price']= df['Price'][df['Price'].str.isalpha()] = ''
-
        # #df['Price'] = df['Price'].str.replace("ج.م.",'', regex=True)
        ## df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace("ج.م.","", regex=True)
-
-
-    
        # #df['Price'] = df['Price'].astype('int')
-
         #df['PriceBeforDiscount']=df['PriceBeforDiscount'].astype('int')
-
         #df['Price'] = df['Price'].str.replace('\W', '', regex=True)
         #df['Price'] = df['Price'].str.replace('.00', '', regex=True)
         #df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('.00', '', regex=True)
         #df['Price'] = df['Price'].str.replace('\D', '', regex=True)
         #df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('\D', '', regex=True)
-
         #df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('\W', '', regex=True)
         #df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('\s', '', regex=True)
-
         #df['Price']=df['Price'].replace(['EGP','LE ',','],'', regex=True)
         return df
 
@@ -526,28 +524,25 @@ class CompanyBenchmarking:
         return True
 
     def DataExport(self):
-
-        if self.__DataFrame.empty:
-            print("Data is empty!...Please use DisplayData method Firstly")
-            return False
-        else:
-            print("Data Exporting....")
-            df= self.__DataFrame
-            df.to_excel("c:\\ProductDetails.xlsx")
-            print("Finished!")
-            print("-" * 40)
-            return True
+        print("Data Exporting....")
+        df= self.__DataFrame
+        df.to_excel("c:\\ProductDetails.xlsx")
+        print("Finished!")
+        print("-" * 40)
+        return True
 
 def main():
 
 
     while True :
+
        DataCompany= CompanyBenchmarking()
-       if DataCompany.DataDisplay():
-          if DataCompany.DataExport() :
-            restart = input('\nWould you like to restart? Enter yes.... or press any key to exit.\n')
-            if restart.lower() != 'yes':
-                break
+       DataCompany.DataDisplay()
+       DataCompany.DataExport()
+
+       restart = input('\nWould you like to restart? Enter yes.... or press any key to exit.\n')
+       if restart.lower() != 'yes':
+          break
 
 if __name__ == "__main__":
     main()
