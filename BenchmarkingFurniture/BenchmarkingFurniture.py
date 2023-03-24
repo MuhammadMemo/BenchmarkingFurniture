@@ -16,7 +16,8 @@ class CompanyBenchmarking:
 
     def __init__(self):
         print("# Hello in the Benchmarketing Project# \nPleass Select one or all to download Company data from website:\n")
-        # list for Company + all
+        print("-" * 40)
+       # list for Company + all
         self.__ListOfCompany={"All Company":0,"Mffco":1,"Kabbani":2,"Egypt":3,"Hub" : 4
                     ,"Smart" : 5,"Carpiture" :6 ,"American" : 7,"ElMalik" : 8}
         # list for Category + all
@@ -24,7 +25,7 @@ class CompanyBenchmarking:
                          ,'KIDS BEDROOMS':3,'DINING ROOMS':4,'Antrehat':5,'Salon':6,'Corner':7}
 
         #Public headers To Pass All Methods
-        self.headers = {
+        self.__headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.3'}
 
         #Public Variables
@@ -163,7 +164,7 @@ class CompanyBenchmarking:
 
         print("Downloded : ",len(self.__Products),"  Products\n")
 
-        AllData = {'Campany': self.C__ampanyList, 'Category': self.__CategoryList,
+        AllData = {'Campany': self.__CampanyList, 'Category': self.__CategoryList,
                     'Products': self.__Products, 'Price': self.__Price,'PriceBeforDiscount':self.__PriceBeforDiscount}  
 
         df = pd.DataFrame(AllData)
@@ -384,6 +385,7 @@ class CompanyBenchmarking:
             try:
                  campany = int(input('Please enter an Campany Number :\n'))
                  if campany in valuesCompany :
+                    print("_"*40)
                     break
                  else:
                     print('Sorry... Campany Number.is not invalid..! :')
@@ -395,6 +397,7 @@ class CompanyBenchmarking:
             try:
                  category=int(input('Please enter an Category Number :\n'))
                  if category in valuesCategory :
+                    print("_"*40)
                     break
                  else:
                       print('Sorry... Category Number.is not invalid..! :')
@@ -435,7 +438,7 @@ class CompanyBenchmarking:
         # TO_DO Loop in urls 
         for g in range(len(urls)):
             # TO_DO Connect urls 
-            page = rs.get(url=urls[g], headers=self.headers)
+            page = rs.get(url=urls[g], headers=self.__headers)
             # Get Page HTML
             soup = bs(page.content, 'html.parser')
             if page.status_code == 404 :
@@ -475,26 +478,28 @@ class CompanyBenchmarking:
 
     def __dataCleaning__(self,df):
 
+        df=df.drop_duplicates(keep='first')
+
+        df['Price'] = df['Price'].str.replace('LE','')
+        df['Price'] = df['Price'].str.replace('EGP','')
+        df['Price'] = df['Price'].str.replace('Special Price','')
+        df['Price'] = df['Price'].str.replace(',','')
+        df['Price'] = df['Price'].str.replace('٬','')
+
+        df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('LE','')
+        df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('EGP','')
+        df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('Regular Price','')
+        df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace(',','')
+        df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('٬','')
+
         #getVals = list([val for val in ini_string if val.isalnum()])
         #result = "".join(getVals)
-
-        df=df.drop_duplicates(keep='first')
-       # df['Price']=df['Price'].replace('LE','',inplace=True)
-
         #df['Price']= df['Price'][df['Price'].str.isalpha()] = ''
 
-       # df['Price'] = df['Price'].str.replace('LE','')
-       # df['Price'] = df['Price'].str.replace('EGP','')
-       # df['Price'] = df['Price'].str.replace('Special Price','')
        # #df['Price'] = df['Price'].str.replace("ج.م.",'', regex=True)
-       # df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('LE','')
-       # df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('EGP','')
-       # df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('Regular Price','')
        ## df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace("ج.م.","", regex=True)
-       # df['Price'] = df['Price'].str.replace(',','')
-       # df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace(',','')
-       # df['Price'] = df['Price'].str.replace('٬','')
-       # df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('٬','')
+
+
     
        # #df['Price'] = df['Price'].astype('int')
 
@@ -514,18 +519,22 @@ class CompanyBenchmarking:
 
     def DisplayData(self):
         print(self.__DataFrame)
+        print("-" * 40)
 
     def ExportData(self):
         print("Data Exporting....")
         df= self.__DataFrame
         df.to_excel("c:\\ProductDetails.xlsx")
         print("Finished!")
+        print("-" * 40)
 
 
 
 def main():
-    DataCompany= CompanyBenchmarking()
+
+
     while True :
+       DataCompany= CompanyBenchmarking()
        DataCompany.DisplayData()
        DataCompany.ExportData()
        restart = input('\nWould you like to restart? Enter yes.... or press any key to exit.\n')
