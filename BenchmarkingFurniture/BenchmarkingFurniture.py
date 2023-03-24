@@ -2,6 +2,7 @@
 
 
 from ast import List
+from itertools import groupby
 from msilib.schema import Class
 import requests as rs
 from bs4 import BeautifulSoup as bs
@@ -16,10 +17,6 @@ import datetime as dt
 class CompanyBenchmarking:
 
     def __init__(self)-> None:
-
-        def __HelloMessage__():
-            print("# Hello in the Benchmarketing Project# \nPleass Select one or all to download Company data from website:\n")
-            print("-" * 40)
 
        # list for Company + all
         self.__ListOfCompany={"All Company":0,"Mffco":1,"Kabbani":2,"Egypt":3,"Hub" : 4
@@ -44,8 +41,7 @@ class CompanyBenchmarking:
         self.__imgList = []
         self.__imgUrl = []
 
-
-        __HelloMessage__()
+        self.__HelloMessage__()
 
         self.__campany,self.__category = self.__getFilterUser__()
 
@@ -60,6 +56,10 @@ class CompanyBenchmarking:
         self.__EndTime=dt.datetime.now()
 
         print("Start Time: ", self.__StartTimememe ,"End Time:" , self.__EndTime)
+
+    def __HelloMessage__(self)-> None:
+        print("# Hello in the Benchmarketing Project# \nPleass Select one or all to download Company data from website:\n")
+        print("-" * 40)
 
     # TO-DO ..Method To Get Mffco data
     def __MffcoFormat__(self,soup, campany, category):
@@ -313,12 +313,13 @@ class CompanyBenchmarking:
                 #Repeat campany,category name
                 self.__CampanyList.append(campany)
                 self.__CategoryList.append(category)
-
                 #Loop Get Price
-            for c in i.find_all(class_='price'):
+            for c in  i.find_all("span", class_="woocommerce-Price-amount amount"):
+                #if c.tect !="174,900 EGP":
+                    #print(c.text)
                 self.__Price.append(c.text)
                 self.__PriceBeforDiscount.append(c.text)
-
+                        #print(c.text)
         print("Downloded : ",len(self.__Products),"  Products\n")
         # Associate data from lists to dictionary
         AllData = {'Campany': self.__CampanyList, 'Category': self.__CategoryList,
@@ -488,7 +489,6 @@ class CompanyBenchmarking:
 
         df=df.drop_duplicates(keep='first')
 
-
         removabl=['LE','EGP','Special Price',',','٬','ج.م.','Regular Price']
         for char in removabl:
             df['Price']=df['Price'].astype(str).str.replace(char,'')
@@ -498,24 +498,14 @@ class CompanyBenchmarking:
         df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.strip()
         df['Products']=df['Products'].str.strip()
 
-
         df['PriceBeforDiscount']=df['PriceBeforDiscount'].astype('int')
         df['Price'] = df['Price'].astype('int')
 
-
-        #result = "".join(getVals)
         #df['Price']= df['Price'][df['Price'].str.isalpha()] = ''
-       # #df['Price'] = df['Price'].str.replace("ج.م.",'', regex=True)
-       ## df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace("ج.م.","", regex=True)
-
-        #df['Price'] = df['Price'].str.replace('\W', '', regex=True)
         #df['Price'] = df['Price'].str.replace('.00', '', regex=True)
-        #df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('.00', '', regex=True)
-        #df['Price'] = df['Price'].str.replace('\D', '', regex=True)
         #df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('\D', '', regex=True)
         #df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('\W', '', regex=True)
         #df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('\s', '', regex=True)
-        #df['Price']=df['Price'].replace(['EGP','LE ',','],'', regex=True)
         return df
 
     def DataDisplay(self):
@@ -526,9 +516,16 @@ class CompanyBenchmarking:
         print("-" * 40)
         return True
 
-
     def DataTypes(self):
         print(self.__DataFrame.dtypes)
+
+    def DataStatistic(self):
+        df=self.__DataFrame
+        Count_Products =df.groupby(['Campany','Category'],dropna= False)['Products'].count()
+        avg_Price =df.groupby(['Category','Products'],dropna= False)['Price'].mean()
+        min_Price=df,groupby(['Campany'],'Catogry')['price'].min()
+        max_Price=df,groupby(['Campany'],'Catogry')['price'].max()
+        print('Data Statistic :', Count_Products,avg_Price,min_Price,max_Price)
 
     def DataExport(self):
         print("Data Exporting....")
@@ -546,7 +543,9 @@ def main():
        DataCompany= CompanyBenchmarking()
        #DataCompany.DataDisplay()
        #DataCompany.DataExport()
-       DataCompany.DataTypes()
+       DataCompany.DataStatistic()
+       #DataCompany.DataTypes()
+
        
        restart = input('\nWould you like to restart? Enter yes.... or press any key to exit.\n')
        if restart.lower() != 'yes':
