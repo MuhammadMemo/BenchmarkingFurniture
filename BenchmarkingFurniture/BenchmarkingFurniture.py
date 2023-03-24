@@ -534,7 +534,10 @@ class CompanyBenchmarking:
         min_Price=df.groupby(['Campany','Category'])['Price'].min().reset_index().rename(columns={"Price":"min_Price"})
         max_Price=df.groupby(['Campany','Category'])['Price'].max().reset_index().rename(columns={"Price":"max_Price"})
 
+        #print(type(Count_Products))
+
         df1=pd.concat([Count_Products,avg_Price,min_Price,max_Price], axis=1)
+        #df1.drop(df.iloc[:, 3:4], inplace=True, axis=1)
         print(df1)
         #print('Data Statistic :',"Count_Products :", Count_Products,"avg_Price :",avg_Price,"min_Price : ",min_Price,"max_Price : ",max_Price)
         df1.to_excel("c:\\DataStatistic.xlsx")
