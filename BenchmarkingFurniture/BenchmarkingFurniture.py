@@ -14,7 +14,7 @@ import datetime as dt
 
 class CompanyBenchmarking:
 
-    def __init__(self):
+    def __init__(self)-> None:
         print("# Hello in the Benchmarketing Project# \nPleass Select one or all to download Company data from website:\n")
         print("-" * 40)
        # list for Company + all
@@ -34,6 +34,7 @@ class CompanyBenchmarking:
         self.__PriceBeforDiscount=[]
         self.__CampanyList = []
         self.__CategoryList = []
+
         self.__FlagPrice=0
         self.__Img = []
         self.__imgList = []
@@ -94,10 +95,12 @@ class CompanyBenchmarking:
 
 
         print("Downloded  ",len(self.__Products),"  Products\n")
+
         AllData = {'Campany': self.__CampanyList, 'Category': self.__CategoryList,
                     'Products': self.__Products, 'Price': self.__Price,'PriceBeforDiscount':self.__PriceBeforDiscount}  
 
         df = pd.DataFrame(AllData)
+
         #clear All variables
         self.__CampanyList.clear()
         self.__CategoryList.clear()
@@ -517,29 +520,34 @@ class CompanyBenchmarking:
         #df['Price']=df['Price'].replace(['EGP','LE ',','],'', regex=True)
         return df
 
-    def DisplayData(self):
+    def DataDisplay(self):
         print(self.__DataFrame)
         print("-" * 40)
+        return True
 
-    def ExportData(self):
-        print("Data Exporting....")
-        df= self.__DataFrame
-        df.to_excel("c:\\ProductDetails.xlsx")
-        print("Finished!")
-        print("-" * 40)
+    def DataExport(self):
 
-
+        if self.__DataFrame.empty:
+            print("Data is empty!...Please use DisplayData method Firstly")
+            return False
+        else:
+            print("Data Exporting....")
+            df= self.__DataFrame
+            df.to_excel("c:\\ProductDetails.xlsx")
+            print("Finished!")
+            print("-" * 40)
+            return True
 
 def main():
 
 
     while True :
        DataCompany= CompanyBenchmarking()
-       DataCompany.DisplayData()
-       DataCompany.ExportData()
-       restart = input('\nWould you like to restart? Enter yes.... or press any key to exit.\n')
-       if restart.lower() != 'yes':
-            break
+       if DataCompany.DataDisplay():
+          if DataCompany.DataExport() :
+            restart = input('\nWould you like to restart? Enter yes.... or press any key to exit.\n')
+            if restart.lower() != 'yes':
+                break
 
 if __name__ == "__main__":
     main()
