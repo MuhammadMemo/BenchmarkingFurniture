@@ -525,14 +525,19 @@ class CompanyBenchmarking:
         print(self.__DataFrame.dtypes)
 
     def DataStatistic(self):
-
+        pd.set_option('colheader_justify', 'center')
+        pd.set_option('display.max_columns',None)
+        pd.set_option('display.max_rows', None)
         df=self.__DataFrame
-        Count_Products =df.groupby(['Campany','Category'])['Products'].count()
-        avg_Price=df.groupby(['Campany','Category'])['Price'].mean()
-        min_Price=df.groupby(['Campany','Category'])['Price'].min()
-        max_Price=df.groupby(['Campany','Category'])['Price'].max()
-        print('Data Statistic :',"Count_Products :", Count_Products,"avg_Price :",avg_Price,"min_Price : ",min_Price,"max_Price : ",max_Price)
-        avg_Price.to_excel("c:\\DataStatistic.xlsx")
+        Count_Products =df.groupby(['Campany','Category'])['Products'].count().reset_index().rename(columns={"Products":"Count Of Products"})
+        avg_Price=df.groupby(['Campany','Category'])['Price'].mean().reset_index().rename(columns={"Price":"avg_Price"})
+        min_Price=df.groupby(['Campany','Category'])['Price'].min().reset_index().rename(columns={"Price":"min_Price"})
+        max_Price=df.groupby(['Campany','Category'])['Price'].max().reset_index().rename(columns={"Price":"max_Price"})
+
+        df1=pd.concat([Count_Products,avg_Price,min_Price,max_Price], axis=1)
+        print(df1)
+        #print('Data Statistic :',"Count_Products :", Count_Products,"avg_Price :",avg_Price,"min_Price : ",min_Price,"max_Price : ",max_Price)
+        df1.to_excel("c:\\DataStatistic.xlsx")
 
     def DataExport(self):
         print("Data Exporting....")
