@@ -28,7 +28,7 @@ class CompanyBenchmarking:
         #Public headers To Pass All Methods
         self.__headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.3'}
-
+        self.__DataFrame=pd.DataFrame()
         #Public Variables
         self.__Products = []
         self.__Price = []
@@ -49,9 +49,9 @@ class CompanyBenchmarking:
 
         self.__campany,self.__category,self.__url =self.__getFilterData__(self.__campany,self.__category)
 
-        self.__df = self.__dataLoding__(self.__campany,self.__category,self.__url)
+        self.__DataFrame = self.__dataLoding__(self.__campany,self.__category,self.__url)
 
-        self.__DataFrame=self.__dataCleaning__(self.__df)
+        self.__DataFrame=self.__dataCleaning__(self.__DataFrame)
 
         self.__EndTime=dt.datetime.now()
 
@@ -315,11 +315,16 @@ class CompanyBenchmarking:
                 self.__CategoryList.append(category)
                 #Loop Get Price
             for c in  i.find_all("span", class_="woocommerce-Price-amount amount"):
-                #if c.tect !="174,900 EGP":
+                #if c.tect !="174,900 EGP":
                     #print(c.text)
                 self.__Price.append(c.text)
                 self.__PriceBeforDiscount.append(c.text)
                         #print(c.text)
+            for o in self.__Price:
+                if o =="174,900 EGP":
+                        self.__Price.remove(o)
+                        self.__PriceBeforDiscount.remove(o)
+
         print("Downloded : ",len(self.__Products),"  Products\n")
         # Associate data from lists to dictionary
         AllData = {'Campany': self.__CampanyList, 'Category': self.__CategoryList,
@@ -443,7 +448,7 @@ class CompanyBenchmarking:
     # Loding Data Base on Campany,Category Filter
     def __dataLoding__(self,campanyName : List,categoryName : List,urls :List):
     # Select Company Method
-        dfFinal=pd.DataFrame()
+
         # TO_DO Loop in urls 
         for g in range(len(urls)):
             # TO_DO Connect urls 
@@ -460,28 +465,28 @@ class CompanyBenchmarking:
                 print ("Connection is OK \n","Downloading...",campanyName[g], categoryName[g],"\n")
             # Filter Products in HTML
             if campanyName[g]=='Mffco':
-                dfFinal= pd.concat([dfFinal,self.__MffcoFormat__(soup ,campanyName[g], categoryName[g])])
+                self.__DataFrame= pd.concat([self.__DataFrame,self.__MffcoFormat__(soup ,campanyName[g], categoryName[g])])
             elif campanyName[g]=='Kabbani':
-                dfFinal= pd.concat([dfFinal,self.__KabbaniFormat__(soup, campanyName[g], categoryName[g])])
+                self.__DataFrame= pd.concat([self.__DataFrame,self.__KabbaniFormat__(soup, campanyName[g], categoryName[g])])
             elif campanyName[g]=='Egypt':
-                dfFinal= pd.concat([dfFinal,self.__EgyptFormat__(soup, campanyName[g], categoryName[g])])
+                self.__DataFrame= pd.concat([self.__DataFrame,self.__EgyptFormat__(soup, campanyName[g], categoryName[g])])
             elif campanyName[g]=='Hub':
-                dfFinal= pd.concat([dfFinal,self.__HubFormat__(soup, campanyName[g], categoryName[g])])
+                self.__DataFrame= pd.concat([self.__DataFrame,self.__HubFormat__(soup, campanyName[g], categoryName[g])])
             elif campanyName[g]=='Smart':
-                dfFinal= pd.concat([dfFinal,self.__SmartFormat__(soup, campanyName[g], categoryName[g])])
+                self.__DataFrame= pd.concat([self.__DataFrame,self.__SmartFormat__(soup, campanyName[g], categoryName[g])])
             elif campanyName[g]=='Carpiture':
-                dfFinal= pd.concat([dfFinal,self.__CarpitureFormat__(soup, campanyName[g], categoryName[g])])
+                self.__DataFrame= pd.concat([self.__DataFrame,self.__CarpitureFormat__(soup, campanyName[g], categoryName[g])])
             elif campanyName[g]=='American':
-                dfFinal= pd.concat([dfFinal,self.__AmericanFormat__(soup, campanyName[g], categoryName[g])])
+                self.__DataFrame= pd.concat([self.__DataFrame,self.__AmericanFormat__(soup, campanyName[g], categoryName[g])])
             elif campanyName[g]=='ElMalik':
-                dfFinal= pd.concat([dfFinal,self.__ElMalikFormat__(soup, campanyName[g], categoryName[g])])
+                self.__DataFrame= pd.concat([self.__DataFrame,self.__ElMalikFormat__(soup, campanyName[g], categoryName[g])])
 
             page.close()
             print("The Connection Has been Closed\n","Waiting.... \n")
             t.sleep(5)
 
             print("Data Cleaning....\n","Waiting.... \n")
-            df = self.__dataCleaning__(dfFinal)
+            df = self.__dataCleaning__(self.__DataFrame)
 
         return df
 
@@ -520,12 +525,14 @@ class CompanyBenchmarking:
         print(self.__DataFrame.dtypes)
 
     def DataStatistic(self):
+
         df=self.__DataFrame
-        Count_Products =df.groupby(['Campany','Category'],dropna= False)['Products'].count()
-        avg_Price =df.groupby(['Category','Products'],dropna= False)['Price'].mean()
-        min_Price=df,groupby(['Campany'],'Catogry')['price'].min()
-        max_Price=df,groupby(['Campany'],'Catogry')['price'].max()
-        print('Data Statistic :', Count_Products,avg_Price,min_Price,max_Price)
+        Count_Products =df.groupby(['Campany','Category'])['Products'].count()
+        avg_Price=df.groupby(['Campany','Category'])['Price'].mean()
+        min_Price=df.groupby(['Campany','Category'])['Price'].min()
+        max_Price=df.groupby(['Campany','Category'])['Price'].max()
+        print('Data Statistic :',"Count_Products :", Count_Products,"avg_Price :",avg_Price,"min_Price : ",min_Price,"max_Price : ",max_Price)
+        avg_Price.to_excel("c:\\DataStatistic.xlsx")
 
     def DataExport(self):
         print("Data Exporting....")
