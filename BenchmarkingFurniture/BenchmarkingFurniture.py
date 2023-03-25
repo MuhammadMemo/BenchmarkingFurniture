@@ -42,20 +42,14 @@ class CompanyBenchmarking:
         self.__imgUrl = []
 
         self.__HelloMessage__()
-
         self.__campany,self.__category = self.__getFilterUser__()
-
-        self.__StartTimememe=dt.datetime.now()
-
+        self.__StartTime=dt.datetime.now()
         self.__campany,self.__category,self.__url =self.__getFilterData__(self.__campany,self.__category)
-
         self.__DataFrame = self.__dataLoding__(self.__campany,self.__category,self.__url)
-
         self.__DataFrame=self.__dataCleaning__(self.__DataFrame)
-
         self.__EndTime=dt.datetime.now()
 
-        print("Start Time: ", self.__StartTimememe ,"End Time:" , self.__EndTime)
+        print("Start Time: ", self.__StartTime ,"End Time:" , self.__EndTime)
 
     def __HelloMessage__(self)-> None:
         print("# Hello in the Benchmarketing Project# \nPleass Select one or all to download Company data from website:\n")
@@ -426,8 +420,8 @@ class CompanyBenchmarking:
         df['Price'] = df['Price'].str.strip()
         df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.strip()
         df['Products']=df['Products'].str.strip()
-        df['PriceBeforDiscount']=df['PriceBeforDiscount'].astype('int')
-        df['Price'] = df['Price'].astype('int')
+        #df['PriceBeforDiscount']=df['PriceBeforDiscount'].astype('float')
+        #df['Price'] = df['Price'].astype('float')
         #df['Price']= df['Price'][df['Price'].str.isalpha()] = ''
         #df['Price'] = df['Price'].str.replace('.00', '', regex=True)
         #df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('\D', '', regex=True)
@@ -451,16 +445,9 @@ class CompanyBenchmarking:
         pd.set_option('display.max_columns',None)
         pd.set_option('display.max_rows', None)
         df=self.__DataFrame
-        Count_Products =df.groupby(['Campany','Category'])['Products'].count().reset_index().rename(columns={"Products":"Count Of Products"})
-        avg_Price=df.groupby(['Campany','Category'])['Price'].mean().reset_index().rename(columns={"Price":"avg_Price"})
-        min_Price=df.groupby(['Campany','Category'])['Price'].min().reset_index().rename(columns={"Price":"min_Price"})
-        max_Price=df.groupby(['Campany','Category'])['Price'].max().reset_index().rename(columns={"Price":"max_Price"})
-        #print(type(Count_Products))
-        df1=pd.concat([Count_Products,avg_Price,min_Price,max_Price], axis=1)
-        #df1.drop(df.iloc[:, 3:4], inplace=True, axis=1)
-        print(df1)
-        #print('Data Statistic :',"Count_Products :", Count_Products,"avg_Price :",avg_Price,"min_Price : ",min_Price,"max_Price : ",max_Price)
-        df1.to_excel("c:\\DataStatistic.xlsx")
+        df=df.groupby(['Campany','Category'])['Price'].describe()
+        print(df)
+        df.to_excel("c:\\DataStatistic.xlsx")
 
     def DataExport(self):
         print("Data Exporting....")
@@ -473,9 +460,9 @@ class CompanyBenchmarking:
 def main():
     while True :
        DataCompany= CompanyBenchmarking()
-       #DataCompany.DataDisplay()
-       #DataCompany.DataExport()
-       DataCompany.DataStatistic()
+       DataCompany.DataDisplay()
+       DataCompany.DataExport()
+       #DataCompany.DataStatistic()
        #DataCompany.DataTypes()
        restart = input('\nWould you like to restart? Enter yes.... or press any key to exit.\n')
        if restart.lower() != 'yes':
