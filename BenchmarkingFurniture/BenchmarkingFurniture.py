@@ -450,58 +450,6 @@ class CompanyBenchmarking:
         print(df)
         df.to_excel("c:\\DataStatistic.xlsx")
 
-<<<<<<< HEAD
-    df=df.drop_duplicates(keep='first')
-   # df['Price']=df['Price'].replace('LE','',inplace=True)
-
-    #df['Price']= df['Price'][df['Price'].str.isalpha()] = ''
-
-   # df['Price'] = df['Price'].str.replace('LE','')
-   # df['Price'] = df['Price'].str.replace('EGP','')
-   # df['Price'] = df['Price'].str.replace('Special Price','')
-   # #df['Price'] = df['Price'].str.replace("ج.م.",'', regex=True)
-   # df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('LE','')
-   # df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('EGP','')
-   # df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('Regular Price','')
-   ## df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace("ج.م.","", regex=True)
-   # df['Price'] = df['Price'].str.replace(',','')
-   # df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace(',','')
-   # df['Price'] = df['Price'].str.replace('٬','')
-   # df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('٬','')
-    
-   # #df['Price'] = df['Price'].astype('int')
-
-    #df['PriceBeforDiscount']=df['PriceBeforDiscount'].astype('int')
-
-    #df['Price'] = df['Price'].str.replace('\W', '', regex=True)
-    df['Price'] = df['Price'].str.replace('.00', '', regex=True)
-
-    df['Price'] = df['Price'].str.replace('\D', '', regex=True)
-
-    df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('.00', '', regex=True)
-    df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('\D', '', regex=True)
-
-    #df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('\W', '', regex=True)
-    #df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('\s', '', regex=True)
-
-    #df['Price']=df['Price'].replace(['EGP','LE ',','],'', regex=True)
-    return df
-
-def main():
-    print("Hello in the Benchmarketing Project...\n Pleass Select one or all to download Company data from website:\n")
-    while True :
-       campany,category = getFilter()
-       StartTime=dt.datetime.now()
-       df = LoadDate(campany,category)
-       df1 = Cleaning(df)
-       print(df1)
-       ExportData(df1)
-
-       EndTime=dt.datetime.now()
-       print("Start Time: ", StartTime ,"End Time:" , EndTime)
-
-       restart = input('\nWould you like to restart? \n Enter yes.... or press any key to exit.\n')
-=======
     def DataExport(self):
         print("Data Exporting....")
         df= self.__DataFrame
@@ -518,7 +466,7 @@ def main():
        DataCompany.DataStatistic()
        #DataCompany.DataTypes()
        restart = input('\nWould you like to restart? Enter yes.... or press any key to exit.\n')
->>>>>>> 2d286a0e7aaf17bcd995a5891d5648574ab5053c
+
        if restart.lower() != 'yes':
           break
 
