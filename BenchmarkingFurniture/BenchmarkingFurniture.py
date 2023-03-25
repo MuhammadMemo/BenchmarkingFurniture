@@ -2,6 +2,8 @@
 
 
 from ast import List
+import string
+#import convert_numbers
 #from itertools import groupby
 #from msilib.schema import Class
 import requests as rs
@@ -410,23 +412,37 @@ class CompanyBenchmarking:
             print("The Connection Has been Closed\n","Waiting.... \n")
             #t.sleep(5)
         return  self.__DataFrame
+
     def __dataCleaning__(self,df):
         df=df.drop_duplicates(keep='first')
-        removabl=['LE','EGP','Special Price','Regular Price',',','٬','ج.م.']
+        removabl=['LE','EGP','Special Price','Regular Price',',',' ','٬','ج.م.']
         for char in removabl:
-            df['Price']=df['Price'].astype(str).str.replace(char,'')
+            df['Price']=df['Price'].astype(str).str.replace(char,'', regex=True)
             df['PriceBeforDiscount']=df['PriceBeforDiscount'].astype(str).str.replace(char,'', regex=True)
+
+
+        #df['PriceBeforDiscount']=df['PriceBeforDiscount'].astype(str).str.replace('.00','00')
+
         df['Price'] = df['Price'].str.strip()
         df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.strip()
         df['Products']=df['Products'].str.strip()
-        df['Price'] = df['Price'].str.replace('\D', '', regex=True)
-        df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('\D', '', regex=True)
-        df['PriceBeforDiscount']=df['PriceBeforDiscount'].astype('float')
-        df['Price'] = df['Price'].astype('float')
+             #‏  30950
+        df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('\W', '', regex=True)
+        df['Price'] = df['Price'].str.replace('\W', '', regex=True)
+
+        #df['PriceBeforDiscount']=pd.to_numeric(df['PriceBeforDiscount'], errors='coerce')
+        #df['Price']=pd.to_numeric(df['Price'], errors='coerce')
+        #print(df['PriceBeforDiscount'])
+        df['PriceBeforDiscount']=df['PriceBeforDiscount'].apply(int)
+        df['Price']=df['Price'].apply(int)
+        #df['PriceBeforDiscount']=df['PriceBeforDiscount'].astype('float')
+        #df['Price'] = df['Price'].astype('float')
+
+        #could not convert string to float: '\u200f  30950'
         #df['Price']= df['Price'][df['Price'].str.isalpha()] = ''
         #df['Price'] = df['Price'].str.replace('.00', '', regex=True)
         #df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('\D', '', regex=True)
-        #df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('\W', '', regex=True)
+        #
         #df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('\s', '', regex=True)
         return df
 
