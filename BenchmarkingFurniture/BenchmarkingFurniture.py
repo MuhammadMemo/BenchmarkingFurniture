@@ -490,8 +490,10 @@ def Cleaning(df):
 
     #df['Price'] = df['Price'].str.replace('\W', '', regex=True)
     df['Price'] = df['Price'].str.replace('.00', '', regex=True)
-    df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('.00', '', regex=True)
+
     df['Price'] = df['Price'].str.replace('\D', '', regex=True)
+
+    df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('.00', '', regex=True)
     df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('\D', '', regex=True)
 
     #df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('\W', '', regex=True)
@@ -501,7 +503,7 @@ def Cleaning(df):
     return df
 
 def main():
-    print("Hello in the Benchmarketing Project...Pleass Select one or all to download Company data from website:\n")
+    print("Hello in the Benchmarketing Project...\n Pleass Select one or all to download Company data from website:\n")
     while True :
        campany,category = getFilter()
        StartTime=dt.datetime.now()
@@ -513,7 +515,7 @@ def main():
        EndTime=dt.datetime.now()
        print("Start Time: ", StartTime ,"End Time:" , EndTime)
 
-       restart = input('\nWould you like to restart? Enter yes.... or press any key to exit.\n')
+       restart = input('\nWould you like to restart? \n Enter yes.... or press any key to exit.\n')
        if restart.lower() != 'yes':
             break
 
