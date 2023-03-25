@@ -2,8 +2,8 @@
 
 
 from ast import List
-from itertools import groupby
-from msilib.schema import Class
+#from itertools import groupby
+#from msilib.schema import Class
 import requests as rs
 from bs4 import BeautifulSoup as bs
 import numpy as np
@@ -63,7 +63,6 @@ class CompanyBenchmarking:
 
     # TO-DO ..Method To Get Mffco data
     def __MffcoFormat__(self,soup, campany, category):
-
         filter_Products = soup.find_all("div", class_='product_container')
         # Loop Get Product name
         for i in filter_Products:
@@ -73,7 +72,6 @@ class CompanyBenchmarking:
                  self.__CampanyList.append(campany)
                  self.__CategoryList.append(category)
             # Loop Get Price
-
             for c in i.find_all(class_='woocommerce-Price-amount amount'):
                 if (self.__FlagPrice == 0):
                         self.__PriceBeforDiscount.append(c.text)
@@ -85,7 +83,6 @@ class CompanyBenchmarking:
             #for g in i.find_all('img'):
             #    Img.append(g['src'])
         # Sleep before Next URL
-    
         # Image Download
                 #  
             # t.sleep(100)
@@ -96,15 +93,10 @@ class CompanyBenchmarking:
         #       imgUrl="https:" + img[u]
         # #     urlReq.urlretriev(imgUrl,str(u)+".jpg"+ Campany +"/"+ Category + "/" +"Name")
         #       imgList.append(imgUrl)
-
-
         print("Downloded  ",len(self.__Products),"  Products\n")
-
         AllData = {'Campany': self.__CampanyList, 'Category': self.__CategoryList,
                     'Products': self.__Products, 'Price': self.__Price,'PriceBeforDiscount':self.__PriceBeforDiscount}  
-
         df = pd.DataFrame(AllData)
-
         #clear All variables
         self.__CampanyList.clear()
         self.__CategoryList.clear()
@@ -113,11 +105,9 @@ class CompanyBenchmarking:
         self.__PriceBeforDiscount.clear()
         self.__Img.clear()
         AllData.clear()
-
         return df
     # TO-DO ..Method To Get Kabbani data
     def __KabbaniFormat__(self,soup, campany, category):
-
         # Filter Products in HTML
         filter_Products = soup.find_all("div", class_='grid grid--uniform grid-products grid--view-items')
         # Loop Get Product name
@@ -132,14 +122,10 @@ class CompanyBenchmarking:
                         self.__PriceBeforDiscount.append(c.text)
             for c in i.find_all(class_='product-price__price product-price__sale'):
                         self.__Price.append(c.text)
-
         print("Downloded : ",len(self.__Products),"  Products\n")
-
         AllData = {'Campany': self.__CampanyList, 'Category': self.__CategoryList,
                     'Products': self.__Products, 'Price': self.__Price,'PriceBeforDiscount':self.__PriceBeforDiscount}  
-
         df = pd.DataFrame(AllData)
-
         #clear All variables
         self.__CampanyList.clear()
         self.__CategoryList.clear()
@@ -148,11 +134,9 @@ class CompanyBenchmarking:
         self.__PriceBeforDiscount.clear()
         self.__Img.clear()
         AllData.clear()
-
         return df
     # TO-DO ..Method To Get Egypt data
     def __EgyptFormat__(self,soup, campany, category):
-
         # Filter Products in HTML
         filter_Products = soup.find_all("div", class_='shop-product-content tab-content')
         # Loop Get Product name
@@ -168,12 +152,9 @@ class CompanyBenchmarking:
                     p.append(c.text)
             self.__PriceBeforDiscount = [item.split()[0] for item in p]
             self.__Price = [item.split()[2] for item in p]
-
         print("Downloded : ",len(self.__Products),"  Products\n")
-
         AllData = {'Campany': self.__CampanyList, 'Category': self.__CategoryList,
                     'Products': self.__Products, 'Price': self.__Price,'PriceBeforDiscount':self.__PriceBeforDiscount}  
-
         df = pd.DataFrame(AllData)
         #clear All variables
         self.__CampanyList.clear()
@@ -183,11 +164,9 @@ class CompanyBenchmarking:
         self.__PriceBeforDiscount.clear()
         self.__Img.clear()
         AllData.clear()
-
         return df
     # TO-DO ..Method To Get Hub data
     def __HubFormat__(self,soup, campany, category):
-
         # Filter Products in HTML
         filter_Products = soup.find_all("div" ,id="layerednav-list-products")
         # Loop Get Product name
@@ -198,19 +177,14 @@ class CompanyBenchmarking:
                 self.__CampanyList.append(campany)
                 self.__CategoryList.append(category)
             # Loop Get Price
-
             for c in i.find_all("span" ,class_='old-price'):
                         self.__PriceBeforDiscount.append(c.text)
             for c in i.find_all("span" ,class_='special-price'):
                         self.__Price.append(c.text)
-
         print("Downloded : ",len(self.__Products),"  Products\n")
-
         AllData = {'Campany': self.__CampanyList, 'Category': self.__CategoryList,
                     'Products': self.__Products, 'Price': self.__Price,'PriceBeforDiscount':self.__PriceBeforDiscount}  
-
         df = pd.DataFrame(AllData)
-
         #clear All variables
         self.__CampanyList.clear()
         self.__CategoryList.clear()
@@ -219,12 +193,9 @@ class CompanyBenchmarking:
         self.__PriceBeforDiscount.clear()
         self.__Img.clear()
         AllData.clear()
-
-
         return df
     # TO-DO ..Method To Get Smart data
     def __SmartFormat__(self,soup, campany, category):
-
         # Filter Products in HTML
         filter_Products = soup.find_all("ul", class_='products columns-4')
         # Loop Get Product name
@@ -234,7 +205,6 @@ class CompanyBenchmarking:
                     # Get category,campany name
                 self.__CampanyList.append(campany)
                 self.__CategoryList.append(category)
-
             for c in i.find_all(class_='woocommerce-Price-amount amount'):
                 if (self.__FlagPrice == 0):
                         self.__PriceBeforDiscount.append(c.text)
@@ -242,13 +212,10 @@ class CompanyBenchmarking:
                 else:
                         self.__Price.append(c.text)
                         self.__FlagPrice=0
-
         print("Downloded : ",len(self.__Products),"  Products\n")
         AllData = {'Campany': self.__CampanyList, 'Category': self.__CategoryList,
                     'Products': self.__Products, 'Price': self.__Price,'PriceBeforDiscount':self.__PriceBeforDiscount}  
-
         df = pd.DataFrame(AllData)
-
         #clear All variables
         self.__CampanyList.clear()
         self.__CategoryList.clear()
@@ -261,11 +228,6 @@ class CompanyBenchmarking:
         return df
     # TO-DO ..Method To Get Carpiture data
     def __CarpitureFormat__(self,soup, campany, category):
-
-        # Filter Products in HTML
-        #filter_Products = soup.find_all("div", id="mf-shop-content", class_="mf-shop-content")
-    #filter_Products = soup.find_all("div", class_="row")
-
         filter_Products = soup.find_all("ul", class_="products columns-4")
         # Loop Get Product name
         for i in filter_Products:
@@ -275,7 +237,6 @@ class CompanyBenchmarking:
                 self.__CampanyList.append(campany)
                 self.__CategoryList.append(category)
             # Loop Get Price
-
             for c in i.find_all(class_='woocommerce-Price-amount amount'):
                 if (self.__FlagPrice == 0):
                         self.__Price.append(c.text)
@@ -283,13 +244,10 @@ class CompanyBenchmarking:
                 else:
                     self.__PriceBeforDiscount.append(c.text)
                     self.__FlagPrice=0
-
         print("Downloded : ",len(self.__Products),"  Products\n")
         AllData = {'Campany': self.__CampanyList, 'Category': self.__CategoryList,
                     'Products': self.__Products, 'Price': self.__Price,'PriceBeforDiscount':self.__PriceBeforDiscount}  
-
         df = pd.DataFrame(AllData)
-
         #clear All variables
         self.__CampanyList.clear()
         self.__CategoryList.clear()
@@ -298,14 +256,11 @@ class CompanyBenchmarking:
         self.__PriceBeforDiscount.clear()
         self.__Img.clear()
         AllData.clear()
-
         return df
     # TO-DO .Method To Get American data
     def __AmericanFormat__(self,soup, campany, category):
-
         #Filter Products in HTML
         filter_Products = soup.find_all(class_='products columns-tablet-2 columns-mobile-2 rey-wcGap-default rey-wcGrid-default columns-4')
-
         for i in filter_Products:
             #Loop Get Product name
             for p in i.find_all("h2", class_='woocommerce-loop-product__title'):
@@ -315,8 +270,6 @@ class CompanyBenchmarking:
                 self.__CategoryList.append(category)
                 #Loop Get Price
             for c in  i.find_all("span", class_="woocommerce-Price-amount amount"):
-                #if c.tect !="174,900 EGP":
-                    #print(c.text)
                 self.__Price.append(c.text)
                 self.__PriceBeforDiscount.append(c.text)
                         #print(c.text)
@@ -324,14 +277,11 @@ class CompanyBenchmarking:
                 if o =="174,900 EGP":
                         self.__Price.remove(o)
                         self.__PriceBeforDiscount.remove(o)
-
         print("Downloded : ",len(self.__Products),"  Products\n")
         # Associate data from lists to dictionary
         AllData = {'Campany': self.__CampanyList, 'Category': self.__CategoryList,
                     'Products': self.__Products, 'Price': self.__Price,'PriceBeforDiscount':self.__PriceBeforDiscount}
-
         df = pd.DataFrame(AllData)
-
         # TO-DO clear All variables
         self.__CampanyList.clear()
         self.__CategoryList.clear()
@@ -340,13 +290,10 @@ class CompanyBenchmarking:
         self.__PriceBeforDiscount.clear()
         self.__Img.clear()
         AllData.clear()
-
         return df
     # TO-DO ..Method To Get ElMalik data
     def __ElMalikFormat__(self,soup, campany, category):
-
         filter_Products = soup.find_all("div", class_='products')
-
         for i in filter_Products:
             #Loop Get Product name
             for p in i.find_all("h3", class_='heading-title product-name'):
@@ -354,7 +301,6 @@ class CompanyBenchmarking:
                 #Repeat campany,category name
                 self.__CampanyList.append(campany)
                 self.__CategoryList.append(category)
-
                 #Loop Get Price
             for c in i.find_all(class_='woocommerce-Price-amount amount'):
                 self.__PriceBeforDiscount.append(c.text)
@@ -362,7 +308,6 @@ class CompanyBenchmarking:
                     #Loop Get Images name
             #for g in i.find_all('img'):
             #   Img.append(g['src'])
-              
             # Sleep before Next URL
         #    for u in range(len(img)):
         #       opener = urlReq.build_opener()
@@ -375,9 +320,7 @@ class CompanyBenchmarking:
         # Associate data from lists to dictionary
         AllData = {'Campany': self.__CampanyList, 'Category': self.__CategoryList,
                     'Products': self.__Products, 'Price': self.__Price,'PriceBeforDiscount':self.__PriceBeforDiscount} 
-    
         df = pd.DataFrame(AllData)
-
        # TO-DO clear All variables
         self.__CampanyList.clear()
         self.__CategoryList.clear()
@@ -386,7 +329,6 @@ class CompanyBenchmarking:
         self.__PriceBeforDiscount.clear()
         self.__Img.clear()
         AllData.clear()
-
         return df
     # TO-DO Get Filter From user
     def __getFilterUser__(self):
@@ -417,38 +359,28 @@ class CompanyBenchmarking:
                       print('Sorry... Category Number.is not invalid..! :')
             except :
                     print("Oops... data.is not Correct..! :")
-
         return campany,category
-
     # TO-DO Get Filter From data Source
     def __getFilterData__(self,campany : int,category : int):
-
         keysCompany = self.__ListOfCompany.keys()
         keysCategory = self.__ListOfCategory.keys()
-
         df = pd.read_excel( "Datafurniture.xls")
         dfcampany=pd.DataFrame()
-
         if campany!= 0 : 
             campanyname =list(keysCompany)[campany]
             dfcampany = df[df['Campany'] == campanyname]
         else : dfcampany =df
-
         if category!= 0 : 
             categoryname =list(keysCategory)[category]
             dfcampany = dfcampany[dfcampany['Category'] == categoryname]
-
         dfcampany.reset_index(inplace=True)
         campanyName = dfcampany['Campany']
         categoryName = dfcampany['Category']
         urls = dfcampany['URL']
-
         return campanyName,categoryName,urls
-
     # Loding Data Base on Campany,Category Filter
-    def __dataLoding__(self,campanyName : List,categoryName : List,urls :List):
-    # Select Company Method
 
+    def __dataLoding__(self,campanyName : List,categoryName : List,urls :List):
         # TO_DO Loop in urls 
         for g in range(len(urls)):
             # TO_DO Connect urls 
@@ -480,32 +412,22 @@ class CompanyBenchmarking:
                 self.__DataFrame= pd.concat([self.__DataFrame,self.__AmericanFormat__(soup, campanyName[g], categoryName[g])])
             elif campanyName[g]=='ElMalik':
                 self.__DataFrame= pd.concat([self.__DataFrame,self.__ElMalikFormat__(soup, campanyName[g], categoryName[g])])
-
             page.close()
             print("The Connection Has been Closed\n","Waiting.... \n")
             t.sleep(5)
-
-            print("Data Cleaning....\n","Waiting.... \n")
-            df = self.__dataCleaning__(self.__DataFrame)
-
-        return df
+        return  self.__DataFrame
 
     def __dataCleaning__(self,df):
-
         df=df.drop_duplicates(keep='first')
-
         removabl=['LE','EGP','Special Price',',','٬','ج.م.','Regular Price']
         for char in removabl:
             df['Price']=df['Price'].astype(str).str.replace(char,'')
             df['PriceBeforDiscount']=df['PriceBeforDiscount'].astype(str).str.replace(char,'', regex=True)
-
         df['Price'] = df['Price'].str.strip()
         df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.strip()
         df['Products']=df['Products'].str.strip()
-
         df['PriceBeforDiscount']=df['PriceBeforDiscount'].astype('int')
         df['Price'] = df['Price'].astype('int')
-
         #df['Price']= df['Price'][df['Price'].str.isalpha()] = ''
         #df['Price'] = df['Price'].str.replace('.00', '', regex=True)
         #df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('\D', '', regex=True)
@@ -533,9 +455,7 @@ class CompanyBenchmarking:
         avg_Price=df.groupby(['Campany','Category'])['Price'].mean().reset_index().rename(columns={"Price":"avg_Price"})
         min_Price=df.groupby(['Campany','Category'])['Price'].min().reset_index().rename(columns={"Price":"min_Price"})
         max_Price=df.groupby(['Campany','Category'])['Price'].max().reset_index().rename(columns={"Price":"max_Price"})
-
         #print(type(Count_Products))
-
         df1=pd.concat([Count_Products,avg_Price,min_Price,max_Price], axis=1)
         #df1.drop(df.iloc[:, 3:4], inplace=True, axis=1)
         print(df1)
@@ -551,17 +471,12 @@ class CompanyBenchmarking:
         return True
 
 def main():
-
-
     while True :
-
        DataCompany= CompanyBenchmarking()
        #DataCompany.DataDisplay()
        #DataCompany.DataExport()
        DataCompany.DataStatistic()
        #DataCompany.DataTypes()
-
-       
        restart = input('\nWould you like to restart? Enter yes.... or press any key to exit.\n')
        if restart.lower() != 'yes':
           break
