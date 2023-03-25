@@ -11,7 +11,8 @@
     <OutputPath>.</OutputPath>
     <Name>BenchmarkingFurniture</Name>
     <RootNamespace>BenchmarkingFurniture</RootNamespace>
-    <InterpreterId>Global|ContinuumAnalytics|Anaconda39-64</InterpreterId>
+    <InterpreterId>Global|ContinuumAnalytics|Anaconda37-64</InterpreterId>
+    <SuppressEnvironmentCreationPrompt>True</SuppressEnvironmentCreationPrompt>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -29,6 +30,7 @@
     <InterpreterReference Include="CondaEnv|CondaEnv|python7" />
     <InterpreterReference Include="Global|ContinuumAnalytics|Anaconda37-64" />
     <InterpreterReference Include="Global|ContinuumAnalytics|Anaconda39-64" />
+    <InterpreterReference Include="Global|PythonCore|3.7" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
