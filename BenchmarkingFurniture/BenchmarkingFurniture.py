@@ -410,7 +410,6 @@ class CompanyBenchmarking:
             print("The Connection Has been Closed\n","Waiting.... \n")
             #t.sleep(5)
         return  self.__DataFrame
-
     def __dataCleaning__(self,df):
         df=df.drop_duplicates(keep='first')
         removabl=['LE','EGP','Special Price','Regular Price',',','٬','ج.م.']
