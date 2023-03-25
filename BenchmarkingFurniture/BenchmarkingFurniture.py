@@ -408,20 +408,22 @@ class CompanyBenchmarking:
                 self.__DataFrame= pd.concat([self.__DataFrame,self.__ElMalikFormat__(soup, campanyName[g], categoryName[g])])
             page.close()
             print("The Connection Has been Closed\n","Waiting.... \n")
-            t.sleep(5)
+            #t.sleep(5)
         return  self.__DataFrame
 
     def __dataCleaning__(self,df):
         df=df.drop_duplicates(keep='first')
-        removabl=['LE','EGP','Special Price',',','٬','ج.م.','Regular Price']
+        removabl=['LE','EGP','Special Price','Regular Price',',','٬','ج.م.']
         for char in removabl:
             df['Price']=df['Price'].astype(str).str.replace(char,'')
             df['PriceBeforDiscount']=df['PriceBeforDiscount'].astype(str).str.replace(char,'', regex=True)
         df['Price'] = df['Price'].str.strip()
         df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.strip()
         df['Products']=df['Products'].str.strip()
-        #df['PriceBeforDiscount']=df['PriceBeforDiscount'].astype('float')
-        #df['Price'] = df['Price'].astype('float')
+        df['Price'] = df['Price'].str.replace('\D', '', regex=True)
+        df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('\D', '', regex=True)
+        df['PriceBeforDiscount']=df['PriceBeforDiscount'].astype('float')
+        df['Price'] = df['Price'].astype('float')
         #df['Price']= df['Price'][df['Price'].str.isalpha()] = ''
         #df['Price'] = df['Price'].str.replace('.00', '', regex=True)
         #df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.replace('\D', '', regex=True)
@@ -462,7 +464,7 @@ def main():
        DataCompany= CompanyBenchmarking()
        DataCompany.DataDisplay()
        DataCompany.DataExport()
-       #DataCompany.DataStatistic()
+       DataCompany.DataStatistic()
        #DataCompany.DataTypes()
        restart = input('\nWould you like to restart? Enter yes.... or press any key to exit.\n')
        if restart.lower() != 'yes':
