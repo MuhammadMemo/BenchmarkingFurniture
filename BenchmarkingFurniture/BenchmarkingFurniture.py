@@ -2,7 +2,7 @@
 
 
 from ast import List
-import string
+
 #import convert_numbers
 #from itertools import groupby
 #from msilib.schema import Class
@@ -10,6 +10,7 @@ import requests as rs
 from bs4 import BeautifulSoup as bs
 import numpy as np
 import pandas as pd
+import matplotlib.pylab as plt
 
 import time as t
 import urllib.request as urlReq
@@ -455,12 +456,29 @@ class CompanyBenchmarking:
         print("-" * 40)
         return True
 
+    def DataGraph(self):
+        df= self.__DataFrame
+        #print(df.head())
+        Count_Products=df.groupby(['Campany','Category'])['Products'].count()
+        agv_Price=df.groupby(['Campany','Category'])['Price'].mean()
+        print(Count_Products,agv_Price)
+        fig, axs = plt.subplots(1, 3, figsize=(9, 3), sharey=True)
+        #plt.plot(Count_Products,agv_Price,color='Red')
+        axs[0].scatter(Count_Products,agv_Price,color='Red')
+        axs[1].bar(Count_Products,agv_Price,color='Blue')
+        axs[2].plot(Count_Products,agv_Price,color='Green')
+        #axs.legend()
+        fig.suptitle('Coun Of Products & agv Of Price')
+        # Display
+        plt.show()
+
 def main():
     while True :
        DataCompany= CompanyBenchmarking()
-       DataCompany.DataDisplay()
-       DataCompany.DataExport()
-       DataCompany.DataStatistic()
+       #DataCompany.DataDisplay()
+       #DataCompany.DataExport()
+       #DataCompany.DataStatistic()
+       DataCompany.DataGraph()
        #DataCompany.DataTypes()
        restart = input('\nWould you like to restart? Enter yes.... or press any key to exit.\n')
 
