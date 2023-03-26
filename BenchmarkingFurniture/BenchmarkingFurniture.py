@@ -420,7 +420,6 @@ class CompanyBenchmarking:
             df['Price']=df['Price'].astype(str).str.replace(char,'', regex=True)
             df['PriceBeforDiscount']=df['PriceBeforDiscount'].astype(str).str.replace(char,'', regex=True)
 
-
         #df['PriceBeforDiscount']=df['PriceBeforDiscount'].astype(str).str.replace('.00','00')
 
         df['Price'] = df['Price'].str.strip()
