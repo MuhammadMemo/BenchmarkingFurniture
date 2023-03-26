@@ -61,7 +61,7 @@ class CompanyBenchmarking:
 
     # TO-DO ..Method To Get Mffco data
     def __MffcoFormat__(self,soup, campany, category):
-        filter_Products = soup.find_all("ul", class_="products_list products" )
+        filter_Products = soup.find_all("div", class_="product_container" )
         # Loop Get Product name
         for i in filter_Products:
             for p in i.find_all("h3", class_='title'):
@@ -70,7 +70,10 @@ class CompanyBenchmarking:
                  self.__CampanyList.append(campany)
                  self.__CategoryList.append(category)
             # Loop Get Price
-            for c in i.find_all(class_='woocommerce-Price-amount amount'):
+
+            results = []
+            self.__FlagPrice = 0
+            for c in i.find_all("span",class_='woocommerce-Price-amount amount'):
                 if (self.__FlagPrice == 0):
                         self.__PriceBeforDiscount.append(c.text)
                         self.__FlagPrice=1
@@ -92,11 +95,12 @@ class CompanyBenchmarking:
         # #     urlReq.urlretriev(imgUrl,str(u)+".jpg"+ Campany +"/"+ Category + "/" +"Name")
         #       imgList.append(imgUrl)
         #if self.__CategoryList=='Corner' :
+
         #self.__Price=list(dict.fromkeys( self.__Price))
         #self.__PriceBeforDiscount=list(dict.fromkeys(self.__PriceBeforDiscount))
 
         print("Downloded  ",len(self.__Products),"  Products\n")
-        print(len(self.__Price),len(self.__Products),len(self.__PriceBeforDiscount))
+        #print(len(self.__Price),len(self.__Products),len(self.__PriceBeforDiscount))
         AllData = {'Campany': self.__CampanyList, 'Category': self.__CategoryList,
                     'Products': self.__Products, 'Price': self.__Price,'PriceBeforDiscount': self.__PriceBeforDiscount}  
         df = pd.DataFrame(AllData)
