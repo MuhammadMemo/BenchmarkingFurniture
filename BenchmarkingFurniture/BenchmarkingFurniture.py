@@ -31,8 +31,9 @@ class CompanyBenchmarking:
         #Public headers To Pass All Methods
         self.__headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.3'}
-        self.__DataFrame=pd.DataFrame()
+        
         #Public Variables
+        self.__DataFrame=pd.DataFrame()
         self.__Products = []
         self.__Price = []
         self.__PriceBeforDiscount=[]
@@ -60,7 +61,7 @@ class CompanyBenchmarking:
 
     # TO-DO ..Method To Get Mffco data
     def __MffcoFormat__(self,soup, campany, category):
-        filter_Products = soup.find_all("div", class_='product_container')
+        filter_Products = soup.find_all("ul", class_="products_list products" )
         # Loop Get Product name
         for i in filter_Products:
             for p in i.find_all("h3", class_='title'):
@@ -74,8 +75,8 @@ class CompanyBenchmarking:
                         self.__PriceBeforDiscount.append(c.text)
                         self.__FlagPrice=1
                 else:
-                    self.__Price.append(c.text)
-                    self.__FlagPrice=0
+                        self.__Price.append(c.text)
+                        self.__FlagPrice=0
             #Loop Get Images name
             #for g in i.find_all('img'):
             #    Img.append(g['src'])
@@ -90,9 +91,14 @@ class CompanyBenchmarking:
         #       imgUrl="https:" + img[u]
         # #     urlReq.urlretriev(imgUrl,str(u)+".jpg"+ Campany +"/"+ Category + "/" +"Name")
         #       imgList.append(imgUrl)
+        #if self.__CategoryList=='Corner' :
+        #self.__Price=list(dict.fromkeys( self.__Price))
+        #self.__PriceBeforDiscount=list(dict.fromkeys(self.__PriceBeforDiscount))
+
         print("Downloded  ",len(self.__Products),"  Products\n")
+        print(len(self.__Price),len(self.__Products),len(self.__PriceBeforDiscount))
         AllData = {'Campany': self.__CampanyList, 'Category': self.__CategoryList,
-                    'Products': self.__Products, 'Price': self.__Price,'PriceBeforDiscount':self.__PriceBeforDiscount}  
+                    'Products': self.__Products, 'Price': self.__Price,'PriceBeforDiscount': self.__PriceBeforDiscount}  
         df = pd.DataFrame(AllData)
         #clear All variables
         self.__CampanyList.clear()
@@ -271,11 +277,12 @@ class CompanyBenchmarking:
                 self.__PriceBeforDiscount.append(c.text)
                         #print(c.text)
             for o in self.__Price:
-                if o =="174,900 EGP":
+                if o =="174,900 EGP" and  category=="MASTER BEDROOMS":
                         self.__Price.remove(o)
                         self.__PriceBeforDiscount.remove(o)
         print("Downloded : ",len(self.__Products),"  Products\n")
         # Associate data from lists to dictionary
+        #print(len(self.__Products),len(self.__Price),len(self.__PriceBeforDiscount))
         AllData = {'Campany': self.__CampanyList, 'Category': self.__CategoryList,
                     'Products': self.__Products, 'Price': self.__Price,'PriceBeforDiscount':self.__PriceBeforDiscount}
         df = pd.DataFrame(AllData)
@@ -415,7 +422,6 @@ class CompanyBenchmarking:
         return  self.__DataFrame
 
     def __dataCleaning__(self,df):
-
         df=df.drop_duplicates(keep='first')
         removabl=[',',' ','٬','ج.م.']
         for char in removabl:
@@ -462,22 +468,34 @@ class CompanyBenchmarking:
         Count_Products=df.groupby(['Campany','Category'])['Products'].count()
         agv_Price=df.groupby(['Campany','Category'])['Price'].mean()
         print(Count_Products,agv_Price)
-        fig, axs = plt.subplots(1, 3, figsize=(9, 3), sharey=True)
-        #plt.plot(Count_Products,agv_Price,color='Red')
-        axs[0].scatter(Count_Products,agv_Price,color='Red')
+
+        fig, axs = plt.subplots(1, 3, figsize=(9,5), sharey=True)
+        #axs[0].pie(Count_Products, frame=True)
+        axs[0].scatter(Count_Products,agv_Price,color='Red' )
         axs[1].bar(Count_Products,agv_Price,color='Blue')
         axs[2].plot(Count_Products,agv_Price,color='Green')
+
+        axs[0].legend((12,14), ('Count_Products', 'agv_Price'),bbox_to_anchor=(0., 1.02, 1., .102), loc=3,
+       ncol=2, mode="expand", borderaxespad=0)
+        axs[1].legend((12,14), ('Count_Products', 'agv_Price'), loc='upper right')
+        axs[2].legend((12,14), ('Count_Products', 'agv_Price'), loc='upper right')
         #axs.legend()
+        #axs[3].hist(agv_Price,bins=8, linewidth=0.3,edgecolor="white")
+        #fig1, ax1 = plt.subplots()
+
+        #ax1.hist(agv_Price, bins=8, linewidth=0.5, edgecolor="white")
+
         fig.suptitle('Coun Of Products & agv Of Price')
         # Display
         plt.show()
+        plt.draw()
 
 def main():
     while True :
        DataCompany= CompanyBenchmarking()
-       #DataCompany.DataDisplay()
-       #DataCompany.DataExport()
-       #DataCompany.DataStatistic()
+       DataCompany.DataDisplay()
+       DataCompany.DataExport()
+       DataCompany.DataStatistic()
        DataCompany.DataGraph()
        #DataCompany.DataTypes()
        restart = input('\nWould you like to restart? Enter yes.... or press any key to exit.\n')
