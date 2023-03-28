@@ -19,19 +19,19 @@ import datetime as dt
 
 class CompanyBenchmarking:
 
-    def __init__(self)-> None:
+    def __init__(self,FileLocation_ToLoade:str) -> str:
 
        # list for Company + all
         self.__ListOfCompany={"All Company":0,"Mffco":1,"Kabbani":2,"Egypt":3,"Hub" : 4
-                    ,"Smart" : 5,"Carpiture" :6 ,"American" : 7,"ElMalik" : 8,"Carrefour" : 9}
+                    ,"Smart" : 5,"Carpiture" :6 ,"American" : 7,"ElMalik" : 8}
         # list for Category + all
         self.__ListOfCategory ={'All Category':0, 'MASTER BEDROOMS' :1 ,'TEEN BEDROOMS':2
-                         ,'KIDS BEDROOMS':3,'DINING ROOMS':4,'Antrehat':5,'Salon':6,'Corner':7,'Bkala':8}
+                         ,'KIDS BEDROOMS':3,'DINING ROOMS':4,'Antrehat':5,'Salon':6,'Corner':7}
 
         #Public headers To Pass All Methods
         self.__headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.3'}
-        
+        df = pd.read_excel(FileLocation_ToLoade)
         #Public Variables
         self.__DataFrame=pd.DataFrame()
         self.__Products = []
@@ -44,11 +44,13 @@ class CompanyBenchmarking:
         self.__Img = []
         self.__imgList = []
         self.__imgUrl = []
+        self.__errorConnections=0
+
 
         self.__HelloMessage__()
         self.__campany,self.__category = self.__getFilterUser__()
         self.__StartTime=dt.datetime.now()
-        self.__campany,self.__category,self.__url =self.__getFilterData__(self.__campany,self.__category)
+        self.__campany,self.__category,self.__url =self.__getFilterData__(df,self.__campany,self.__category)
         self.__DataFrame = self.__dataLoding__(self.__campany,self.__category,self.__url)
         self.__DataFrame=self.__dataCleaning__(self.__DataFrame)
         self.__EndTime=dt.datetime.now()
@@ -60,44 +62,6 @@ class CompanyBenchmarking:
         print("-" * 40)
 
         
-    # TO-DO ..Method To Get Mffco data
-    def __CarrefourFormat__(self,soup, campany, category):
-        #Product = soup.find_all("div", class_="product_container" )
-        #print(soup.prettify())
-        #print(soup.title.string)
-        #print(soup.find_all("div", class_="css-1nhiovu","title"))
-        print(soup.css.select("title"))
-
-        Product = soup.find_all("title")
-
-        for p in range(len(Product)):
-            self.__Products.append(Product[p].text)
-            self.__CampanyList.append(campany)
-            self.__CategoryList.append(category)
-        print(self.__Products)
-
-
-        Price = soup.find_all("div", class_="css-y6872u")
-
-        for i in range(len(Price)):
-                    self.__PriceBeforDiscount.append(Price[i].text)
-        print(self.__PriceBeforDiscount)
-
-
-        print("Downloded  ",len(self.__Products),"  Products\n")
-        print(len(self.__Price),len(self.__Products),len(self.__PriceBeforDiscount))
-        AllData = {'Campany': self.__CampanyList, 'Category': self.__CategoryList,
-                    'Products': self.__Products, 'Price': self.__Price,'PriceBeforDiscount': self.__PriceBeforDiscount}  
-        df = pd.DataFrame(AllData)
-        #clear All variables
-        self.__CampanyList.clear()
-        self.__CategoryList.clear()
-        self.__Products.clear()
-        self.__Price.clear()
-        self.__PriceBeforDiscount.clear()
-        #self.__Img.clear()
-        AllData.clear()
-        return df
 
     # TO-DO ..Method To Get Mffco data
     def __MffcoFormat__(self,soup, campany, category):
@@ -123,29 +87,12 @@ class CompanyBenchmarking:
         self.__CampanyList=c1
         self.__CategoryList=c2
 
-        #print(soup['ins'].b)
-        #print("d")
-        #data= list(zip(self.__Price,self.__PriceBeforDiscount,self.__Products,self.__CampanyList,self.__CategoryList))
-        #z=self.__Products
-        #for i in z:
-        #    self.__Products.append(i)
-        #print(len(self.__Products))
-        #self.__Products
-        #for n1 in list11[1],:
-        #    print(n1)
-            
-        #for n2 in list11[2],:
-        #    print(n2)
-        # Printing the value Prince
-
-  
         # Printing the value Queen
 
         #print(dataList)
         #with open ("C:\\Users\\ism01\\Myfile.csv","w") as myFile:
         #    wr = csv.writing(myFile)
             ##for c in i.find_all("span" ,class_="woocommerce-Price-amount amount"):
-
 
             #Loop Get Images name
             #for g in i.find_all('img'):
@@ -181,7 +128,6 @@ class CompanyBenchmarking:
         #self.__Img.clear()
         AllData.clear()
         return df
-
     # TO-DO ..Method To Get Kabbani data
     def __KabbaniFormat__(self,soup, campany, category):
         # Filter Products in HTML
@@ -438,10 +384,10 @@ class CompanyBenchmarking:
                     print("Oops... data.is not Correct..! :")
         return campany,category
     # TO-DO Get Filter From data Source
-    def __getFilterData__(self,campany : int,category : int):
+    def __getFilterData__(self,df,campany : int,category : int):
         keysCompany = self.__ListOfCompany.keys()
         keysCategory = self.__ListOfCategory.keys()
-        df = pd.read_excel( "Datafurniture.xls")
+
         dfcampany=pd.DataFrame()
         if campany!= 0 : 
             campanyname =list(keysCompany)[campany]
@@ -457,22 +403,25 @@ class CompanyBenchmarking:
         return campanyName,categoryName,urls
     # Loding Data Base on Campany,Category Filter
 
-    def __dataLoding__(self,campanyName : List,categoryName : List,urls :List):
+    def __dataLoding__(self,campanyName : List,categoryName : List,urls :List)-> List:
         # TO_DO Loop in urls 
+        errorConnection=0
         for g in range(len(urls)):
             # TO_DO Connect urls 
             page = rs.get(url=urls[g], headers=self.__headers)
             # Get Page HTML
-            soup = bs(page.content, 'html.parser')
+            soup = bs(page.content, 'html.parser',)
             #html5lib
             if page.status_code == 404 :
-                print("Connection is Not Found!")
-                break
+                print("Connection is Not Found!",urls[g],campanyName[g], categoryName[g],"\n")
+                errorConnection +=1
+                continue
             if page.status_code != 200:
-                print("Cconnection Error UnKnown!")
-                break
+                print("Cconnection Error UnKnown!",urls[g],campanyName[g], categoryName[g],"\n")
+                errorConnection +=1
+                continue
             else :
-                print ("Connection is OK \n","Downloading...",campanyName[g], categoryName[g],"\n")
+                print ("Connection is OK :","Downloading...",campanyName[g], categoryName[g],"\n")
             # Filter Products in HTML
             if campanyName[g]=='Mffco':
                 self.__DataFrame= pd.concat([self.__DataFrame,self.__MffcoFormat__(soup ,campanyName[g], categoryName[g])])
@@ -490,11 +439,10 @@ class CompanyBenchmarking:
                 self.__DataFrame= pd.concat([self.__DataFrame,self.__AmericanFormat__(soup, campanyName[g], categoryName[g])])
             elif campanyName[g]=='ElMalik':
                 self.__DataFrame= pd.concat([self.__DataFrame,self.__ElMalikFormat__(soup, campanyName[g], categoryName[g])])
-            elif campanyName[g]=='Carrefour':
-                self.__DataFrame= pd.concat([self.__DataFrame,self.__CarrefourFormat__(soup, campanyName[g], categoryName[g])])
             page.close()
             print("The Connection Has been Closed\n","Waiting.... \n")
             #t.sleep(5)
+            self.__errorConnection=errorConnection
         return  self.__DataFrame
 
     def __dataCleaning__(self,df):
@@ -530,6 +478,7 @@ class CompanyBenchmarking:
         df=self.__DataFrame
         df=df.groupby(['Campany','Category'])['Price'].describe()
         print(df)
+        print("Error Connection : ",self.__errorConnection)
         df.to_excel("c:\\DataStatistic.xlsx")
 
     def DataExport(self):
@@ -570,7 +519,7 @@ class CompanyBenchmarking:
 
 def main():
     while True :
-       DataCompany= CompanyBenchmarking()
+       DataCompany= CompanyBenchmarking("Datafurniture.xls")
        DataCompany.DataDisplay()
        DataCompany.DataExport()
        DataCompany.DataStatistic()
