@@ -23,10 +23,10 @@ class CompanyBenchmarking:
 
        # list for Company + all
         self.__ListOfCompany={"All Company":0,"Mffco":1,"Kabbani":2,"Egypt":3,"Hub" : 4
-                    ,"Smart" : 5,"Carpiture" :6 ,"American" : 7,"ElMalik" : 8}
+                    ,"Smart" : 5,"Carpiture" :6 ,"American" : 7,"ElMalik" : 8,"Carrefour" : 9}
         # list for Category + all
         self.__ListOfCategory ={'All Category':0, 'MASTER BEDROOMS' :1 ,'TEEN BEDROOMS':2
-                         ,'KIDS BEDROOMS':3,'DINING ROOMS':4,'Antrehat':5,'Salon':6,'Corner':7}
+                         ,'KIDS BEDROOMS':3,'DINING ROOMS':4,'Antrehat':5,'Salon':6,'Corner':7,'Bkala':8}
 
         #Public headers To Pass All Methods
         self.__headers = {
@@ -59,54 +59,82 @@ class CompanyBenchmarking:
         print("# Hello in the Benchmarketing Project# \nPleass Select one or all to download Company data from website:\n")
         print("-" * 40)
 
+        
     # TO-DO ..Method To Get Mffco data
-    def __MffcoFormat__(self,soup, campany, category):
+    def __CarrefourFormat__(self,soup, campany, category):
         #Product = soup.find_all("div", class_="product_container" )
-        Product = soup.find_all("h3", class_='title' )
+        #print(soup.prettify())
+        #print(soup.title.string)
+        #print(soup.find_all("div", class_="css-1nhiovu","title"))
+        print(soup.css.select("title"))
+
+        Product = soup.find_all("title")
+
         for p in range(len(Product)):
             self.__Products.append(Product[p].text)
             self.__CampanyList.append(campany)
             self.__CategoryList.append(category)
+        print(self.__Products)
 
-        self.__FlagPrice = 0
-        Price = soup.find_all("span" ,class_="woocommerce-Price-amount amount" )
+
+        Price = soup.find_all("div", class_="css-y6872u")
+
         for i in range(len(Price)):
-              if (self.__FlagPrice == 0):
                     self.__PriceBeforDiscount.append(Price[i].text)
-                    self.__FlagPrice=1
-              else:
-                    self.__Price.append(Price[i].text)
-                    self.__FlagPrice=0
+        print(self.__PriceBeforDiscount)
 
-        #print(self.__Price,len(Price))
 
+        print("Downloded  ",len(self.__Products),"  Products\n")
+        print(len(self.__Price),len(self.__Products),len(self.__PriceBeforDiscount))
+        AllData = {'Campany': self.__CampanyList, 'Category': self.__CategoryList,
+                    'Products': self.__Products, 'Price': self.__Price,'PriceBeforDiscount': self.__PriceBeforDiscount}  
+        df = pd.DataFrame(AllData)
+        #clear All variables
+        self.__CampanyList.clear()
+        self.__CategoryList.clear()
+        self.__Products.clear()
+        self.__Price.clear()
+        self.__PriceBeforDiscount.clear()
+        #self.__Img.clear()
+        AllData.clear()
+        return df
+
+    # TO-DO ..Method To Get Mffco data
+    def __MffcoFormat__(self,soup, campany, category):
+
+        Product = soup.find_all("h3", class_='title')
+        #Loop Get Product name
+        for p in Product:
+            self.__Products.append(p.text)
+            # Get category,campany name
+            self.__CampanyList.append(campany)
+            self.__CategoryList.append(category)
+        #tag = soup.ins
+            # Loop Get Price
+        for a in soup.select('ins'):
+            self.__Price.append(a.find_next('bdi').text)
+        for a in soup.select('del'):
+            self.__PriceBeforDiscount.append(a.find_next('bdi').text)
+
+        print(soup['ins'].b)
+        print("d")
+        #data= list(zip(self.__Price,self.__PriceBeforDiscount,self.__Products,self.__CampanyList,self.__CategoryList))
+
+
+        #for n1 in list11[1],:
+        #    print(n1)
+            
+        #for n2 in list11[2],:
+        #    print(n2)
+        # Printing the value Prince
+
+  
+        # Printing the value Queen
+
+        #print(dataList)
         #with open ("C:\\Users\\ism01\\Myfile.csv","w") as myFile:
         #    wr = csv.writing(myFile)
-
-
-        # Loop Get Product name
-        #for i in filter_Products:
-        #    for p in i.find_all("h3", class_='title'):
-        #         self.__Products.append(p.text)
-        #            # Get category,campany name
-        #         self.__CampanyList.append(campany)
-        #         self.__CategoryList.append(category)
-            # Loop Get Price
-
-            #self.__FlagPrice = 0
-            #for c in i.find_all("span" ,{"class":"woocommerce-Price-amount amount"}):
             ##for c in i.find_all("span" ,class_="woocommerce-Price-amount amount"):
-            #    self.__Price.append(c.text)
-            #    print(self.__Price)
-
-                #if (self.__FlagPrice == 0):
-                #        self.__PriceBeforDiscount.append(c.text)
-                #        self.__FlagPrice=1
-                #else:
-                #        self.__Price.append(c.text)
-                #        self.__FlagPrice=0
-
-
 
 
             #Loop Get Images name
@@ -125,23 +153,25 @@ class CompanyBenchmarking:
         #       imgList.append(imgUrl)
         #if self.__CategoryList=='Corner' :
 
-        self.__Price=list(dict.fromkeys( self.__Price))
-        self.__PriceBeforDiscount=list(dict.fromkeys(self.__PriceBeforDiscount))
+        #self.__Price=list(dict.fromkeys( self.__Price))
+        #self.__PriceBeforDiscount=list(dict.fromkeys(self.__PriceBeforDiscount))
 
         print("Downloded  ",len(self.__Products),"  Products\n")
-        print(len(self.__Price),len(self.__Products),len(self.__PriceBeforDiscount))
-        AllData = {'Campany': self.__CampanyList, 'Category': self.__CategoryList,
-                    'Products': self.__Products, 'Price': self.__Price,'PriceBeforDiscount': self.__PriceBeforDiscount}  
-        df = pd.DataFrame(AllData)
+    ##print(len(self.__Price),len(self.__Products),len(self.__PriceBeforDiscount))
+    #    AllData = {'Campany': self.__CampanyList, 'Category': self.__CategoryList,
+    #                'Products': self.__Products, 'Price': self.__Price,'PriceBeforDiscount': self.__PriceBeforDiscount}  
+        #df = pd.DataFrame(data,columns=['Price','PriceBeforDiscount','Products','Campany','Category'])
         #clear All variables
+        #print(df)
         self.__CampanyList.clear()
         self.__CategoryList.clear()
         self.__Products.clear()
         self.__Price.clear()
         self.__PriceBeforDiscount.clear()
         #self.__Img.clear()
-        AllData.clear()
+        #AllData.clear()
         return df
+
     # TO-DO ..Method To Get Kabbani data
     def __KabbaniFormat__(self,soup, campany, category):
         # Filter Products in HTML
@@ -424,6 +454,7 @@ class CompanyBenchmarking:
             page = rs.get(url=urls[g], headers=self.__headers)
             # Get Page HTML
             soup = bs(page.content, 'html.parser')
+            #html5lib
             if page.status_code == 404 :
                 print("Connection is Not Found!")
                 break
@@ -449,6 +480,8 @@ class CompanyBenchmarking:
                 self.__DataFrame= pd.concat([self.__DataFrame,self.__AmericanFormat__(soup, campanyName[g], categoryName[g])])
             elif campanyName[g]=='ElMalik':
                 self.__DataFrame= pd.concat([self.__DataFrame,self.__ElMalikFormat__(soup, campanyName[g], categoryName[g])])
+            elif campanyName[g]=='Carrefour':
+                self.__DataFrame= pd.concat([self.__DataFrame,self.__CarrefourFormat__(soup, campanyName[g], categoryName[g])])
             page.close()
             print("The Connection Has been Closed\n","Waiting.... \n")
             #t.sleep(5)
@@ -456,7 +489,7 @@ class CompanyBenchmarking:
 
     def __dataCleaning__(self,df):
         df=df.drop_duplicates(keep='first')
-        removabl=['٬','ج.م.']
+        removabl=[',','.','٬','ج.م.']
         for char in removabl:
             df['Price']=df['Price'].astype(str).str.replace(char,'', regex=True)
             df['PriceBeforDiscount']=df['PriceBeforDiscount'].astype(str).str.replace(char,'', regex=True)
