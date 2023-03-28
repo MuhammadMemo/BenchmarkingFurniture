@@ -61,25 +61,54 @@ class CompanyBenchmarking:
 
     # TO-DO ..Method To Get Mffco data
     def __MffcoFormat__(self,soup, campany, category):
-        filter_Products = soup.find_all("div", class_="product_container" )
+        #Product = soup.find_all("div", class_="product_container" )
+        Product = soup.find_all("h3", class_='title' )
+        for p in range(len(Product)):
+            self.__Products.append(Product[p].text)
+            self.__CampanyList.append(campany)
+            self.__CategoryList.append(category)
+
+        self.__FlagPrice = 0
+        Price = soup.find_all("span" ,class_="woocommerce-Price-amount amount" )
+        for i in range(len(Price)):
+              if (self.__FlagPrice == 0):
+                    self.__PriceBeforDiscount.append(Price[i].text)
+                    self.__FlagPrice=1
+              else:
+                    self.__Price.append(Price[i].text)
+                    self.__FlagPrice=0
+
+        #print(self.__Price,len(Price))
+
+        #with open ("C:\\Users\\ism01\\Myfile.csv","w") as myFile:
+        #    wr = csv.writing(myFile)
+
+
         # Loop Get Product name
-        for i in filter_Products:
-            for p in i.find_all("h3", class_='title'):
-                 self.__Products.append(p.text)
-                    # Get category,campany name
-                 self.__CampanyList.append(campany)
-                 self.__CategoryList.append(category)
+        #for i in filter_Products:
+        #    for p in i.find_all("h3", class_='title'):
+        #         self.__Products.append(p.text)
+        #            # Get category,campany name
+        #         self.__CampanyList.append(campany)
+        #         self.__CategoryList.append(category)
             # Loop Get Price
 
-            results = []
-            self.__FlagPrice = 0
-            for c in i.find_all("span",class_='woocommerce-Price-amount amount'):
-                if (self.__FlagPrice == 0):
-                        self.__PriceBeforDiscount.append(c.text)
-                        self.__FlagPrice=1
-                else:
-                        self.__Price.append(c.text)
-                        self.__FlagPrice=0
+            #self.__FlagPrice = 0
+            #for c in i.find_all("span" ,{"class":"woocommerce-Price-amount amount"}):
+            ##for c in i.find_all("span" ,class_="woocommerce-Price-amount amount"):
+            #    self.__Price.append(c.text)
+            #    print(self.__Price)
+
+                #if (self.__FlagPrice == 0):
+                #        self.__PriceBeforDiscount.append(c.text)
+                #        self.__FlagPrice=1
+                #else:
+                #        self.__Price.append(c.text)
+                #        self.__FlagPrice=0
+
+
+
+
             #Loop Get Images name
             #for g in i.find_all('img'):
             #    Img.append(g['src'])
@@ -96,11 +125,11 @@ class CompanyBenchmarking:
         #       imgList.append(imgUrl)
         #if self.__CategoryList=='Corner' :
 
-        #self.__Price=list(dict.fromkeys( self.__Price))
-        #self.__PriceBeforDiscount=list(dict.fromkeys(self.__PriceBeforDiscount))
+        self.__Price=list(dict.fromkeys( self.__Price))
+        self.__PriceBeforDiscount=list(dict.fromkeys(self.__PriceBeforDiscount))
 
         print("Downloded  ",len(self.__Products),"  Products\n")
-        #print(len(self.__Price),len(self.__Products),len(self.__PriceBeforDiscount))
+        print(len(self.__Price),len(self.__Products),len(self.__PriceBeforDiscount))
         AllData = {'Campany': self.__CampanyList, 'Category': self.__CategoryList,
                     'Products': self.__Products, 'Price': self.__Price,'PriceBeforDiscount': self.__PriceBeforDiscount}  
         df = pd.DataFrame(AllData)
@@ -110,7 +139,7 @@ class CompanyBenchmarking:
         self.__Products.clear()
         self.__Price.clear()
         self.__PriceBeforDiscount.clear()
-        self.__Img.clear()
+        #self.__Img.clear()
         AllData.clear()
         return df
     # TO-DO ..Method To Get Kabbani data
@@ -427,7 +456,7 @@ class CompanyBenchmarking:
 
     def __dataCleaning__(self,df):
         df=df.drop_duplicates(keep='first')
-        removabl=[',',' ','٬','ج.م.']
+        removabl=['٬','ج.م.']
         for char in removabl:
             df['Price']=df['Price'].astype(str).str.replace(char,'', regex=True)
             df['PriceBeforDiscount']=df['PriceBeforDiscount'].astype(str).str.replace(char,'', regex=True)
