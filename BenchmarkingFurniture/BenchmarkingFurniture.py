@@ -447,7 +447,7 @@ class CompanyBenchmarking:
 
     def __dataCleaning__(self,df):
         df=df.drop_duplicates(keep='first')
-        removabl=[',','.','٬','ج.م.']
+        removabl=[',','٬','ج.م.']
         for char in removabl:
             df['Price']=df['Price'].astype(str).str.replace(char,'', regex=True)
             df['PriceBeforDiscount']=df['PriceBeforDiscount'].astype(str).str.replace(char,'', regex=True)

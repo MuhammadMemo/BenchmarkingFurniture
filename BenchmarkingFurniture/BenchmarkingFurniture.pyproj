@@ -11,7 +11,7 @@
     <OutputPath>.</OutputPath>
     <Name>BenchmarkingFurniture</Name>
     <RootNamespace>BenchmarkingFurniture</RootNamespace>
-    <InterpreterId>Global|ContinuumAnalytics|Anaconda37-64</InterpreterId>
+    <InterpreterId>Global|PythonCore|3.9</InterpreterId>
     <SuppressEnvironmentCreationPrompt>True</SuppressEnvironmentCreationPrompt>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
