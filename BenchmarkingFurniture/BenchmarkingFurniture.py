@@ -116,11 +116,21 @@ class CompanyBenchmarking:
         for a in soup.select('del'):
             self.__PriceBeforDiscount.append(a.find_next('bdi').text)
 
-        print(soup['ins'].b)
-        print("d")
+        p=  np.repeat(self.__Products, 2).tolist()
+        c1=  np.repeat(self.__CampanyList, 2).tolist()
+        c2=  np.repeat(self.__CategoryList, 2).tolist()
+        self.__Products=p
+        self.__CampanyList=c1
+        self.__CategoryList=c2
+
+        #print(soup['ins'].b)
+        #print("d")
         #data= list(zip(self.__Price,self.__PriceBeforDiscount,self.__Products,self.__CampanyList,self.__CategoryList))
-
-
+        #z=self.__Products
+        #for i in z:
+        #    self.__Products.append(i)
+        #print(len(self.__Products))
+        #self.__Products
         #for n1 in list11[1],:
         #    print(n1)
             
@@ -158,9 +168,9 @@ class CompanyBenchmarking:
 
         print("Downloded  ",len(self.__Products),"  Products\n")
     ##print(len(self.__Price),len(self.__Products),len(self.__PriceBeforDiscount))
-    #    AllData = {'Campany': self.__CampanyList, 'Category': self.__CategoryList,
-    #                'Products': self.__Products, 'Price': self.__Price,'PriceBeforDiscount': self.__PriceBeforDiscount}  
-        #df = pd.DataFrame(data,columns=['Price','PriceBeforDiscount','Products','Campany','Category'])
+        AllData = {'Campany': self.__CampanyList, 'Category': self.__CategoryList,
+                    'Products': self.__Products, 'Price': self.__Price,'PriceBeforDiscount': self.__PriceBeforDiscount}  
+        df = pd.DataFrame(AllData)
         #clear All variables
         #print(df)
         self.__CampanyList.clear()
@@ -169,7 +179,7 @@ class CompanyBenchmarking:
         self.__Price.clear()
         self.__PriceBeforDiscount.clear()
         #self.__Img.clear()
-        #AllData.clear()
+        AllData.clear()
         return df
 
     # TO-DO ..Method To Get Kabbani data
@@ -495,9 +505,11 @@ class CompanyBenchmarking:
             df['PriceBeforDiscount']=df['PriceBeforDiscount'].astype(str).str.replace(char,'', regex=True)
         df['Price'] = df['Price'].str.extract(pat='(\d+)', expand=False)
         df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.extract(pat='(\d+)', expand=False)
+        df['Products'] = df['Products'].str.strip()
+
         df['PriceBeforDiscount']=df['PriceBeforDiscount'].astype('int')
         df['Price'] = df['Price'].astype('int')
-
+        df.reset_index(inplace=True)
         return df
 
     def DataDisplay(self):
