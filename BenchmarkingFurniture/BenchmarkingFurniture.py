@@ -446,18 +446,26 @@ class CompanyBenchmarking:
         return  self.__DataFrame
 
     def __dataCleaning__(self,df):
+        #  TO_DO Remove duplicates
+        df.reset_index(inplace=True,drop=True)
         df=df.drop_duplicates(keep='first')
-        removabl=[',','.','٬','ج.م.']
+        #  TO_DO Price Cleaning
+        removabl=[',','.',' ','٬','ج.م.']
         for char in removabl:
             df['Price']=df['Price'].astype(str).str.replace(char,'', regex=True)
             df['PriceBeforDiscount']=df['PriceBeforDiscount'].astype(str).str.replace(char,'', regex=True)
         df['Price'] = df['Price'].str.extract(pat='(\d+)', expand=False)
         df['PriceBeforDiscount'] = df['PriceBeforDiscount'].str.extract(pat='(\d+)', expand=False)
-        df['Products'] = df['Products'].str.strip()
-
         df['PriceBeforDiscount']=df['PriceBeforDiscount'].astype('int')
         df['Price'] = df['Price'].astype('int')
-        df.reset_index(inplace=True)
+        #  TO_DO Products Cleaning
+        df['Products'] = df['Products'].str.strip()
+        #  TO_DO Products Category Changing for outlier values
+        Change=['فوتيه مارفل','كرسى هزاز مودرن']
+        for char in Change:
+             df.loc[(df.Products == char ), 'Category'] = 'karacey'
+
+        df.reset_index(inplace=True,drop=True)
         return df
 
     def DataDisplay(self):
