@@ -12,6 +12,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pylab as plt
 
+
 import time as t
 import urllib.request as urlReq
 import datetime as dt
@@ -34,7 +35,7 @@ class CompanyBenchmarking:
             'User-Agent': 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.3'}
         df = pd.read_excel(FileLocation_ToLoade)
         #Public Variables
-        self.__DataFrame=pd.DataFrame()
+        self.__DataFrame=pd.DataFrame(index=None)
         self.__Products = []
         self.__Price = []
         self.__PriceBeforDiscount=[]
@@ -452,11 +453,8 @@ class CompanyBenchmarking:
         #  TO_DO Remove duplicates
         df.reset_index(inplace=True,drop=True)
         df=df.drop_duplicates(keep='first')
-
         #  TO_DO Price Cleaning
-
         removabl=[',','٬','ج.م.']
-
         for char in removabl:
             df['Price']=df['Price'].astype(str).str.replace(char,'', regex=True)
             df['PriceBeforDiscount']=df['PriceBeforDiscount'].astype(str).str.replace(char,'', regex=True)
@@ -482,8 +480,9 @@ class CompanyBenchmarking:
         print("-" * 40)
         return True
 
-    def DataTypes(self):
-        print(self.__DataFrame.dtypes)
+    def DataInfo(self):
+        print(self.__DataFrame.info(memory_usage='deep'))
+        #print(self.__DataFrame.dtypes)
 
     def DataStatistic(self):
         pd.set_option('colheader_justify', 'center')
@@ -535,11 +534,11 @@ class CompanyBenchmarking:
 def main():
     while True :
        DataCompany= CompanyBenchmarking("Datafurniture.xls")
-       DataCompany.DataDisplay()
-       DataCompany.DataExport()
-       DataCompany.DataStatistic()
-       DataCompany.DataGraph()
-       #DataCompany.DataTypes()
+       #DataCompany.DataDisplay()
+       #DataCompany.DataExport()
+       #DataCompany.DataStatistic()
+       #DataCompany.DataGraph()
+       DataCompany.DataInfo()
        restart = input('\nWould you like to restart? Enter yes.... or press any key to exit.\n')
 
        if restart.lower() != 'yes':
