@@ -17,6 +17,7 @@ import urllib.request as urlReq
 import datetime as dt
 
 
+
 class CompanyBenchmarking:
 
     def __init__(self,FileLocation_ToLoade:str) -> str:
@@ -45,17 +46,18 @@ class CompanyBenchmarking:
         self.__imgList = []
         self.__imgUrl = []
         self.__errorConnections=0
+        self.__successConnection=0
 
 
         self.__HelloMessage__()
         self.__campany,self.__category = self.__getFilterUser__()
         self.__StartTime=dt.datetime.now()
         self.__campany,self.__category,self.__url =self.__getFilterData__(df,self.__campany,self.__category)
-        self.__DataFrame = self.__dataLoding__(self.__campany,self.__category,self.__url)
+        self.__DataFrame ,self.__errorConnections,self.__successConnection= self.__dataLoding__(self.__campany,self.__category,self.__url)
         self.__DataFrame=self.__dataCleaning__(self.__DataFrame)
         self.__EndTime=dt.datetime.now()
 
-        print("Start Time: ", self.__StartTime ,"End Time:" , self.__EndTime)
+        print("Start Time: ", self.__StartTime ,"End Time:" , self.__EndTime,"Error Connections",self.__errorConnections ,"Success Connection",self.__successConnection)
 
     def __HelloMessage__(self)-> None:
         print("# Hello in the Benchmarketing Project# \nPleass Select one or all to download Company data from website:\n")
@@ -406,6 +408,7 @@ class CompanyBenchmarking:
     def __dataLoding__(self,campanyName : List,categoryName : List,urls :List)-> List:
         # TO_DO Loop in urls 
         errorConnection=0
+        SuccessConnection=0
         for g in range(len(urls)):
             # TO_DO Connect urls 
             page = rs.get(url=urls[g], headers=self.__headers)
@@ -422,6 +425,7 @@ class CompanyBenchmarking:
                 continue
             else :
                 print ("Connection is OK :","Downloading...",campanyName[g], categoryName[g],"\n")
+                SuccessConnection += 1
             # Filter Products in HTML
             if campanyName[g]=='Mffco':
                 self.__DataFrame= pd.concat([self.__DataFrame,self.__MffcoFormat__(soup ,campanyName[g], categoryName[g])])
@@ -442,15 +446,17 @@ class CompanyBenchmarking:
             page.close()
             print("The Connection Has been Closed\n","Waiting.... \n")
             #t.sleep(5)
-            self.__errorConnection=errorConnection
-        return  self.__DataFrame
+        return  self.__DataFrame,errorConnection,SuccessConnection
 
     def __dataCleaning__(self,df):
         #  TO_DO Remove duplicates
         df.reset_index(inplace=True,drop=True)
         df=df.drop_duplicates(keep='first')
+
         #  TO_DO Price Cleaning
-        removabl=[',','.',' ','٬','ج.م.']
+
+        removabl=[',','٬','ج.م.']
+
         for char in removabl:
             df['Price']=df['Price'].astype(str).str.replace(char,'', regex=True)
             df['PriceBeforDiscount']=df['PriceBeforDiscount'].astype(str).str.replace(char,'', regex=True)
@@ -460,11 +466,11 @@ class CompanyBenchmarking:
         df['Price'] = df['Price'].astype('int')
         #  TO_DO Products Cleaning
         df['Products'] = df['Products'].str.strip()
-        #  TO_DO Products Category Changing for outlier values
-        Change=['فوتيه مارفل','كرسى هزاز مودرن']
-        for char in Change:
-             df.loc[(df.Products == char ), 'Category'] = 'karacey'
-
+        #  TO_DO Products Category delete for outlier values
+        delete=['فوتيه مارفل','كرسى هزاز مودرن']
+        for char in delete:
+              df = df.loc[~((df['Products']==char))]
+             #df.loc[(df.Products == char ), 'Category'] = 'karacey'
         df.reset_index(inplace=True,drop=True)
         return df
 
@@ -486,7 +492,8 @@ class CompanyBenchmarking:
         df=self.__DataFrame
         df=df.groupby(['Campany','Category'])['Price'].describe()
         print(df)
-        print("Error Connection : ",self.__errorConnection)
+
+        print("Error Connection : ",self.__errorConnections,"Success Connection : ",self.__successConnection)
         df.to_excel("c:\\DataStatistic.xlsx")
 
     def DataExport(self):
