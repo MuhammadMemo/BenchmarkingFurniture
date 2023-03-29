@@ -21,7 +21,7 @@ import datetime as dt
 
 class CompanyBenchmarking:
 
-    def __init__(self,FileLocation_ToLoade:str) -> str:
+    def __init__(self,FileExcelLoading:str) -> str:
 
        # list for Company + all
         self.__ListOfCompany={"All Company":0,"Mffco":1,"Kabbani":2,"Egypt":3,"Hub" : 4
@@ -33,7 +33,7 @@ class CompanyBenchmarking:
         #Public headers To Pass All Methods
         self.__headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.3'}
-        df = pd.read_excel(FileLocation_ToLoade)
+        df = pd.read_excel(FileExcelLoading)
         #Public Variables
         self.__DataFrame=pd.DataFrame(index=None)
         self.__Products = []
@@ -64,11 +64,8 @@ class CompanyBenchmarking:
         print("# Hello in the Benchmarketing Project# \nPleass Select one or all to download Company data from website:\n")
         print("-" * 40)
 
-        
-
     # TO-DO ..Method To Get Mffco data
     def __MffcoFormat__(self,soup, campany, category):
-
         Product = soup.find_all("h3", class_='title')
         #Loop Get Product name
         for p in Product:
@@ -80,9 +77,9 @@ class CompanyBenchmarking:
             # Loop Get Price
         for a in soup.select('ins'):
             self.__Price.append(a.find_next('bdi').text)
-        for a in soup.select('del'):
-            self.__PriceBeforDiscount.append(a.find_next('bdi').text)
-
+        for b in soup.select('del'):
+            self.__PriceBeforDiscount.append(b.find_next('bdi').text)
+        print(len(self.__Products),len(self.__Price),len(self.__PriceBeforDiscount))
         p=  np.repeat(self.__Products, 2).tolist()
         c1=  np.repeat(self.__CampanyList, 2).tolist()
         c2=  np.repeat(self.__CategoryList, 2).tolist()
@@ -115,7 +112,7 @@ class CompanyBenchmarking:
 
         #self.__Price=list(dict.fromkeys( self.__Price))
         #self.__PriceBeforDiscount=list(dict.fromkeys(self.__PriceBeforDiscount))
-
+        print(len(self.__Products),len(self.__Price),len(self.__PriceBeforDiscount))
         print("Downloded  ",len(self.__Products),"  Products\n")
     ##print(len(self.__Price),len(self.__Products),len(self.__PriceBeforDiscount))
         AllData = {'Campany': self.__CampanyList, 'Category': self.__CategoryList,
@@ -128,6 +125,9 @@ class CompanyBenchmarking:
         self.__Products.clear()
         self.__Price.clear()
         self.__PriceBeforDiscount.clear()
+        #p.clear()
+        #c1.clear()
+        #c2.clear()
         #self.__Img.clear()
         AllData.clear()
         return df
@@ -482,7 +482,7 @@ class CompanyBenchmarking:
 
     def DataInfo(self):
         print(self.__DataFrame.info(memory_usage='deep'))
-        #print(self.__DataFrame.dtypes)
+        print("-" * 40)
 
     def DataStatistic(self):
         pd.set_option('colheader_justify', 'center')
@@ -491,6 +491,7 @@ class CompanyBenchmarking:
         df=self.__DataFrame
         df=df.groupby(['Campany','Category'])['Price'].describe()
         print(df)
+        print("-" * 40)
 
         print("Error Connection : ",self.__errorConnections,"Success Connection : ",self.__successConnection)
         df.to_excel("c:\\DataStatistic.xlsx")
@@ -535,7 +536,7 @@ def main():
     while True :
        DataCompany= CompanyBenchmarking("Datafurniture.xls")
        #DataCompany.DataDisplay()
-       #DataCompany.DataExport()
+       DataCompany.DataExport()
        #DataCompany.DataStatistic()
        #DataCompany.DataGraph()
        DataCompany.DataInfo()
