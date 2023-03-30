@@ -488,13 +488,31 @@ class CompanyBenchmarking:
         pd.set_option('colheader_justify', 'center')
         pd.set_option('display.max_columns',None)
         pd.set_option('display.max_rows', None)
-        df=self.__DataFrame
-        df=df.groupby(['Campany','Category'])['Price'].describe()
-        print(df)
+        df1=self.__DataFrame
+        df2=self.__DataFrame
+        df3=self.__DataFrame
+        df4=self.__DataFrame
+
+        df1=df1.groupby(['Campany','Category'])['Price'].describe()
+        print(df1)
+        print("-" * 40)
+        df2=df2.groupby(['Category'])['Price'].describe()
+        print(df2)
+        print("-" * 40)
+        df3=df3.groupby(['Campany'])['Price'].describe()
+        print(df3)
+        print("-" * 40)
+        df4=df4.groupby(['Category','Campany'])['Price'].describe()
+        print(df4)
         print("-" * 40)
 
         print("Error Connection : ",self.__errorConnections,"Success Connection : ",self.__successConnection)
-        df.to_excel("c:\\DataStatistic.xlsx")
+
+        with pd.ExcelWriter('c:\\DataStatistic.xlsx') as writer:
+            df1.to_excel(writer, sheet_name='Campany and Category')
+            df2.to_excel(writer, sheet_name='Category')
+            df3.to_excel(writer, sheet_name="Campany")
+            df4.to_excel(writer, sheet_name="Category and Campany")
 
     def DataExport(self):
         print("Data Exporting....")
@@ -535,10 +553,10 @@ class CompanyBenchmarking:
 def main():
     while True :
        DataCompany= CompanyBenchmarking("Datafurniture.xls")
-       #DataCompany.DataDisplay()
+       DataCompany.DataDisplay()
        DataCompany.DataExport()
-       #DataCompany.DataStatistic()
-       #DataCompany.DataGraph()
+       DataCompany.DataStatistic()
+       DataCompany.DataGraph()
        DataCompany.DataInfo()
        restart = input('\nWould you like to restart? Enter yes.... or press any key to exit.\n')
 

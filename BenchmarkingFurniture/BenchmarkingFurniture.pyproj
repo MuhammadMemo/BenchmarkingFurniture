@@ -11,7 +11,7 @@
     <OutputPath>.</OutputPath>
     <Name>BenchmarkingFurniture</Name>
     <RootNamespace>BenchmarkingFurniture</RootNamespace>
-    <InterpreterId>Global|ContinuumAnalytics|Anaconda37-64</InterpreterId>
+    <InterpreterId>CondaEnv|CondaEnv|env</InterpreterId>
     <SuppressEnvironmentCreationPrompt>True</SuppressEnvironmentCreationPrompt>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -30,6 +30,7 @@
     <InterpreterReference Include="CondaEnv|CondaEnv|python7" />
     <InterpreterReference Include="Global|ContinuumAnalytics|Anaconda37-64" />
     <InterpreterReference Include="Global|ContinuumAnalytics|Anaconda39-64" />
+    <InterpreterReference Include="Global|PythonCore|3.10" />
     <InterpreterReference Include="Global|PythonCore|3.7" />
     <InterpreterReference Include="Global|PythonCore|3.9" />
   </ItemGroup>
