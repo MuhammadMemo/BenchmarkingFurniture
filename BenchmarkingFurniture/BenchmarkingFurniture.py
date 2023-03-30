@@ -521,7 +521,7 @@ class CompanyBenchmarking:
        ncol=2, mode="expand", borderaxespad=0)
         axs[1].legend((12,14), ('Count_Products', 'agv_Price'), loc='upper right')
         axs[2].legend((12,14), ('Count_Products', 'agv_Price'), loc='upper right')
-        #axs.legend()
+
         #axs[3].hist(agv_Price,bins=8, linewidth=0.3,edgecolor="white")
         #fig1, ax1 = plt.subplots()
 
