@@ -54,7 +54,11 @@ class CompanyBenchmarking:
         self.__campany,self.__category = self.__getFilterUser__()
         self.__StartTime=dt.datetime.now()
         self.__campany,self.__category,self.__url =self.__getFilterData__(df,self.__campany,self.__category)
+
         self.__DataFrame ,self.__errorConnections,self.__successConnection= self.__dataLoding__(self.__campany,self.__category,self.__url)
+
+        self.__DataFrame.reset_index(drop=True, inplace=True)
+
         self.__DataFrame=self.__dataCleaning__(self.__DataFrame)
         self.__EndTime=dt.datetime.now()
 
@@ -454,9 +458,9 @@ class CompanyBenchmarking:
 
     def __dataCleaning__(self,df):
         #  TO_DO Remove duplicates
-        df.reset_index(inplace=True,drop=True)
+        #df.reset_index(drop=True)
 
-        df=df.drop_duplicates(keep='first')
+        df=df.drop_duplicates(subset=['Products','Price','PriceBeforDiscount'], keep='first')
         #  TO_DO Price Cleaning
         removabl=[',','٬','ج.م.']
         for char in removabl:
