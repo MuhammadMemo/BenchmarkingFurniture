@@ -12,7 +12,6 @@ import numpy as np
 import pandas as pd
 import matplotlib.pylab as plt
 
-
 import time as t
 import urllib.request as urlReq
 import datetime as dt
@@ -51,6 +50,7 @@ class CompanyBenchmarking:
 
 
         self.__HelloMessage__()
+
         self.__campany,self.__category = self.__getFilterUser__()
         self.__StartTime=dt.datetime.now()
         self.__campany,self.__category,self.__url =self.__getFilterData__(df,self.__campany,self.__category)
@@ -59,7 +59,7 @@ class CompanyBenchmarking:
         self.__EndTime=dt.datetime.now()
 
         print("Start Time: ", self.__StartTime ,"End Time:" , self.__EndTime,"Error Connections",self.__errorConnections ,"Success Connection",self.__successConnection)
-
+        print("Error Connection : ",self.__errorConnections,"Success Connection : ",self.__successConnection)
     def __HelloMessage__(self)-> None:
         print("# Hello in the Benchmarketing Project# \nPleass Select one or all to download Company data from website:\n")
         print("-" * 40)
@@ -386,7 +386,9 @@ class CompanyBenchmarking:
             except :
                     print("Oops... data.is not Correct..! :")
         return campany,category
+
     # TO-DO Get Filter From data Source
+
     def __getFilterData__(self,df,campany : int,category : int):
         keysCompany = self.__ListOfCompany.keys()
         keysCategory = self.__ListOfCategory.keys()
@@ -404,6 +406,7 @@ class CompanyBenchmarking:
         categoryName = dfcampany['Category']
         urls = dfcampany['URL']
         return campanyName,categoryName,urls
+
     # Loding Data Base on Campany,Category Filter
 
     def __dataLoding__(self,campanyName : List,categoryName : List,urls :List)-> List:
@@ -452,6 +455,7 @@ class CompanyBenchmarking:
     def __dataCleaning__(self,df):
         #  TO_DO Remove duplicates
         df.reset_index(inplace=True,drop=True)
+
         df=df.drop_duplicates(keep='first')
         #  TO_DO Price Cleaning
         removabl=[',','٬','ج.م.']
@@ -470,6 +474,9 @@ class CompanyBenchmarking:
               df = df.loc[~((df['Products']==char))]
              #df.loc[(df.Products == char ), 'Category'] = 'karacey'
         df.reset_index(inplace=True,drop=True)
+        #df.rename(index={0: 'index'},inplace=True)
+        #df = df.set_index('index',inplace=True)
+        #df = df.rename(columns={'': 'index'},inplace=True)
         return df
 
     def DataDisplay(self):
@@ -492,7 +499,6 @@ class CompanyBenchmarking:
         df2=self.__DataFrame
         df3=self.__DataFrame
         df4=self.__DataFrame
-
         df1=df1.groupby(['Campany','Category'])['Price'].describe()
         print(df1)
         print("-" * 40)
@@ -506,18 +512,22 @@ class CompanyBenchmarking:
         print(df4)
         print("-" * 40)
 
-        print("Error Connection : ",self.__errorConnections,"Success Connection : ",self.__successConnection)
 
-        with pd.ExcelWriter('c:\\DataStatistic.xlsx') as writer:
+    def DataExport(self):
+
+        df=self.__DataFrame
+        df1=self.__DataFrame.groupby(['Campany','Category'])['Price'].describe()
+        df2=self.__DataFrame.groupby(['Category'])['Price'].describe()
+        df3=self.__DataFrame.groupby(['Campany'])['Price'].describe()
+        df4=self.__DataFrame.groupby(['Category','Campany'])['Price'].describe()
+        print("Data Exporting....")
+        with pd.ExcelWriter('F:\DataStatistic.xlsx') as writer:
+            df.to_excel(writer, sheet_name='Product Details')
             df1.to_excel(writer, sheet_name='Campany and Category')
             df2.to_excel(writer, sheet_name='Category')
             df3.to_excel(writer, sheet_name="Campany")
             df4.to_excel(writer, sheet_name="Category and Campany")
 
-    def DataExport(self):
-        print("Data Exporting....")
-        df= self.__DataFrame
-        df.to_excel("c:\\ProductDetails.xlsx")
         print("Finished!")
         print("-" * 40)
         return True
@@ -553,11 +563,11 @@ class CompanyBenchmarking:
 def main():
     while True :
        DataCompany= CompanyBenchmarking("Datafurniture.xls")
-       DataCompany.DataDisplay()
+       #DataCompany.DataDisplay()
        DataCompany.DataExport()
-       DataCompany.DataStatistic()
-       DataCompany.DataGraph()
-       DataCompany.DataInfo()
+       #DataCompany.DataStatistic()
+       #DataCompany.DataGraph()
+       #DataCompany.DataInfo()
        restart = input('\nWould you like to restart? Enter yes.... or press any key to exit.\n')
 
        if restart.lower() != 'yes':
