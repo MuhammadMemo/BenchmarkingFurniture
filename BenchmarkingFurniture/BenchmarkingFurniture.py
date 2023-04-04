@@ -21,7 +21,7 @@ import datetime as dt
 
 class CompanyBenchmarking:
 
-    def __init__(self,FileExcelLoading:str) -> str:
+    def __init__(self,FileExcelLoading:str,numCampny :List,numCatoegory:List):
 
        # list for Company + all
         self.__ListOfCompany={"All Company":0,"Mffco":1,"Kabbani":2,"Egypt":3,"Hub" : 4
@@ -52,11 +52,18 @@ class CompanyBenchmarking:
 
         self.__HelloMessage__()
 
-        self.__campany,self.__category = self.__getFilterUser__()
-        self.__StartTime=dt.datetime.now()
-        self.__campany,self.__category,self.__url =self.__getFilterData__(df,self.__campany,self.__category)
+        for k,v in self.__ListOfCompany.items():
+                   print("Press:",str(v),"->",str(k))
+        for k1,v1 in self.__ListOfCategory.items():
+                print("Press:",str(v1),"->",str(k1))
+        for c in numCampny:
+            for o in numCatoegory:
+                self.__StartTime=dt.datetime.now()
+                self.__campany,self.__category = self.__getFilterUser__(c,o)
+            
+                self.__campany,self.__category,self.__url =self.__getFilterData__(df,self.__campany,self.__category)
 
-        self.__DataFrame ,self.__errorConnections,self.__successConnection= self.__dataLoding__(self.__campany,self.__category,self.__url)
+                self.__DataFrame ,self.__errorConnections,self.__successConnection= self.__dataLoding__(self.__campany,self.__category,self.__url)
 
         self.__DataFrame.reset_index(drop=True, inplace=True)
 
@@ -65,6 +72,7 @@ class CompanyBenchmarking:
 
         print("Start Time: ", self.__StartTime ,"End Time:" , self.__EndTime,"Error Connections",self.__errorConnections ,"Success Connection",self.__successConnection)
         print("Error Connection : ",self.__errorConnections,"Success Connection : ",self.__successConnection)
+
     def __HelloMessage__(self)-> None:
         print("# Hello in the Benchmarketing Project# \nPleass Select one or all to download Company data from website:\n")
         print("-" * 40)
@@ -87,7 +95,7 @@ class CompanyBenchmarking:
             self.__Price.append(a.find_next('bdi').text)
         for b in soup.select('del'):
             self.__PriceBeforDiscount.append(b.find_next('bdi').text)
-        print(self.__Products)
+        #print(self.__Products)
         print(len(self.__Products),len(self.__Price),len(self.__PriceBeforDiscount))
         p=  np.repeat(self.__Products, 2).tolist()
         c1=  np.repeat(self.__CampanyList, 2).tolist()
@@ -96,7 +104,7 @@ class CompanyBenchmarking:
         self.__CampanyList=c1
         self.__CategoryList=c2
         #print(self.__Price)
-        print(type(self.__Products))
+
         s=list(zip(self.__CampanyList,self.__CategoryList,self.__Products,self.__Price,self.__PriceBeforDiscount))
         # Printing the value Queen
         #for i in s:
@@ -127,8 +135,8 @@ class CompanyBenchmarking:
         print(len(self.__Products),len(self.__Price),len(self.__PriceBeforDiscount))
         print("Downloded  ",len(self.__Products),"  Products\n")
     ##print(len(self.__Price),len(self.__Products),len(self.__PriceBeforDiscount))
-        AllData = {'Campany': self.__CampanyList, 'Category': self.__CategoryList,
-                    'Products': self.__Products, 'Price': self.__Price,'PriceBeforDiscount': self.__PriceBeforDiscount}
+        #AllData = {'Campany': self.__CampanyList, 'Category': self.__CategoryList,
+        #            'Products': self.__Products, 'Price': self.__Price,'PriceBeforDiscount': self.__PriceBeforDiscount}
 
         df = pd.DataFrame(s, columns = ['Campany', 'Category','Products','Price','PriceBeforDiscount'])
         #print(df)
@@ -144,7 +152,7 @@ class CompanyBenchmarking:
         #c1.clear()
         #c2.clear()
         #self.__Img.clear()
-        AllData.clear()
+        #AllData.clear()
         return df
     # TO-DO ..Method To Get Kabbani data
     def __KabbaniFormat__(self,soup, campany, category):
@@ -298,7 +306,7 @@ class CompanyBenchmarking:
         AllData.clear()
         return df
     # TO-DO .Method To Get American data
-    def __AmericanFormat__(self,soup, campany, category):
+    def __AmericanFormat__(self,soup, campany, category ):
         #Filter Products in HTML
         filter_Products = soup.find_all(class_='products columns-tablet-2 columns-mobile-2 rey-wcGap-default rey-wcGrid-default columns-4')
         for i in filter_Products:
@@ -372,15 +380,15 @@ class CompanyBenchmarking:
         AllData.clear()
         return df
     # TO-DO Get Filter From user
-    def __getFilterUser__(self):
+    def __getFilterUser__(self,campany,category):
 
         valuesCompany = self.__ListOfCompany.values()
         valuesCategory = self.__ListOfCategory.values()
         while True :
-            for k,v in self.__ListOfCompany.items():
-                   print("Press:",str(v),"->",str(k))
+            #for k,v in self.__ListOfCompany.items():
+            #       print("Press:",str(v),"->",str(k))
             try:
-                 campany = int(input('Please enter an Campany Number :\n'))
+                 #campany = int(input('Please enter an Campany Number :\n'))
                  if campany in valuesCompany :
                     print("_"*40)
                     break
@@ -389,10 +397,10 @@ class CompanyBenchmarking:
             except :
                    print("Oops... data.is not Correct..! :")
         while True :
-            for k1,v1 in self.__ListOfCategory.items():
-                print("Press:",str(v1),"->",str(k1))
+            #for k1,v1 in self.__ListOfCategory.items():
+            #    print("Press:",str(v1),"->",str(k1))
             try:
-                 category=int(input('Please enter an Category Number :\n'))
+                 #category=int(input('Please enter an Category Number :\n'))
                  if category in valuesCategory :
                     print("_"*40)
                     break
@@ -420,6 +428,11 @@ class CompanyBenchmarking:
         campanyName = dfcampany['Campany']
         categoryName = dfcampany['Category']
         urls = dfcampany['URL']
+        print (campanyName,categoryName)
+        #while True :
+        #    restart = input('\nWould you like to restart? Enter ok.... or press any key to exit.\n')
+        #    if restart.lower() != 'ok':
+        #      break
         return campanyName,categoryName,urls
 
     # Loding Data Base on Campany,Category Filter
@@ -577,10 +590,10 @@ class CompanyBenchmarking:
 
 def main():
     while True :
-       DataCompany= CompanyBenchmarking("Datafurniture.xls")
+       DataCompany= CompanyBenchmarking("Datafurniture.xls",[3,2],[3,2])
        #DataCompany.DataDisplay()
        DataCompany.DataExport()
-       #DataCompany.DataStatistic()
+       DataCompany.DataStatistic()
        #DataCompany.DataGraph()
        #DataCompany.DataInfo()
        restart = input('\nWould you like to restart? Enter yes.... or press any key to exit.\n')
