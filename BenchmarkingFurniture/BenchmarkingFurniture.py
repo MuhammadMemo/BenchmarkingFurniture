@@ -2,6 +2,7 @@
 
 
 from ast import List
+from pickle import LIST
 
 #import convert_numbers
 #from itertools import groupby
@@ -70,19 +71,23 @@ class CompanyBenchmarking:
 
     # TO-DO ..Method To Get Mffco data
     def __MffcoFormat__(self,soup, campany, category):
-        Product = soup.find_all("h3", class_='title')
+        filter_Products = soup.find_all("div", class_='product_container')
+        #div class="product_container"
+        #Product = soup.find_all("h3", class_='title')
         #Loop Get Product name
-        for p in Product:
-            self.__Products.append(p.text)
-            # Get category,campany name
-            self.__CampanyList.append(campany)
-            self.__CategoryList.append(category)
+        for i in filter_Products:
+            for p in i.find_all("h3", class_='title'):
+                self.__Products.append(p.text)
+                    # Get category,campany name
+                self.__CampanyList.append(campany)
+                self.__CategoryList.append(category)
         #tag = soup.ins
             # Loop Get Price
         for a in soup.select('ins'):
             self.__Price.append(a.find_next('bdi').text)
         for b in soup.select('del'):
             self.__PriceBeforDiscount.append(b.find_next('bdi').text)
+        print(self.__Products)
         print(len(self.__Products),len(self.__Price),len(self.__PriceBeforDiscount))
         p=  np.repeat(self.__Products, 2).tolist()
         c1=  np.repeat(self.__CampanyList, 2).tolist()
@@ -90,9 +95,12 @@ class CompanyBenchmarking:
         self.__Products=p
         self.__CampanyList=c1
         self.__CategoryList=c2
-
+        #print(self.__Price)
+        print(type(self.__Products))
+        s=list(zip(self.__CampanyList,self.__CategoryList,self.__Products,self.__Price,self.__PriceBeforDiscount))
         # Printing the value Queen
-
+        #for i in s:
+        #     print(i)
         #print(dataList)
         #with open ("C:\\Users\\ism01\\Myfile.csv","w") as myFile:
         #    wr = csv.writing(myFile)
@@ -120,8 +128,11 @@ class CompanyBenchmarking:
         print("Downloded  ",len(self.__Products),"  Products\n")
     ##print(len(self.__Price),len(self.__Products),len(self.__PriceBeforDiscount))
         AllData = {'Campany': self.__CampanyList, 'Category': self.__CategoryList,
-                    'Products': self.__Products, 'Price': self.__Price,'PriceBeforDiscount': self.__PriceBeforDiscount}  
-        df = pd.DataFrame(AllData)
+                    'Products': self.__Products, 'Price': self.__Price,'PriceBeforDiscount': self.__PriceBeforDiscount}
+
+        df = pd.DataFrame(s, columns = ['Campany', 'Category','Products','Price','PriceBeforDiscount'])
+        #print(df)
+        #print(s)
         #clear All variables
         #print(df)
         self.__CampanyList.clear()
@@ -460,7 +471,7 @@ class CompanyBenchmarking:
         #  TO_DO Remove duplicates
         #df.reset_index(drop=True)
 
-        df=df.drop_duplicates(subset=['Products','Price','PriceBeforDiscount'], keep='first')
+        df=df.drop_duplicates(keep='first')
         #  TO_DO Price Cleaning
         removabl=[',','٬','ج.م.']
         for char in removabl:
