@@ -470,8 +470,8 @@ class CompanyBenchmarking:
     def __dataCleaning__(self,df):
         #  TO_DO Remove duplicates
         #df.reset_index(drop=True)
-
-        df=df.drop_duplicates(keep='first')
+#
+        df=df.drop_duplicates(subset=['Products','Price','PriceBeforDiscount'],keep='first')
         #  TO_DO Price Cleaning
         removabl=[',','٬','ج.م.']
         for char in removabl:
